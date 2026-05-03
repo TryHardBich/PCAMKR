@@ -69,7 +69,7 @@ html, body {
 
 .hero-buttons a {
   padding: 12px 25px;
-  border-radius: 10px;
+  border-radius: 0px;
   color: var(--white);
   text-decoration: none;
   font-weight: bold;
@@ -94,8 +94,10 @@ html, body {
 .btn-3:hover {
   background-color: var(--lightgray);
   transform: translateY(-2px);
-  border: 2px solid var(--button-light-border);
-  background: transparent;
+  border: 2px solid var(--white);
+  background: rgba(255, 0, 0, 0.3); /* var(--lightgray) с прозрачностью */
+
+
 }
 
 .footer {
@@ -128,4 +130,8 @@ body {
   0%   { background-position: 50% 0%; }
   50%  { background-position: 50% 100%; }
   100% { background-position: 50% 0%; }
+}
+.hero-buttons a {
+  position: relative;
+  overflow: hidden;
 }
