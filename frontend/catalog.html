@@ -1,20 +1,80 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Каталог</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="styles/catalog.css">
 </head>
+
 <body>
-  <h1>Каталог комплектующих</h1>
+<a href="index.html" class="back-btn">← На главную</a>
 
-  <nav>
-    <a href="index.html">Главная</a> |
-    <a href="builder.html">Сборщик ПК</a> |
-    <a href="catalog.html">Каталог</a> |
-    <a href="calculator.html">Калькулятор</a>
-  </nav>
+<div class="catalog">
 
-  <p>Здесь будет список товаров.</p>
+  <div class="item">
+    <div class="item-info">
+      <h2 class="item-title">Процессоры</h2>
+      <p class="item-desc">Обязательно</p>
+    </div>
+    <a href="{% url 'catalog_cpu' %}" class="btn-more">Открыть</a>
+  </div>
+
+  <div class="item">
+    <div class="item-info">
+      <h2 class="item-title">Видеокарты</h2>
+      <p class="item-desc">Обязательно</p>
+    </div>
+    <a href="{% url 'catalog_gpu' %}" class="btn-more">Открыть</a>
+  </div>
+
+  <div class="item">
+    <div class="item-info">
+      <h2 class="item-title">Материнские платы</h2>
+      <p class="item-desc">Обязательно</p>
+    </div>
+    <a href="{% url 'catalog_motherboard' %}" class="btn-more">Открыть</a>
+  </div>
+
+  <div class="item">
+    <div class="item-info">
+      <h2 class="item-title">Оперативная память</h2>
+      <p class="item-desc">Обязательно</p>
+    </div>
+    <a href="{% url 'catalog_ram' %}" class="btn-more">Открыть</a>
+  </div>
+
+  <div class="item">
+    <div class="item-info">
+      <h2 class="item-title">Блоки питания</h2>
+      <p class="item-desc">Обязательно</p>
+    </div>
+    <a href="{% url 'catalog_psu' %}" class="btn-more">Открыть</a>
+  </div>
+
+  <div class="item">
+    <div class="item-info">
+      <h2 class="item-title">Корпуса</h2>
+      <p class="item-desc">Обязательно</p>
+    </div>
+    <a href="{% url 'catalog_case' %}" class="btn-more">Открыть</a>
+  </div>
+
+  <div class="item">
+    <div class="item-info">
+      <h2 class="item-title">Накопители</h2>
+      <p class="item-desc">Обязательно</p>
+    </div>
+    <a href="{% url 'catalog_memory' %}" class="btn-more">Открыть</a>
+  </div>
+
+  <div class="item">
+    <div class="item-info">
+      <h2 class="item-title">Охлаждение</h2>
+      <p class="item-desc">Обязательно</p>
+    </div>
+    <a href="{% url 'catalog_cooler' %}" class="btn-more">Открыть</a>
+  </div>
+
+</div>
 </body>
 </html>
