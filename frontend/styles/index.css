@@ -95,7 +95,7 @@ html, body {
   background-color: var(--lightgray);
   transform: translateY(-2px);
   border: 2px solid var(--white);
-  background: rgba(255, 0, 0, 0.3); /* var(--lightgray) с прозрачностью */
+  background: rgba(255, 0, 0, 0.144);
 
 
 }
