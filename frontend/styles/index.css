@@ -135,3 +135,7 @@ body {
   position: relative;
   overflow: hidden;
 }
+::selection {
+  background: none;
+  color: rgba(255, 0, 0, 0.753);
+}
