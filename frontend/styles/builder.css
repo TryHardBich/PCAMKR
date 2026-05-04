@@ -9,7 +9,7 @@ body {
   margin: 0;
   padding: 0;
   background: linear-gradient(
-    45deg,
+    -45deg,
     rgb(160, 5, 5),
     var(--black) 45%,
     var(--white) 150%

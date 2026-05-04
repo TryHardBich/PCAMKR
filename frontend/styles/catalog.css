@@ -1,6 +1,9 @@
 @import url("root.css");
+
 html, body {
   height: 100%;
+  margin: 0;
+  padding: 0;
 }
 
 body {
@@ -8,15 +11,16 @@ body {
   margin: 0;
   padding: 0;
   background: linear-gradient(
-    45deg,
-    var(--darkred) 0%,
-    var(--lightgray) 45%,
-    var(--white) 100%
+    -45deg,
+    rgb(160, 5, 5),
+    var(--black) 45%,
+    var(--white) 150%
   );
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: fixed;
 }
+/* Кнопка назад */
 .back-btn {
   position: fixed;
   top: 15px;
@@ -27,71 +31,56 @@ body {
   text-decoration: none;
   border: none;
   transition: 0.2s;
+  font-size: 18px;
 }
 
 .back-btn:hover {
-  background: transparent;
   transform: translateY(-2px);
-  border: none;
 }
 
-/* Контейнер каталога */
-.catalog {
-  max-width: 900px;
-  margin: 30px auto;
+/* Сетка */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  max-width: 70%;
+  margin: 100px auto 0;
   padding: 0 20px;
 }
 
-/* Элемент списка категорий */
-.item {
-  background: #daa1a12c;
-  border: 1px solid var(--darkblack);
-  padding: 15px 20px;
-  margin-bottom: 15px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: 0.2s;
-}
-
-.item:hover {
-  border-color: var(--white);
-  transform: translateY(-2px);
-}
-
-.item-info {
-  max-width: 70%;
-}
-
-.item-title {
-  font-size: 20px;
-  margin: 0 0 5px;
-  color: var(--white);
-}
-
-.item-desc {
-  font-size: 14px;
-  color: var(--button-light-border);
-  margin: 0 0 10px;
-}
-
-/* Кнопка "Открыть" */
-.btn-more {
-  padding: 8px 14px;
-  background: rgba(117, 112, 112, 0.26);
+.cell {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  padding: 100px 0;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
   color: white;
-  border-radius: 6px;
-  text-decoration: none;
-  border: 1px solid var(--black);
   transition: 0.2s;
+  user-select: none;
+  text-decoration: none;
 }
 
-.btn-more:hover {
-  background: rgba(160, 0, 0, 0.089);
-  transform: translateY(-2px);
-  border: 1px solid var(--white);
+.cell:hover {
+  border-color: white;
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateY(-3px);
 }
 ::selection {
   background: none;
   color: rgba(255, 0, 0, 0.753);
+}
+
+/* Адаптивность */
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 400px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
 }
