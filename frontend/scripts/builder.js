@@ -15,18 +15,31 @@ function loadPart(key, slotId) {
     const data = JSON.parse(localStorage.getItem(key));
     const slot = document.getElementById(slotId);
 
-    if (!slot) return; // если слота нет — выходим
+    if (!slot) return;
 
     if (data) {
         slot.innerHTML = `
-            <b>${data.name}</b><br>
-            ${data.info}<br>
-            <span style="color:#ffd27f">${data.price}</span>
+            <div class="part-left">
+                <div class="part-name">${data.name}</div>
+                <div class="part-info">${data.info}</div>
+            </div>
+
+            <div class="part-right">
+                <div class="part-price">${data.price}</div>
+                <button class="delete-btn">Удалить</button>
+            </div>
         `;
+
+        slot.querySelector(".delete-btn").addEventListener("click", () => {
+            localStorage.removeItem(key);
+            slot.innerHTML = "Не выбрано";
+        });
+
     } else {
         slot.innerHTML = "Не выбрано";
     }
 }
+
 
 // Запуск
 loadConfig();

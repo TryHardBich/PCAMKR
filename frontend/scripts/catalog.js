@@ -51,19 +51,19 @@ function openModal(category, title) {
     items.forEach(item => {
       const div = document.createElement("div");
       div.className = "modal-item";
-      div.innerHTML = `
-        <div class="left-block">
-          <div class="item-name">${item.name}</div>
-          <div class="item-desc">${item.info}</div>
-        </div>
+        div.innerHTML = `
+          <div class="left-block">
+            <div class="item-name">${item.name}</div>
+            <div class="item-desc">${item.info}</div>
+          </div>
 
-        <div class="right-block">
-          <div class="item-price">${item.price}</div>
-          <button class="choose-btn">Выбрать</button>
-        </div>
+          <div class="right-block">
+            <div class="item-price">${item.price}</div>
+
+            <div class="btn-row">
+              <button class="choose-btn">Выбрать</button>
+            </div>
 `;
-
-
       div.querySelector(".choose-btn").addEventListener("click", () => {
         selectItem(category, item);
       });
