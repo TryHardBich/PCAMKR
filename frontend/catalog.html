@@ -12,16 +12,30 @@
 <a href="index.html" class="back-btn">← На главную</a>
 
 <div class="grid">
-  <a href="" class="cell">Процессоры</a>
-  <a href="" class="cell">Видеокарты</a>
-  <a href="" class="cell">Материнские платы</a>
-  <a href="" class="cell">Оперативная память</a>
-  <a href="" class="cell">Блоки питания</a>
-  <a href="" class="cell">Корпуса</a>
-  <a href="" class="cell">Охлаждение</a>
-  <a href="" class="cell">SSD</a>
-  <a href="" class="cell">HDD</a>
+  <a href="#" class="cell" data-category="cpu">Процессоры</a>
+  <a href="#" class="cell" data-category="gpu">Видеокарты</a>
+  <a href="#" class="cell" data-category="motherboard">Материнские платы</a>
+  <a href="#" class="cell" data-category="ram">Оперативная память</a>
+  <a href="#" class="cell" data-category="psu">Блоки питания</a>
+  <a href="#" class="cell" data-category="case">Корпуса</a>
+  <a href="#" class="cell" data-category="cooler">Охлаждение</a>
+  <a href="#" class="cell" data-category="ssd">SSD</a>
+  <a href="#" class="cell" data-category="hdd">HDD</a>
 </div>
 
+<!-- ОДНА универсальная модалка -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h2 id="modalTitle">Категория</h2>
+
+    <div id="modalList">
+      <p class="loading">Загрузка...</p>
+    </div>
+
+    <button class="close-modal">✖</button>
+  </div>
+</div>
+
+<script src="scripts/catalog.js"></script>
 </body>
 </html>

@@ -8,99 +8,120 @@
 </head>
 
 <body>
+
 <header>
-<a href="index.html" class="back-btn">← На главную</a>
-</header> 
+  <a href="index.html" class="back-btn">← На главную</a>
+</header>
+
 <div class="catalog">
 
+  <!-- ПРОЦЕССОР -->
   <div class="item">
     <div class="item-info">
-      <img data-src="https://o.dns-shop.ru/original/st4/3c1cfe78ca62facdb53d1dd382b6b4e8/3ef23aa1f15ae486d9c694c2ec2e8a472b0f49d5b528f28e1a2d55b5d9e29e32.svg" 
-      class="loaded" src="https://o.dns-shop.ru/original/st4/3c1cfe78ca62facdb53d1dd382b6b4e8/3ef23aa1f15ae486d9c694c2ec2e8a472b0f49d5b528f28e1a2d55b5d9e29e32.svg" 
-      data-was-processed="true">
+      <img src="https://o.dns-shop.ru/original/st4/3c1cfe78ca62facdb53d1dd382b6b4e8/3ef23aa1f15ae486d9c694c2ec2e8a472b0f49d5b528f28e1a2d55b5d9e29e32.svg">
       <h2 class="item-title">Процессоры</h2>
       <p class="item-desc">Обязательно</p>
     </div>
+
+    <div id="cpuSlot" class="selected-part">Не выбрано</div>
+
     <a href="{% url 'catalog_cpu' %}" class="btn-more">Открыть</a>
   </div>
 
+  <!-- ВИДЕОКАРТА -->
   <div class="item">
     <div class="item-info">
-      <img data-src="https://o.dns-shop.ru/original/st1/0b81f009e61ca1d48adeb06d6336d4ea/0773252af7bad2915a9e70f860ce9b967c30522790324d23e2e39b335bbc7bd9.svg"
-      class="loaded" src="https://o.dns-shop.ru/original/st1/0b81f009e61ca1d48adeb06d6336d4ea/0773252af7bad2915a9e70f860ce9b967c30522790324d23e2e39b335bbc7bd9.svg"
-      data-was-processed="true">
+      <img src="https://o.dns-shop.ru/original/st1/0b81f009e61ca1d48adeb06d6336d4ea/0773252af7bad2915a9e70f860ce9b967c30522790324d23e2e39b335bbc7bd9.svg">
       <h2 class="item-title">Видеокарты</h2>
       <p class="item-desc"></p>
     </div>
+
+    <div id="gpuSlot" class="selected-part">Не выбрано</div>
+
     <a href="{% url 'catalog_gpu' %}" class="btn-more">Открыть</a>
   </div>
 
+  <!-- МАТЕРИНСКИЕ ПЛАТЫ -->
   <div class="item">
     <div class="item-info">
-      <img data-src="https://o.dns-shop.ru/original/st4/3c1cfe78ca62facdb53d1dd382b6b4e8/3ef23aa1f15ae486d9c694c2ec2e8a472b0f49d5b528f28e1a2d55b5d9e29e32.svg"
-      class="loaded" src="https://o.dns-shop.ru/original/st4/3c1cfe78ca62facdb53d1dd382b6b4e8/3ef23aa1f15ae486d9c694c2ec2e8a472b0f49d5b528f28e1a2d55b5d9e29e32.svg"
-      data-was-processed="true">
+      <img src="https://o.dns-shop.ru/original/st4/3c1cfe78ca62facdb53d1dd382b6b4e8/3ef23aa1f15ae486d9c694c2ec2e8a472b0f49d5b528f28e1a2d55b5d9e29e32.svg">
       <h2 class="item-title">Материнские платы</h2>
       <p class="item-desc">Обязательно</p>
     </div>
+
+    <div id="motherboardSlot" class="selected-part">Не выбрано</div>
+
     <a href="{% url 'catalog_motherboard' %}" class="btn-more">Открыть</a>
   </div>
 
+  <!-- ОПЕРАТИВНАЯ ПАМЯТЬ -->
   <div class="item">
     <div class="item-info">
-      <img data-src="https://o.dns-shop.ru/original/st4/3964cf65899a9560d52d1bc6aff0fb68/c847f8f1bb47049c3894e9864307bb60a97144ed3d8fc36e9616de550c356a10.svg"
-      class="loaded" src="https://o.dns-shop.ru/original/st4/3964cf65899a9560d52d1bc6aff0fb68/c847f8f1bb47049c3894e9864307bb60a97144ed3d8fc36e9616de550c356a10.svg"
-      data-was-processed="true">
+      <img src="https://o.dns-shop.ru/original/st4/3964cf65899a9560d52d1bc6aff0fb68/c847f8f1bb47049c3894e9864307bb60a97144ed3d8fc36e9616de550c356a10.svg">
       <h2 class="item-title">Оперативная память</h2>
       <p class="item-desc">Обязательно</p>
     </div>
+
+    <div id="ramSlot" class="selected-part">Не выбрано</div>
+
     <a href="{% url 'catalog_ram' %}" class="btn-more">Открыть</a>
   </div>
 
+  <!-- БЛОК ПИТАНИЯ -->
   <div class="item">
     <div class="item-info">
-      <img data-src="https://o.dns-shop.ru/original/st1/021147b2260b07639d23f9257d6e1d48/e80c5c474abee47d509dbfca95edb79a616c66d48bab9761ef065cdd0781c39f.svg"
-      class="loaded" src="https://o.dns-shop.ru/original/st1/021147b2260b07639d23f9257d6e1d48/e80c5c474abee47d509dbfca95edb79a616c66d48bab9761ef065cdd0781c39f.svg"
-      data-was-processed="true">
+      <img src="https://o.dns-shop.ru/original/st1/021147b2260b07639d23f9257d6e1d48/e80c5c474abee47d509dbfca95edb79a616c66d48bab9761ef065cdd0781c39f.svg">
       <h2 class="item-title">Блоки питания</h2>
       <p class="item-desc">Обязательно</p>
     </div>
+
+    <div id="psuSlot" class="selected-part">Не выбрано</div>
+
     <a href="{% url 'catalog_psu' %}" class="btn-more">Открыть</a>
   </div>
 
+  <!-- КОРПУС -->
   <div class="item">
     <div class="item-info">
-      <img data-src="https://o.dns-shop.ru/original/st1/e004a6d60e1fdd90908f14d7b259e177/cb47ce06bdc3482387d4d96d60806ceaf6bfce6fc04a5e4ef5a40cdff93aaf48.svg"
-      class="loaded" src="https://o.dns-shop.ru/original/st1/e004a6d60e1fdd90908f14d7b259e177/cb47ce06bdc3482387d4d96d60806ceaf6bfce6fc04a5e4ef5a40cdff93aaf48.svg"
-      data-was-processed="true">
+      <img src="https://o.dns-shop.ru/original/st1/e004a6d60e1fdd90908f14d7b259e177/cb47ce06bdc3482387d4d96d60806ceaf6bfce6fc04a5e4ef5a40cdff93aaf48.svg">
       <h2 class="item-title">Корпуса</h2>
       <p class="item-desc">Обязательно</p>
     </div>
+
+    <div id="caseSlot" class="selected-part">Не выбрано</div>
+
     <a href="{% url 'catalog_case' %}" class="btn-more">Открыть</a>
   </div>
 
+  <!-- НАКОПИТЕЛИ -->
   <div class="item">
     <div class="item-info">
-      <img data-src="https://o.dns-shop.ru/original/st1/b3e6f6548f82c8c7c162e05171f3bb1d/f57352ddd5dbf1bbe8bbc1d2a9daa607f182f8d202fb3b91e261a5a1ff308431.svg"
-      class="loaded" src="https://o.dns-shop.ru/original/st1/b3e6f6548f82c8c7c162e05171f3bb1d/f57352ddd5dbf1bbe8bbc1d2a9daa607f182f8d202fb3b91e261a5a1ff308431.svg"
-      data-was-processed="true">
+      <img src="https://o.dns-shop.ru/original/st1/b3e6f6548f82c8c7c162e05171f3bb1d/f57352ddd5dbf1bbe8bbc1d2a9daa607f182f8d202fb3b91e261a5a1ff308431.svg">
       <h2 class="item-title">Накопители</h2>
       <p class="item-desc">Обязательно</p>
     </div>
+
+    <div id="memorySlot" class="selected-part">Не выбрано</div>
+
     <a href="{% url 'catalog_memory' %}" class="btn-more">Открыть</a>
   </div>
 
+  <!-- ОХЛАЖДЕНИЕ -->
   <div class="item">
     <div class="item-info">
-      <img data-src="https://o.dns-shop.ru/original/st4/b26db692efaa8f401e1a358918a4dd61/252fed6259de104af3a88ae7113af29eb3a09c3f265ce3109cca07c3e5ba977a.svg"
-      class="loaded" src="https://o.dns-shop.ru/original/st4/b26db692efaa8f401e1a358918a4dd61/252fed6259de104af3a88ae7113af29eb3a09c3f265ce3109cca07c3e5ba977a.svg"
-      data-was-processed="true">
+      <img src="https://o.dns-shop.ru/original/st4/b26db692efaa8f401e1a358918a4dd61/252fed6259de104af3a88ae7113af29eb3a09c3f265ce3109cca07c3e5ba977a.svg">
       <h2 class="item-title">Охлаждение</h2>
       <p class="item-desc">Обязательно</p>
     </div>
+
+    <div id="coolerSlot" class="selected-part">Не выбрано</div>
+
     <a href="{% url 'catalog_cooler' %}" class="btn-more">Открыть</a>
   </div>
 
 </div>
+
+<script src="scripts/builder.js"></script>
+
 </body>
 </html>

@@ -1,4 +1,5 @@
 @import url("root.css");
+
 html, body {
   height: 100%;
   overflow-y: auto;
@@ -18,6 +19,8 @@ body {
   background-size: cover;
   background-attachment: fixed;
 }
+
+/* Кнопка назад */
 .back-btn {
   position: fixed;
   top: 15px;
@@ -31,9 +34,7 @@ body {
 }
 
 .back-btn:hover {
-  background: transparent;
   transform: translateY(-2px);
-  border: none;
 }
 
 /* Контейнер каталога */
@@ -49,9 +50,11 @@ body {
   border: 1px solid var(--light);
   padding: 15px 20px;
   margin-bottom: 15px;
+
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;   /* ВАЖНО — вертикальная структура */
+  gap: 12px;                /* расстояние между блоками */
+
   transition: 0.2s;
 }
 
@@ -60,13 +63,22 @@ body {
   transform: translateY(-2px);
 }
 
+/* Шапка элемента */
 .item-info {
-  max-width: 70%;
   display: grid;
-  grid-template-columns: 80px 1fr; /* слева картинка, справа текст */
-  grid-template-rows: auto auto;   /* две строки текста */
-  column-gap: 15px;                /* расстояние между картинкой и текстом */
+  grid-template-columns: 80px 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 15px;
   align-items: center;
+
+  min-height: 70px; /* одинаковая высота для всех */
+}
+
+.item-info img {
+  width: 80px;
+  height: 60px;
+  object-fit: contain;
+  grid-row: 1 / 3;
 }
 
 .item-title {
@@ -78,7 +90,27 @@ body {
 .item-desc {
   font-size: 14px;
   color: var(--button-light-border);
-  margin: 0 0 10px;
+  margin: 0;
+}
+
+/* Блок выбранного компонента */
+.selected-part {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 10px;
+  border-radius: 8px;
+  color: white;
+  font-size: 16px;
+
+  min-height: 40px;          /* одинаковая высота */
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
+
+  white-space: nowrap;       /* не переносится */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Кнопка "Открыть" */
@@ -90,6 +122,8 @@ body {
   text-decoration: none;
   border: 1px solid var(--light);
   transition: 0.2s;
+  width: fit-content;
+  align-self: flex-end; /* ПРИЖИМАЕТ КНОПКУ К ПРАВОМУ КРАЮ */
 }
 
 .btn-more:hover {
@@ -97,14 +131,8 @@ body {
   transform: translateY(-2px);
   border: 1px solid var(--white);
 }
+
 ::selection {
   background: none;
   color: rgba(255, 0, 0, 0.753);
-}
-
-.item-info img {
-  width: 80px;
-  height: 60px;
-  object-fit: contain;
-grid-row: 1 / 3; /* картинка занимает две строки */
 }
