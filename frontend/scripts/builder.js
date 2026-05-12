@@ -1,13 +1,13 @@
 // Загружаем все компоненты при открытии конфигуратора
 function loadConfig() {
-    loadPart("cpu", "cpuSlot");
-    loadPart("gpu", "gpuSlot");
-    loadPart("motherboard", "motherboardSlot");
-    loadPart("ram", "ramSlot");
-    loadPart("psu", "psuSlot");
-    loadPart("case", "caseSlot");
-    loadPart("memory", "memorySlot");
-    loadPart("cooler", "coolerSlot");
+    loadPart('cpu', 'cpuSlot');
+    loadPart('gpu', 'gpuSlot');
+    loadPart('motherboard', 'motherboardSlot');
+    loadPart('ram', 'ramSlot');
+    loadPart('psu', 'psuSlot');
+    loadPart('case', 'caseSlot');
+    loadPart('memory', 'memorySlot');
+    loadPart('cooler', 'coolerSlot');
 }
 
 // Универсальная функция загрузки компонента
@@ -30,13 +30,13 @@ function loadPart(key, slotId) {
             </div>
         `;
 
-        slot.querySelector(".delete-btn").addEventListener("click", () => {
+        slot.querySelector('.delete-btn').addEventListener('click', () => {
             localStorage.removeItem(key);
-            slot.innerHTML = "Не выбрано";
+            slot.innerHTML = 'Не выбрано';
         });
 
     } else {
-        slot.innerHTML = "Не выбрано";
+        slot.innerHTML = 'Не выбрано';
     }
 }
 
