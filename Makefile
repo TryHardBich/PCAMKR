@@ -6,4 +6,4 @@ lint:
 lint-fix:
 	npm run lint:fix
 database:
-	docker exec -it my-postgresSQL psql -U postgres -d pc_components
+	sudo -u postgres psql
