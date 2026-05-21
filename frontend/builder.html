@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Сборщик</title>
+  <title>Сборщик ПК</title>
   <link rel="stylesheet" href="styles/builder.css">
 </head>
 
@@ -14,6 +14,17 @@
 </header>
 
 <div class="catalog">
+  <div class="side-panel">
+    <h2>Сборка</h2>
+
+    <div id="sideBuildInfo"></div>
+
+    <h2>Ошибки</h2>
+    <div id="errorBox"></div>
+
+    <h2>Цена</h2>
+    <div id="totalPrice">0 ₽</div>
+  </div>
 
   <!-- ПРОЦЕССОР -->
   <div class="item">
@@ -25,7 +36,7 @@
 
     <div id="cpuSlot" class="selected-part">Не выбрано</div>
 
-    <a href="{% url 'catalog_cpu' %}" class="btn-more">Открыть</a>
+    <button class="btn-more" onclick="openModal('cpu')">Открыть</button>
   </div>
 
   <!-- ВИДЕОКАРТА -->
@@ -33,12 +44,11 @@
     <div class="item-info">
       <img src="https://o.dns-shop.ru/original/st1/0b81f009e61ca1d48adeb06d6336d4ea/0773252af7bad2915a9e70f860ce9b967c30522790324d23e2e39b335bbc7bd9.svg">
       <h2 class="item-title">Видеокарты</h2>
-      <p class="item-desc"></p>
     </div>
 
     <div id="gpuSlot" class="selected-part">Не выбрано</div>
 
-    <a href="{% url 'catalog_gpu' %}" class="btn-more">Открыть</a>
+    <button class="btn-more" onclick="openModal('gpu')">Открыть</button>
   </div>
 
   <!-- МАТЕРИНСКИЕ ПЛАТЫ -->
@@ -51,7 +61,7 @@
 
     <div id="motherboardSlot" class="selected-part">Не выбрано</div>
 
-    <a href="{% url 'catalog_motherboard' %}" class="btn-more">Открыть</a>
+    <button class="btn-more" onclick="openModal('motherboard')">Открыть</button>
   </div>
 
   <!-- ОПЕРАТИВНАЯ ПАМЯТЬ -->
@@ -64,7 +74,7 @@
 
     <div id="ramSlot" class="selected-part">Не выбрано</div>
 
-    <a href="{% url 'catalog_ram' %}" class="btn-more">Открыть</a>
+    <button class="btn-more" onclick="openModal('ram')">Открыть</button>
   </div>
 
   <!-- БЛОК ПИТАНИЯ -->
@@ -77,7 +87,7 @@
 
     <div id="psuSlot" class="selected-part">Не выбрано</div>
 
-    <a href="{% url 'catalog_psu' %}" class="btn-more">Открыть</a>
+    <button class="btn-more" onclick="openModal('psu')">Открыть</button>
   </div>
 
   <!-- КОРПУС -->
@@ -90,7 +100,7 @@
 
     <div id="caseSlot" class="selected-part">Не выбрано</div>
 
-    <a href="{% url 'catalog_case' %}" class="btn-more">Открыть</a>
+    <button class="btn-more" onclick="openModal('case')">Открыть</button>
   </div>
 
   <!-- НАКОПИТЕЛИ -->
@@ -101,9 +111,9 @@
       <p class="item-desc">Обязательно</p>
     </div>
 
-    <div id="memorySlot" class="selected-part">Не выбрано</div>
+    <div id="storageSlot" class="selected-part">Не выбрано</div>
 
-    <a href="{% url 'catalog_memory' %}" class="btn-more">Открыть</a>
+    <button class="btn-more" onclick="openModal('storage')">Открыть</button>
   </div>
 
   <!-- ОХЛАЖДЕНИЕ -->
@@ -116,9 +126,28 @@
 
     <div id="coolerSlot" class="selected-part">Не выбрано</div>
 
-    <a href="{% url 'catalog_cooler' %}" class="btn-more">Открыть</a>
+    <button class="btn-more" onclick="openModal('cooler')">Открыть</button>
   </div>
 
+</div>
+
+<!-- Блок ошибок -->
+<div id="errorBox" class="error-box"></div>
+
+<!-- Итоговая цена -->
+<div id="totalPrice" class="total-price">0 ₽</div>
+
+<!-- УНИВЕРСАЛЬНАЯ МОДАЛКА -->
+<div class="modal" id="partsModal">
+  <div class="modal-content">
+    <h2 id="modalTitle">Выбор компонента</h2>
+
+    <div id="modalList" class="modal-list">
+      Загрузка...
+    </div>
+
+    <button class="close-modal" onclick="closeModal()">✖</button>
+  </div>
 </div>
 
 <script src="scripts/builder.js"></script>

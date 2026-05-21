@@ -28,15 +28,24 @@
     1. Заходим в postgreSQL ```bash
     make database
     ```
+    
     2. Создаем пустую базу данных ```bash
     CREATE DATABASE pcamkr_db;
     ```
-    3. Переходим в нашу пустую базу и восстанавливаем dump ```bash
+
+    3. Переходим в нашу пустую базу и восстанавливаем dump 
+    ```bash
+    \c pcamkr_db;
     psql -U postgres -d pcamkr_db < pcamkr_dump.sql
     ```
-    4. Проверяем работает ли база данных ```bash
+
+    4. Проверяем работает ли сервер 
+    ```bash
     node backend/server.js
     ```
-    и переходим по ссылке в браузере ```bash
+
+    и переходим по ссылке в браузере 
+    ```bash
+    Узнать свой ip: ip -br addr
     http://ТВОЙ_IP_адрес:3001/api/test
     ```
