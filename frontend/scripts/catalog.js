@@ -1,11 +1,7 @@
-// =====================================
-// ГЛОБАЛЬНЫЕ НАСТРОЙКИ
-// =====================================
+/* eslint-disable no-undef */
+const API_BASE = 'http://172.29.167.229:3001/api';
 
-const API_BASE = '/api';
-
-// Список категорий и соответствующих роутов
-const CATEGORIES = {
+const CATEGORY_ENDPOINTS = {
     cpu: 'cpus',
     gpu: 'gpus',
     motherboard: 'motherboards',
@@ -16,102 +12,97 @@ const CATEGORIES = {
     storage: 'storages'
 };
 
-// =====================================
-// ЗАГРУЗКА КАТЕГОРИИ
-// =====================================
+// Открытие модалки
+async function openModal(category) {
+    const modal = document.getElementById('modal');
+    const title = document.getElementById('modalTitle');
+    const list = document.getElementById('modalList');
 
-async function loadCategory(category) {
-    const endpoint = CATEGORIES[category];
-    if (!endpoint) return;
+    modal.style.display = 'flex';
+    modal.dataset.category = category;
+
+    title.textContent = 'Категория: ' + getCategoryName(category);
+    list.innerHTML = '<p class=\'loading\'>Загрузка...</p>';
 
     try {
+        const endpoint = CATEGORY_ENDPOINTS[category];
         const res = await fetch(`${API_BASE}/${endpoint}`);
         const items = await res.json();
-        renderCatalog(category, items);
+        renderModalList(items, category);
     } catch (err) {
-        console.error(`Ошибка загрузки категории ${category}:`, err);
+        list.innerHTML = '<p>Ошибка загрузки</p>';
+        console.error(err);
     }
 }
 
-// =====================================
-// РЕНДЕР КАТАЛОГА
-// =====================================
+// Закрытие модалки
+function closeModal() {
+    document.getElementById('modal').style.display = 'none';
+}
 
-function renderCatalog(category, items) {
-    const container = document.getElementById('catalogContainer');
-    const title = document.getElementById('catalogTitle');
-
-    if (!container || !title) return;
-
-    title.textContent = getCategoryName(category);
-    container.innerHTML = '';
+// Рендер списка
+function renderModalList(items, category) {
+    const list = document.getElementById('modalList');
+    list.innerHTML = '';
 
     items.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'catalog-card';
+        const row = document.createElement('div');
+        row.className = 'modal-item';
 
-        card.innerHTML = `
-            <div class="card-name">${item.name}</div>
-            <div class="card-info">${item.info || ''}</div>
-            <div class="card-price">${item.price} ₽</div>
-
-            <div class="card-actions">
-                <button class="details-btn">Подробнее</button>
-                <button class="select-btn">Выбрать</button>
+        row.innerHTML = `
+            <div>
+                <div>${item.name}</div>
+                <div style="opacity:0.7">${item.info || ''}</div>
             </div>
+
+            <button class="select-btn">Выбрать</button>
         `;
 
-        // Кнопка "Подробнее"
-        card.querySelector('.details-btn').addEventListener('click', () => {
-            openDetails(item);
+        row.querySelector('.select-btn').addEventListener('click', () => {
+            saveSelected(category, item);
+            closeModal();
         });
 
-        // Кнопка "Выбрать"
-        card.querySelector('.select-btn').addEventListener('click', () => {
-            selectPart(category, item);
-        });
-
-        container.appendChild(card);
+        list.appendChild(row);
     });
 }
 
-// =====================================
-// ОТКРЫТИЕ ПОДРОБНОЙ ИНФОРМАЦИИ
-// =====================================
+// Сохранение выбранного
+function saveSelected(category, item) {
+    localStorage.setItem('cat_' + category, JSON.stringify(item));
+    updateSelectedPanel();
+}
 
-function openDetails(item) {
-    const modal = document.getElementById('detailsModal');
-    const content = document.getElementById('detailsContent');
+// Обновление правой панели
+function updateSelectedPanel() {
+    const box = document.getElementById('selectedParts');
+    box.innerHTML = '';
 
-    if (!modal || !content) return;
+    Object.keys(CATEGORY_ENDPOINTS).forEach(cat => {
+        const saved = localStorage.getItem('cat_' + cat);
+        if (!saved) return;
 
-    content.innerHTML = `
-        <h2>${item.name}</h2>
-        <p>${item.info || 'Нет описания'}</p>
-        <p><strong>Цена:</strong> ${item.price} ₽</p>
-        <button id="closeDetails">Закрыть</button>
-    `;
+        const item = JSON.parse(saved);
 
-    modal.style.display = 'block';
+        const div = document.createElement('div');
+        div.className = 'selected-item';
 
-    document.getElementById('closeDetails').addEventListener('click', () => {
-        modal.style.display = 'none';
+        div.innerHTML = `
+            <span>${item.name}</span>
+            <button class="sel-remove" onclick="removeSelected('${cat}')">✖</button>
+        `;
+
+        box.appendChild(div);
     });
 }
 
-// =====================================
-// ВЫБОР КОМПОНЕНТА ДЛЯ КОНФИГУРАТОРА
-// =====================================
-
-function selectPart(category, item) {
-    localStorage.setItem(category, JSON.stringify(item));
-    window.location.href = 'builder.html';
+// Удаление
+function removeSelected(category) {
+    localStorage.removeItem('cat_' + category);
+    updateSelectedPanel();
 }
 
-// =====================================
-// ПОЛУЧЕНИЕ ЧЕЛОВЕЧЕСКОГО НАЗВАНИЯ КАТЕГОРИИ
-// =====================================
-
+// Названия категорий
 function getCategoryName(key) {
     const names = {
         cpu: 'Процессоры',
@@ -120,21 +111,15 @@ function getCategoryName(key) {
         ram: 'Оперативная память',
         psu: 'Блоки питания',
         case: 'Корпуса',
-        cooler: 'Кулеры',
+        cooler: 'Охлаждение',
         storage: 'Накопители'
     };
     return names[key] || key;
 }
 
-// =====================================
-// ИНИЦИАЛИЗАЦИЯ
-// =====================================
+// Инициализация
+document.querySelectorAll('.cell').forEach(cell => {
+    cell.addEventListener('click', () => openModal(cell.dataset.category));
+});
 
-function initCatalog() {
-    const params = new URLSearchParams(window.location.search);
-    const category = params.get('category') || 'cpu';
-
-    loadCategory(category);
-}
-
-initCatalog();
+updateSelectedPanel();

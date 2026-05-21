@@ -9,12 +9,7 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background: linear-gradient(
-    -45deg,
-    rgb(160, 5, 5),
-    var(--black) 45%,
-    var(--white) 150%
-  );
+  background: linear-gradient(-45deg, rgb(160, 5, 5), var(--black) 45%, var(--white) 150%);
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: fixed;
@@ -37,24 +32,58 @@ body {
   transform: translateY(-2px);
 }
 
-/* Контейнер каталога */
+/* ПРАВАЯ ПАНЕЛЬ */
+.side-panel {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 280px;
+  height: 100vh;
+  background: rgba(0,0,0,0.45);
+  backdrop-filter: blur(6px);
+  border-left: 1px solid rgba(255,255,255,0.25);
+  padding: 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  overflow-y: auto;
+  z-index: 999;
+}
+
+.side-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 10px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  color: white;
+  font-size: 15px;
+}
+
+.side-item:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: var(--white);
+}
+
+/* КАТАЛОГ */
 .catalog {
   max-width: 900px;
   margin: 30px auto;
   padding: 0 20px;
+  margin-right: 300px;
 }
 
-/* Элемент списка категорий */
 .item {
   background: #ffffff2c;
   border: 1px solid var(--light);
   padding: 15px 20px;
   margin-bottom: 15px;
-
   display: flex;
-  flex-direction: column;   /* ВАЖНО — вертикальная структура */
-  gap: 12px;                /* расстояние между блоками */
-
+  flex-direction: column;
+  gap: 12px;
   transition: 0.2s;
 }
 
@@ -63,15 +92,13 @@ body {
   transform: translateY(-2px);
 }
 
-/* Шапка элемента */
 .item-info {
   display: grid;
   grid-template-columns: 80px 1fr;
   grid-template-rows: auto auto;
   column-gap: 15px;
   align-items: center;
-
-  min-height: 70px; /* одинаковая высота для всех */
+  min-height: 70px;
 }
 
 .item-info img {
@@ -93,256 +120,160 @@ body {
   margin: 0;
 }
 
-/* Блок выбранного компонента */
+/* СЛОТЫ */
 .selected-part {
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  padding: 10px;
-  border-radius: 8px;
-  color: white;
-  font-size: 16px;
-
-  min-height: 40px;          /* одинаковая высота */
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: flex-start;
-  text-align: left;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.25);
+  padding: 12px 15px;
+  border-radius: 10px;
+  transition: 0.2s;
+}
 
-  white-space: nowrap;       /* не переносится */
-  overflow: hidden;
-  text-overflow: ellipsis;
+.selected-part:hover {
+  border-color: var(--white);
+  background: rgba(255,255,255,0.18);
+  transform: translateY(-2px);
 }
 
 /* Кнопка "Открыть" */
 .btn-more {
-  padding: 8px 14px;
-  background: rgba(70, 69, 69, 0.479);
-  color: white;
-  border-radius: 6px;
-  text-decoration: none;
-  border: 1px solid var(--light);
-  transition: 0.2s;
-  width: fit-content;
-  align-self: flex-end; /* ПРИЖИМАЕТ КНОПКУ К ПРАВОМУ КРАЮ */
-}
-
-.btn-more:hover {
-  background: rgba(170, 159, 159, 0.089);
-  transform: translateY(-2px);
-  border: 1px solid var(--white);
-}
-
-::selection {
-  background: none;
-  color: rgba(255, 0, 0, 0.753);
-}
-/* Общий контейнер слота */
-#cpuSlot, #gpuSlot, #motherboardSlot, #ramSlot,
-#psuSlot, #caseSlot, #storageSlot, #coolerSlot {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 15px;
+  padding: 4px 10px;
+  font-size: 13px;
+  background: rgba(255,255,255,0.08);
   border: 1px solid rgba(255,255,255,0.25);
-  border-radius: 8px;
-  margin-bottom: 10px;
-}
-
-/* Левый блок */
-.part-left {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 4px;
-}
-
-.part-name {
-  font-size: 18px;
-  font-weight: bold;
-  color: var(--white);
-}
-
-.part-info {
-  font-size: 14px;
-  color: #ccc;
-}
-
-/* Правый блок */
-.part-right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
-}
-
-/* Цена */
-.part-price {
-  font-size: 18px;
-  font-weight: bold;
-  color: silver;
-  white-space: nowrap;
-}
-
-/* Кнопка удалить */
-.delete-btn {
-  padding: 6px 12px;
-  background: rgba(255, 0, 0, 0.15);
-  border: 1px solid rgba(255, 80, 80, 0.6);
   border-radius: 6px;
   color: white;
   cursor: pointer;
   transition: 0.2s;
+  align-self: flex-end;
+  margin-left: auto;
   white-space: nowrap;
 }
 
-.delete-btn:hover {
+.btn-more:hover {
+  background: rgba(255,255,255,0.18);
+  border-color: var(--white);
+  transform: translateY(-2px);
+}
+
+/* Очистить сборку */
+.clear-btn {
+  padding: 10px;
   background: rgba(255, 0, 0, 0.25);
+  border: 1px solid rgba(255, 80, 80, 0.6);
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 16px;
+}
+
+.clear-btn:hover {
+  background: rgba(255, 0, 0, 0.35);
   border-color: rgba(255, 120, 120, 1);
   transform: translateY(-2px);
 }
 
-/* ============================
-   МОДАЛЬНОЕ ОКНО (ТОЛЬКО ЦЕНТР)
-   ============================ */
-
+/* МОДАЛКА — ПО ЦЕНТРУ */
 .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+  position: fixed;
+  inset: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(4px);
+  z-index: 99999;
+}
 
-    display: none; /* скрыта по умолчанию */
-    justify-content: center;
-    align-items: center;
-
-    background: rgba(0,0,0,0.55);
-    z-index: 99999;
+.modal.show {
+  display: flex !important;
 }
 
 /* Контейнер модалки */
 .modal-content {
-    background: rgba(20, 20, 20, 0.95);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 12px;
-
-    width: 600px;
-    max-width: 90%;
-    max-height: 80vh;
-
-    padding: 20px;
-    overflow-y: auto;
-
-    box-shadow: 0 0 25px rgba(0,0,0,0.6);
+  background: rgba(20, 20, 20, 0.95);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 14px;
+  width: 600px;
+  max-width: 90%;
+  max-height: 80vh;
+  padding: 25px;
+  overflow-y: auto;
+  box-shadow: 0 0 35px rgba(0,0,0,0.6);
+  animation: modalFade 0.25s ease;
 }
 
 /* Кнопка закрытия */
 .close-modal {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-
-    background: rgba(255, 0, 0, 0.25);
-    border: 1px solid rgba(255, 80, 80, 0.6);
-    color: white;
-
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  padding: 6px 12px;
+  background: rgba(255,0,0,0.25);
+  border: 1px solid rgba(255,80,80,0.6);
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
-/* Элемент списка внутри модалки */
+.close-modal:hover {
+  background: rgba(255,0,0,0.35);
+  border-color: rgba(255,120,120,1);
+  transform: translateY(-2px);
+}
+
+/* Элемент списка */
 .modal-item {
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.15);
-    padding: 12px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* КРАСИВАЯ КНОПКА ВЫБРАТЬ */
+.select-btn {
+  padding: 8px 14px;
+  background: linear-gradient(135deg, rgba(0,200,0,0.35), rgba(0,255,0,0.45));
+  border: 1px solid rgba(0,255,0,0.6);
+  border-radius: 8px;
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.select-btn:hover {
+  background: linear-gradient(135deg, rgba(0,255,0,0.55), rgba(0,255,0,0.75));
+  border-color: rgba(0,255,0,1);
+  transform: translateY(-2px);
+}
+
+.delete-btn {
+    padding: 6px 14px;
+    background: linear-gradient(135deg, rgba(255,0,0,0.25), rgba(255,60,60,0.35));
+    border: 1px solid rgba(255,120,120,0.6);
     border-radius: 8px;
 
-    margin-bottom: 12px;
-
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.modal-item .select-btn {
-    background: rgba(0, 150, 0, 0.25);
-    border: 1px solid rgba(0, 255, 0, 0.4);
     color: white;
-
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-/* ============================
-   ПРАВАЯ ПАНЕЛЬ
-   ============================ */
-
-.side-panel {
-    position: fixed;
-    right: 0;
-    top: 0;
-
-    width: 320px;
-    height: 100vh;
-
-    background: rgba(0,0,0,0.45);
-    backdrop-filter: blur(6px);
-
-    border-left: 1px solid rgba(255,255,255,0.15);
-
-    padding: 20px;
-    overflow-y: auto;
-
-    color: white;
-}
-
-.side-panel h2 {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    font-size: 20px;
-    color: var(--white);
-}
-
-#sideBuildInfo {
-    margin-bottom: 20px;
-}
-
-#sideBuildInfo .side-item {
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.15);
-    padding: 10px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-}
-
-#sideBuildInfo .side-item .name {
-    font-size: 16px;
-    font-weight: bold;
-}
-
-#sideBuildInfo .side-item .info {
     font-size: 14px;
-    opacity: 0.8;
-}
-
-#totalPrice {
-    font-size: 26px;
     font-weight: bold;
-    margin-top: 10px;
+
+    cursor: pointer;
+    transition: 0.2s;
 }
 
-/* Ошибки */
-#errorBox {
-    margin-bottom: 20px;
+.delete-btn:hover {
+    background: linear-gradient(135deg, rgba(255,0,0,0.45), rgba(255,80,80,0.55));
+    border-color: rgba(255,150,150,1);
+    transform: translateY(-2px);
 }
-
-#errorBox .error {
-    background: rgba(255,0,0,0.25);
-    border: 1px solid rgba(255,80,80,0.6);
-    padding: 8px;
-    border-radius: 6px;
-    margin-bottom: 8px;
-}
-
