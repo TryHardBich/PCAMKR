@@ -2,7 +2,7 @@
 // ===============================
 // API
 // ===============================
-const API_BASE = 'http://172.29.167.229:3001/api';
+const API_BASE = 'http://172.20.171.15:3001/api';
 
 const CATEGORY_ENDPOINTS = {
     cpu: 'cpus',
