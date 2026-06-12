@@ -108,6 +108,12 @@ html, body {
   width: 100%;
   background: transparent;
 }
+
+
+::selection {
+  background: none;
+  color: rgba(255, 0, 0, 0.753);
+}
 body {
   background: linear-gradient(
     -45deg,
@@ -123,13 +129,12 @@ body {
   );
 
   background-size: 400% 400%;
-  animation: gradient 16s ease infinite;
+  animation: gradient 10s ease forwards;
 }
 
 @keyframes gradient {
   0%   { background-position: 50% 0%; }
-  50%  { background-position: 50% 100%; }
-  100% { background-position: 50% 0%; }
+  100% { background-position: 50% 100%; }
 }
 .hero-buttons a {
   position: relative;

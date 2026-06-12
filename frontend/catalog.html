@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Каталог</title>
+  <title>Категории</title>
+
   <link rel="stylesheet" href="styles/catalog.css">
 </head>
 
@@ -11,33 +12,57 @@
 
 <a href="index.html" class="back-btn">← На главную</a>
 
-<div class="grid">
-  <a class="cell" data-category="cpu">Процессоры</a>
-  <a class="cell" data-category="gpu">Видеокарты</a>
-  <a class="cell" data-category="motherboard">Материнские платы</a>
-  <a class="cell" data-category="ram">Оперативная память</a>
-  <a class="cell" data-category="psu">Блоки питания</a>
-  <a class="cell" data-category="case">Корпуса</a>
-  <a class="cell" data-category="cooler">Охлаждение</a>
-  <a class="cell" data-category="storage">Накопители</a>
-</div>
+<h1>Категории комплектующих</h1>
 
-<!-- Правая панель -->
-<div id="selectedPartsPanel" class="side-panel">
-  <h2>Выбрано</h2>
-  <div id="selectedParts"></div>
-  <a href="builder.html" class="to-builder-btn">Перейти к сборке</a>
-</div>
+<div class="category-grid">
 
-<!-- Модалка -->
-<div class="modal" id="modal">
-  <div class="modal-content">
-    <h2 id="modalTitle">Категория</h2>
-    <div id="modalList"><p class="loading">Загрузка...</p></div>
-    <button class="modal-close" onclick="closeModal()">✖</button>
+  <div class="category-card" onclick="openCategory('cpu')">
+    <img src="icons/cpu.svg" class="cat-icon">
+    <p>Процессоры</p>
   </div>
+
+  <div class="category-card" onclick="openCategory('gpu')">
+    <img src="icons/gpu.svg" class="cat-icon">
+    <p>Видеокарты</p>
+  </div>
+
+  <div class="category-card" onclick="openCategory('motherboard')">
+    <img src="icons/motherboard.svg" class="cat-icon">
+    <p>Материнские платы</p>
+  </div>
+
+  <div class="category-card" onclick="openCategory('ram')">
+    <img src="icons/ram.svg" class="cat-icon">
+    <p>Оперативная память</p>
+  </div>
+
+  <div class="category-card" onclick="openCategory('storage')">
+    <img src="icons/storage.svg" class="cat-icon">
+    <p>Накопители</p>
+  </div>
+
+  <div class="category-card" onclick="openCategory('psu')">
+    <img src="icons/psu.svg" class="cat-icon">
+    <p>Блоки питания</p>
+  </div>
+
+  <div class="category-card" onclick="openCategory('cooler')">
+    <img src="icons/cooler.svg" class="cat-icon">
+    <p>Охлаждение</p>
+  </div>
+
+  <div class="category-card" onclick="openCategory('case')">
+    <img src="icons/case.svg" class="cat-icon">
+    <p>Корпуса</p>
+  </div>
+
 </div>
 
-<script src="scripts/catalog.js"></script>
+<script>
+function openCategory(cat) {
+  window.location.href = `list.html?category=${cat}`;
+}
+</script>
+
 </body>
 </html>

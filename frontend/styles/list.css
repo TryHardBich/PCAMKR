@@ -1,0 +1,348 @@
+@import url("root.css");
+
+/* ===== БАЗА СТРАНИЦЫ ===== */
+
+body {
+    background: linear-gradient(-45deg, rgb(160, 5, 5), var(--black) 45%, var(--white) 150%);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    color: var(--white);
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+
+
+.page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 16px 40px;
+}
+
+.page-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.back-btn {
+  top: 15px;
+  left: 15px;
+  z-index: 9999;
+  padding: 5px 14px;
+  color: var(--white);
+  text-decoration: none;
+  border: none;
+  transition: 0.2s;
+}
+
+.back-btn:hover {
+  transform: translateY(-2px);
+}
+
+h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 600;
+}
+
+/* ===== ЛЕЙАУТ ===== */
+
+.layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+/* ===== ФИЛЬТРЫ (Citilink‑карточка) ===== */
+
+.filters {
+    background: rgba(27, 27, 27, 0.65);
+    backdrop-filter: blur(6px);
+    border-radius: 10px;
+    padding: 16px 14px 18px;
+    box-shadow: 0 0 0 1px #262626;
+    position: sticky;
+    top: 16px;
+}
+
+.filters-title {
+    font-size: 18px;
+    margin: 0 0 12px;
+    font-weight: 600;
+}
+
+.filter-block {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.filter-block label {
+    font-size: 13px;
+    margin-bottom: 4px;
+    color: #bbbbbb;
+}
+
+.filter-block input,
+.filter-block select {
+    padding: 6px 10px;
+    background: #121212;
+    border: 1px solid #333;
+    border-radius: 6px;
+    color: #f5f5f5;
+    font-size: 14px;
+}
+
+.filter-block input:focus,
+.filter-block select:focus {
+    outline: none;
+    border-color: #ff8c00;
+}
+
+.filters-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.filter-btn {
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    transition: 0.15s;
+}
+
+.filter-btn.primary {
+    background: rgba(255, 255, 255, 0.911);
+    color: #111;
+    font-weight: 600;
+}
+
+.filter-btn.primary:hover {
+    background: #c5c5c5;
+}
+
+.filter-btn.secondary {
+    background: #262626;
+    color: #f5f5f5;
+    border: 1px solid #3a3a3a;
+}
+
+.filter-btn.secondary:hover {
+    background: #303030;
+}
+
+/* ===== СПИСОК ТОВАРОВ ===== */
+
+.products-wrapper {
+    background: rgba(21, 21, 21, 0.55);
+    backdrop-filter: blur(4px);
+    border-radius: 10px;
+    padding: 14px 14px 18px;
+    box-shadow: 0 0 0 1px #262626;
+}
+
+.items-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 14px;
+}
+
+/* ===== КАРТОЧКА ТОВАРА (Citilink‑стиль) ===== */
+
+.product-card {
+    background: rgba(29, 29, 29, 0.55);
+    backdrop-filter: blur(4px);
+    border-radius: 10px;
+    padding: 10px 10px 12px;
+    border: 1px solid gray;
+    cursor: pointer;
+    transition: 0.15s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.product-card:hover {
+    border-color: var(--white);
+}
+
+.product-card img {
+    width: 100%;
+    height: 130px;
+    object-fit: contain;
+    margin-bottom: 4px;
+}
+
+.product-card h3 {
+    font-size: 15px;
+    margin: 0;
+    color: #f5f5f5;
+    min-height: 36px;
+}
+
+.product-card p {
+    font-size: 16px;
+    margin: 0;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+/* ===== НЕСОВМЕСТИМЫЕ ===== */
+
+.incompatible {
+    opacity: 0.45;
+    border: 1px solid #aa0000 !important;
+    cursor: pointer !important;
+}
+
+.incompatible:hover {
+    box-shadow: 0 0 0 1px #aa000033;
+}
+
+.incompatible:hover::after {
+    content: attr(data-reason);
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    background: #550000;
+    color: #fff;
+    padding: 6px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    text-align: center;
+    z-index: 20;
+    pointer-events: none;
+}
+
+/* ===== СОВМЕСТИМЫЕ ===== */
+
+.compatible {
+    border: 1px solid #024e02 !important;
+    box-shadow: 0 0 0 1px #016401;
+}
+
+.compatible:hover {
+    box-shadow: 0 0 0 1px #024d02;
+}
+
+/* ===== МОДАЛКА ===== */
+
+.compat-modal {
+    display: none;
+    position: fixed;
+    z-index: 99999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(3px);
+    justify-content: center;
+    align-items: center;
+}
+
+.compat-modal-content {
+    background: #222;
+    padding: 22px;
+    border-radius: 10px;
+    width: 360px;
+    text-align: center;
+    border: 1px solid #aa0000;
+    animation: modalFade 0.25s ease;
+}
+
+.compat-modal-content h3 {
+    color: #ff4444;
+    margin-bottom: 8px;
+    font-size: 20px;
+}
+
+.compat-modal-content p {
+    color: #ddd;
+    font-size: 15px;
+    margin-bottom: 16px;
+}
+
+#compatModalClose {
+    background: #aa0000;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+#compatModalClose:hover {
+    background: #cc0000;
+}
+
+@keyframes modalFade {
+    from { opacity: 0; transform: scale(0.9); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+/* ===== АДАПТИВ ===== */
+
+@media (max-width: 900px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+
+    .filters {
+        position: static;
+        order: -1;
+    }
+}
+
+/* Анимация появления карточек */
+@keyframes fadeUp {
+    0% {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.product-card {
+    opacity: 0;
+    animation: fadeUp 0.9s ease forwards;
+}
+
+.product-card:nth-child(1) { animation-delay: 0.10s; }
+.product-card:nth-child(2) { animation-delay: 0.20s; }
+.product-card:nth-child(3) { animation-delay: 0.30s; }
+.product-card:nth-child(4) { animation-delay: 0.40s; }
+.product-card:nth-child(5) { animation-delay: 0.50s; }
+.product-card:nth-child(6) { animation-delay: 0.60s; }
+.product-card:nth-child(7) { animation-delay: 0.70s; }
+.product-card:nth-child(8) { animation-delay: 0.80s; }
+.product-card:nth-child(9) { animation-delay: 0.90s; }
+.product-card:nth-child(10) { animation-delay: 1.00s; }
+
+.product-card {
+    transition: 
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        filter 0.25s ease;
+}
+
+/* При наведении — чуть ярче и чуть выше */
+.product-card:hover {
+    transform: translateY(-6px);
+    filter: brightness(1.12);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+}

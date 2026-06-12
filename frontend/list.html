@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Выбор комплектующих</title>
+
+    <link rel="stylesheet" href="styles/list.css">
+</head>
+
+<body>
+
+<div class="page">
+    <header class="page-header">
+        <a href="builder.html" class="back-btn">← Назад к сборке</a>
+        <a href="catalog.html" class="back-btn">← Назад</a>
+        <h1 id="title">Категория</h1>
+    </header>
+
+    <!-- МОДАЛКА СОВМЕСТИМОСТИ -->
+    <div id="compatModal" class="compat-modal">
+      <div class="compat-modal-content">
+        <h3>Несовместимо</h3>
+        <p id="compatModalText"></p>
+        <button id="compatModalClose">Понятно</button>
+      </div>
+    </div>
+
+    <!-- ОСНОВНОЙ ЛЕЙАУТ -->
+    <main class="layout">
+
+        <!-- ФИЛЬТРЫ СЛЕВА -->
+        <aside class="filters">
+            <h2 class="filters-title">Фильтры</h2>
+
+            <div class="filter-block">
+                <label>Цена от:</label>
+                <input type="number" id="priceMin" placeholder="0">
+            </div>
+
+            <div class="filter-block">
+                <label>Цена до:</label>
+                <input type="number" id="priceMax" placeholder="∞">
+            </div>
+
+            <div class="filter-block">
+                <label>Бренд:</label>
+                <select id="brandFilter">
+                    <option value="">Все</option>
+                </select>
+            </div>
+
+            <div class="filter-block">
+                <label>Сокет:</label>
+                <select id="socketFilter">
+                    <option value="">Все</option>
+                </select>
+            </div>
+
+            <div class="filter-block">
+                <label>Серия:</label>
+                <select id="seriesFilter">
+                    <option value="">Все</option>
+                </select>
+            </div>
+
+            <div class="filters-buttons">
+                <button id="applyFilters" class="filter-btn primary">Применить</button>
+                <button id="clearFilters" class="filter-btn secondary">Удалить все фильтры</button>
+                <button id="toggleCompatible" class="filter-btn secondary">Показать только совместимые</button>
+            </div>
+
+        </aside>
+
+        <!-- КАРТОЧКИ СПРАВА -->
+        <section class="products-wrapper">
+            <div id="itemsList" class="items-list"></div>
+        </section>
+
+    </main>
+</div>
+
+<script src="scripts/list.js"></script>
+</body>
+</html>

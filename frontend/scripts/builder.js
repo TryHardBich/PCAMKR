@@ -1,247 +1,177 @@
 /* eslint-disable no-undef */
-// ===============================
-// API
-// ===============================
-const API_BASE = 'http://172.20.171.15:3001/api';
 
-const CATEGORY_ENDPOINTS = {
-    cpu: 'cpus',
-    gpu: 'gpus',
-    motherboard: 'motherboards',
-    ram: 'rams',
-    psu: 'psus',
-    case: 'cases',
-    storage: 'storages',
-    cooler: 'coolers'
-};
+const PARTS = [
+  { key: "cpu",         name: "Процессор" },
+  { key: "motherboard", name: "Материнская плата" },
+  { key: "gpu",         name: "Видеокарта" },
+  { key: "ram",         name: "Оперативная память" },
+  { key: "storage",     name: "Накопитель" },
+  { key: "psu",         name: "Блок питания" },
+  { key: "cooler",      name: "Охлаждение" },
+  { key: "case",        name: "Корпус" }
+];
 
-// ===============================
-// ТЕКУЩАЯ СБОРКА
-// ===============================
-const build = {
-    cpu: null,
-    gpu: null,
-    motherboard: null,
-    ram: null,
-    psu: null,
-    case: null,
-    storage: null,
-    cooler: null
-};
+let selectedParts = {};
 
-// ===============================
-// ОТКРЫТИЕ МОДАЛКИ
-// ===============================
-async function openModal(category) {
-    const modal = document.getElementById('partsModal');
-    const title = document.getElementById('modalTitle');
-    const list = document.getElementById('modalList');
+function init() {
+  loadFromLocalStorage();
 
-    modal.classList.add('show');
-    modal.dataset.category = category;
+  const partsList = document.getElementById("partsList");
 
-    title.textContent = 'Выбор: ' + getCategoryName(category);
-    list.innerHTML = 'Загрузка...';
+  PARTS.forEach(p => {
+    const item = selectedParts[p.key];
 
-    try {
-        const endpoint = CATEGORY_ENDPOINTS[category];
-        const res = await fetch(`${API_BASE}/${endpoint}`);
-        const items = await res.json();
-        renderModalList(category, items);
-    } catch (err) {
-        list.innerHTML = 'Ошибка загрузки';
-        console.error(err);
-    }
-}
-
-// ===============================
-// ЗАКРЫТИЕ МОДАЛКИ
-// ===============================
-function closeModal() {
-    document.getElementById('partsModal').classList.remove('show');
-}
-
-// ===============================
-// СПИСОК В МОДАЛКЕ
-// ===============================
-function renderModalList(category, items) {
-    const list = document.getElementById('modalList');
-    list.innerHTML = '';
-
-    items.forEach(item => {
-        const row = document.createElement('div');
-        row.className = 'modal-item';
-
-        row.innerHTML = `
-            <div class="modal-left">
-                <div class="modal-name">${item.name}</div>
-                <div class="modal-info">${item.info || ''}</div>
-            </div>
-
-            <button class="select-btn">Выбрать</button>
-        `;
-
-        row.querySelector('.select-btn').addEventListener('click', () => {
-            selectPart(category, item);
-            closeModal();
-        });
-
-        list.appendChild(row);
-    });
-}
-
-// ===============================
-// ВЫБОР КОМПОНЕНТА
-// ===============================
-function selectPart(category, item) {
-    build[category] = item;
-    localStorage.setItem(category, JSON.stringify(item));
-
-    updateSlot(category);
-    updateSidePanel();
-    updatePrice();
-    validateCompatibility();
-}
-
-// ===============================
-// ОБНОВЛЕНИЕ СЛОТА
-// ===============================
-function updateSlot(category) {
-    const slot = document.getElementById(category + 'Slot');
-    const item = build[category];
-
-    if (!item) {
-        slot.innerHTML = 'Не выбрано';
-        return;
-    }
-
-    slot.innerHTML = `
-        <div class="part-left">
-            <div class="part-name">${item.name}</div>
-            <div class="part-info">${item.info || ''}</div>
-        </div>
-
-        <div class="part-right">
-            <div class="part-price">${Number(item.price).toLocaleString('ru-RU')} ₽</div>
-            <button class="delete-btn" onclick="removePart('${category}')">Удалить</button>
-        </div>
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${p.name}</td>
+      <td>
+        <button class="select-btn" onclick="openList('${p.key}')">Выбрать</button>
+        <button class="remove-btn" onclick="removePart('${p.key}')">✖</button>
+      </td>
+      <td id="price-${p.key}">${item ? Number(item.price) + " ₽" : "—"}</td>
     `;
+    partsList.appendChild(row);
+  });
+
+  updateSummary();
 }
 
-// ===============================
-// УДАЛЕНИЕ КОМПОНЕНТА
-// ===============================
+function openList(category) {
+  window.location.href = `list.html?category=${category}&return=builder`;
+}
+
 function removePart(category) {
-    build[category] = null;
-    localStorage.removeItem(category);
-
-    updateSlot(category);
-    updateSidePanel();
-    updatePrice();
-    validateCompatibility();
+  delete selectedParts[category];
+  localStorage.removeItem("selected_" + category);
+  document.getElementById(`price-${category}`).textContent = "—";
+  updateSummary();
 }
 
-// ===============================
-// ПРАВАЯ ПАНЕЛЬ
-// ===============================
-function updateSidePanel() {
-    const box = document.getElementById('sideBuildInfo');
-    box.innerHTML = '';
-
-    Object.keys(build).forEach(cat => {
-        const item = build[cat];
-        if (!item) return;
-
-        const div = document.createElement('div');
-        div.className = 'side-item';
-
-        div.innerHTML = `
-            <div>${item.name}</div>
-            <div>${Number(item.price).toLocaleString('ru-RU')} ₽</div>
-        `;
-
-        box.appendChild(div);
-    });
+function loadFromLocalStorage() {
+  PARTS.forEach(p => {
+    const saved = localStorage.getItem("selected_" + p.key);
+    if (saved) {
+      selectedParts[p.key] = JSON.parse(saved);
+    }
+  });
 }
 
-// ===============================
-// ЦЕНА
-// ===============================
-function updatePrice() {
-    let total = 0;
+function updateSummary() {
+  const table = document.getElementById("summaryTable");
+  table.innerHTML = "";
 
-    Object.values(build).forEach(item => {
-        if (item) total += Number(item.price);
-    });
+  let total = 0;
 
-    document.getElementById('totalPrice').textContent =
-        total.toLocaleString('ru-RU') + ' ₽';
+  PARTS.forEach(p => {
+    const item = selectedParts[p.key];
+    const price = item ? Number(item.price) : null;
+
+    if (item) total += price;
+
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${p.name}</td>
+      <td>${item ? item.name : "Не выбрано"}</td>
+      <td>
+        ${item ? price + " ₽" : "—"}
+        ${item ? `<button class="remove-btn-small" onclick="removePart('${p.key}')">✖</button>` : ""}
+      </td>
+    `;
+    table.appendChild(row);
+  });
+
+  document.getElementById("totalPrice").textContent = total + " ₽";
+}
+
+init();
+
+// ===============================
+// МОДАЛКА
+// ===============================
+const compatModal = document.getElementById("compatModal");
+const compatModalText = document.getElementById("compatModalText");
+const compatModalClose = document.getElementById("compatModalClose");
+
+compatModalClose.onclick = () => compatModal.style.display = "none";
+window.onclick = e => { if (e.target === compatModal) compatModal.style.display = "none"; };
+
+// ===============================
+// ПОКАЗАТЬ ОШИБКУ
+// ===============================
+function showCompatibilityError(text) {
+    compatModalText.textContent = text;
+    compatModal.style.display = "flex";
 }
 
 // ===============================
 // ПРОВЕРКА СОВМЕСТИМОСТИ
 // ===============================
 function validateCompatibility() {
-    const box = document.getElementById('errorBox');
-    const errors = [];
+    const cpu = build.cpu;
+    const mb = build.motherboard;
+    const ram = build.ram;
+    const gpu = build.gpu;
+    const psu = build.psu;
+    const cooler = build.cooler;
+    const pcCase = build.case;
 
-    if (build.cpu && build.motherboard) {
-        if (build.cpu.socket !== build.motherboard.socket) {
-            errors.push('❌ Процессор и материнская плата имеют разные сокеты');
+    // CPU ↔ Motherboard
+    if (cpu && mb) {
+        if (cpu.socket !== mb.socket) {
+            showCompatibilityError("Процессор и материнская плата имеют разные сокеты");
+            return false;
         }
     }
 
-    box.innerHTML = errors.length ? errors.join('<br>') : 'Ошибок нет';
+    // Motherboard ↔ RAM
+    if (ram && mb) {
+        if (ram.type !== mb.memory_type) {
+            showCompatibilityError("Тип оперативной памяти не подходит к материнской плате");
+            return false;
+        }
+    }
+
+    // GPU ↔ Case
+    if (gpu && pcCase) {
+        if (gpu.length > pcCase.gpu_max_length) {
+            showCompatibilityError("Видеокарта слишком длинная для корпуса");
+            return false;
+        }
+    }
+
+    // Cooler ↔ Case
+    if (cooler && pcCase) {
+        if (cooler.height > pcCase.cooler_max_height) {
+            showCompatibilityError("Кулер слишком высокий для корпуса");
+            return false;
+        }
+    }
+
+    // PSU ↔ GPU
+    if (gpu && psu) {
+        if (psu.power < gpu.recommended_psu) {
+            showCompatibilityError("Мощности блока питания недостаточно для видеокарты");
+            return false;
+        }
+    }
+
+    return true;
 }
+function selectPart(category, item) {
 
-// ===============================
-// ЗАГРУЗКА ИЗ LOCALSTORAGE
-// ===============================
-function loadSavedBuild() {
-    Object.keys(build).forEach(cat => {
-        const saved = localStorage.getItem(cat);
-        if (saved) build[cat] = JSON.parse(saved);
-        updateSlot(cat);
-    });
+    // временно подставляем, чтобы проверить
+    const old = build[category];
+    build[category] = item;
 
+    if (!validateCompatibility()) {
+        build[category] = old; // откат
+        return;
+    }
+
+    // сохраняем
+    localStorage.setItem(category, JSON.stringify(item));
+
+    updateSlot(category);
     updateSidePanel();
     updatePrice();
-    validateCompatibility();
-}
-
-// ===============================
-// ОЧИСТКА СБОРКИ
-// ===============================
-document.getElementById('clearBuild').addEventListener('click', () => {
-    Object.keys(build).forEach(cat => {
-        build[cat] = null;
-        localStorage.removeItem(cat);
-        updateSlot(cat);
-    });
-
-    updateSidePanel();
-    updatePrice();
-    validateCompatibility();
-});
-
-// ===============================
-// INIT
-// ===============================
-document.addEventListener('DOMContentLoaded', loadSavedBuild);
-
-// ===============================
-// НАЗВАНИЯ КАТЕГОРИЙ
-// ===============================
-function getCategoryName(key) {
-    const names = {
-        cpu: 'Процессоры',
-        gpu: 'Видеокарты',
-        motherboard: 'Материнские платы',
-        ram: 'Оперативная память',
-        psu: 'Блоки питания',
-        case: 'Корпуса',
-        storage: 'Накопители',
-        cooler: 'Охлаждение'
-    };
-    return names[key] || key;
 }

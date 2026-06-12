@@ -8,7 +8,7 @@ import ramRouter from './routes/rams.js';
 import storageRouter from './routes/storages.js';
 import psuRouter from './routes/psus.js';
 import motherboardRouter from './routes/motherboards.js';
-import caseRouter from './routes/cases.js';
+//import caseRouter from './routes/cases.js';
 
 const app = express();
 app.use(cors());
@@ -21,7 +21,7 @@ app.get('/api/test', (req, res) => {
 app.use('/api/cpus', cpuRouter);
 app.use('/api/gpus', gpuRouter);
 app.use('/api/coolers', coolerRouter);
-app.use('/api/cases', caseRouter);
+//app.use('/api/cases', caseRouter);
 app.use('/api/motherboards', motherboardRouter);
 app.use('/api/psus', psuRouter);
 app.use('/api/rams', ramRouter);
