@@ -125,6 +125,7 @@ function renderBuilder() {
     Object.keys(CATEGORY_NAMES).forEach(key => {
         const item = selectedParts[key];
         const row = document.createElement("tr");
+        row.classList.add("animate-in");
 
         if (!item) {
             row.innerHTML = `
