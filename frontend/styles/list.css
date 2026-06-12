@@ -98,7 +98,7 @@ h1 {
 .filter-block input:focus,
 .filter-block select:focus {
     outline: none;
-    border-color: #ff8c00;
+    border-color: #ffffff;
 }
 
 .filters-buttons {
@@ -272,17 +272,17 @@ h1 {
 }
 
 #compatModalClose {
-    background: #aa0000;
-    border: none;
+    background: var(--lightgray);
+    border: 1px solid white;
     padding: 8px 16px;
     border-radius: 6px;
-    color: white;
+    color: rgb(255, 255, 255);
     cursor: pointer;
     font-size: 14px;
 }
 
 #compatModalClose:hover {
-    background: #cc0000;
+    background: var(--light);
 }
 
 @keyframes modalFade {
@@ -351,18 +351,49 @@ h1 {
 }
 
 #compatForceAdd {
-    background: #ff8c00;
-    border: none;
+    background: rgba(202, 15, 15, 0.404);
+    border: 1px solid red;
     padding: 8px 16px;
     border-radius: 6px;
-    color: #111;
+    color: #ffffff;
     cursor: pointer;
     font-size: 14px;
-    font-weight: 600;
     transition: 0.25s ease;
 }
 
 #compatForceAdd:hover {
-    background: #ffa733;
+    background: rgb(170, 13, 13);
     transform: translateY(-2px);
+}
+/* поиск */
+.search-box {
+    margin-bottom: 15px;
+}
+
+#searchInput {
+    width: 94%;
+    padding: 7px;
+    border-radius: 8px;
+    border: 1px solid #444;
+    background: #222;
+    color: white;
+    font-size: 16px;
+    outline: none;
+    transition: 0.2s;
+}
+
+#searchInput:focus {
+    border-color: #ffffff;
+}
+
+/* Убираем стрелки у number */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+::selection {
+    background: #47474793; /* красный фон */
+    color: white;        /* белый текст */
 }

@@ -100,3 +100,8 @@ h1 {
 .category-card:nth-child(6) { animation-delay: 0.60s; }
 .category-card:nth-child(7) { animation-delay: 0.70s; }
 .category-card:nth-child(8) { animation-delay: 0.80s; }
+
+::selection {
+    background: #47474793; /* красный фон */
+    color: white;        /* белый текст */
+}

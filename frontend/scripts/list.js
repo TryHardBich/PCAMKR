@@ -280,6 +280,17 @@ function renderItems(items) {
         list.appendChild(div);
     });
 }
+const searchInput = document.getElementById("searchInput");
+
+searchInput.addEventListener("input", () => {
+    const query = searchInput.value.toLowerCase();
+
+    const filtered = allItems.filter(item =>
+        item.name.toLowerCase().includes(query)
+    );
+
+    renderItems(filtered);
+});
 
 /* ===============================
    ВЫБОР КОМПОНЕНТА

@@ -43,11 +43,11 @@ h1 {
 /* левая панель*/ 
 
 .summary-panel {
-    width: 32%;
     background: var(--darkgray);
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px #000;
+     flex: 0 400px; /* минимальная ширина */
 }
 
 .summary-panel h2 {
@@ -88,19 +88,37 @@ h1 {
 }
 
 /* Правая таблица */
+.parts-table tbody tr:nth-child(odd) {
+    background: #1e1e1e;
+}
+
+.parts-table tbody tr:nth-child(even) {
+    background: #252525;
+}
+.parts-table tbody tr:hover {
+    background: #333;
+    transition: 0.2s;
+}
 
 .parts-table-container {
-    width: 68%;
+    width: 75%;
 }
 
 .parts-table {
     width: 100%;
     border-collapse: collapse;
     background: var(--darkgray);
-    border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 0 10px #000;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 12px rgba(0,0,0,0.6);
 }
+
+.parts-table td:nth-child(1) { width: 28%; }
+.parts-table td:nth-child(2) { width: 28%; }
+.parts-table td:nth-child(3) { width: 24%; }
+.parts-table td:nth-child(4) { width: 20%; }
 
 .parts-table th {
     background: var(--black);
@@ -186,4 +204,9 @@ h1 {
 
 .compat-buttons button:hover {
     background: rgb(200, 0, 0);
+}
+
+::selection {
+    background: #47474793;
+    color: white;      
 }
