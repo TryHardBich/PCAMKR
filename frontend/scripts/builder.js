@@ -1,93 +1,17 @@
 /* eslint-disable no-undef */
 
-const PARTS = [
-  { key: "cpu",         name: "Процессор" },
-  { key: "motherboard", name: "Материнская плата" },
-  { key: "gpu",         name: "Видеокарта" },
-  { key: "ram",         name: "Оперативная память" },
-  { key: "storage",     name: "Накопитель" },
-  { key: "psu",         name: "Блок питания" },
-  { key: "cooler",      name: "Охлаждение" },
-  { key: "case",        name: "Корпус" }
-];
+const CATEGORY_NAMES = {
+    cpu: "Процессор",
+    motherboard: "Материнская плата",
+    gpu: "Видеокарта",
+    ram: "Оперативная память",
+    storage: "Накопитель",
+    psu: "Блок питания",
+    cooler: "Охлаждение",
+    case: "Корпус"
+};
 
-let selectedParts = {};
-
-function init() {
-  loadFromLocalStorage();
-
-  const partsList = document.getElementById("partsList");
-
-  PARTS.forEach(p => {
-    const item = selectedParts[p.key];
-
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${p.name}</td>
-      <td>
-        <button class="select-btn" onclick="openList('${p.key}')">Выбрать</button>
-        <button class="remove-btn" onclick="removePart('${p.key}')">✖</button>
-      </td>
-      <td id="price-${p.key}">${item ? Number(item.price) + " ₽" : "—"}</td>
-    `;
-    partsList.appendChild(row);
-  });
-
-  updateSummary();
-}
-
-function openList(category) {
-  window.location.href = `list.html?category=${category}&return=builder`;
-}
-
-function removePart(category) {
-  delete selectedParts[category];
-  localStorage.removeItem("selected_" + category);
-  document.getElementById(`price-${category}`).textContent = "—";
-  updateSummary();
-}
-
-function loadFromLocalStorage() {
-  PARTS.forEach(p => {
-    const saved = localStorage.getItem("selected_" + p.key);
-    if (saved) {
-      selectedParts[p.key] = JSON.parse(saved);
-    }
-  });
-}
-
-function updateSummary() {
-  const table = document.getElementById("summaryTable");
-  table.innerHTML = "";
-
-  let total = 0;
-
-  PARTS.forEach(p => {
-    const item = selectedParts[p.key];
-    const price = item ? Number(item.price) : null;
-
-    if (item) total += price;
-
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${p.name}</td>
-      <td>${item ? item.name : "Не выбрано"}</td>
-      <td>
-        ${item ? price + " ₽" : "—"}
-        ${item ? `<button class="remove-btn-small" onclick="removePart('${p.key}')">✖</button>` : ""}
-      </td>
-    `;
-    table.appendChild(row);
-  });
-
-  document.getElementById("totalPrice").textContent = total + " ₽";
-}
-
-init();
-
-// ===============================
-// МОДАЛКА
-// ===============================
+/* Модалка совместимости */
 const compatModal = document.getElementById("compatModal");
 const compatModalText = document.getElementById("compatModalText");
 const compatModalClose = document.getElementById("compatModalClose");
@@ -95,83 +19,141 @@ const compatModalClose = document.getElementById("compatModalClose");
 compatModalClose.onclick = () => compatModal.style.display = "none";
 window.onclick = e => { if (e.target === compatModal) compatModal.style.display = "none"; };
 
-// ===============================
-// ПОКАЗАТЬ ОШИБКУ
-// ===============================
 function showCompatibilityError(text) {
     compatModalText.textContent = text;
     compatModal.style.display = "flex";
 }
 
-// ===============================
-// ПРОВЕРКА СОВМЕСТИМОСТИ
-// ===============================
-function validateCompatibility() {
-    const cpu = build.cpu;
-    const mb = build.motherboard;
-    const ram = build.ram;
-    const gpu = build.gpu;
-    const psu = build.psu;
-    const cooler = build.cooler;
-    const pcCase = build.case;
+/* Проверка совместимости */
+function checkCompatibility(categoryKey, item, selectedParts) {
+    const cpu = selectedParts.cpu;
+    const mb = selectedParts.motherboard;
+    const ram = selectedParts.ram;
+    const gpu = selectedParts.gpu;
+    const psu = selectedParts.psu;
+    const cooler = selectedParts.cooler;
+    const pcCase = selectedParts.case;
 
-    // CPU ↔ Motherboard
-    if (cpu && mb) {
-        if (cpu.socket !== mb.socket) {
-            showCompatibilityError("Процессор и материнская плата имеют разные сокеты");
-            return false;
-        }
-    }
+    if (categoryKey === "motherboard" && cpu && item.socket !== cpu.socket)
+        return "Сокет материнской платы не подходит к процессору";
 
-    // Motherboard ↔ RAM
-    if (ram && mb) {
-        if (ram.type !== mb.memory_type) {
-            showCompatibilityError("Тип оперативной памяти не подходит к материнской плате");
-            return false;
-        }
-    }
+    if (categoryKey === "cpu" && mb && item.socket !== mb.socket)
+        return "Сокет процессора не подходит к материнской плате";
 
-    // GPU ↔ Case
-    if (gpu && pcCase) {
-        if (gpu.length > pcCase.gpu_max_length) {
-            showCompatibilityError("Видеокарта слишком длинная для корпуса");
-            return false;
-        }
-    }
+    if (categoryKey === "ram" && mb && item.type !== mb.memory_type)
+        return "Тип оперативной памяти не подходит к материнской плате";
 
-    // Cooler ↔ Case
-    if (cooler && pcCase) {
-        if (cooler.height > pcCase.cooler_max_height) {
-            showCompatibilityError("Кулер слишком высокий для корпуса");
-            return false;
-        }
-    }
+    if (categoryKey === "motherboard" && ram && ram.type !== item.memory_type)
+        return "Материнская плата не поддерживает выбранную память";
 
-    // PSU ↔ GPU
-    if (gpu && psu) {
-        if (psu.power < gpu.recommended_psu) {
-            showCompatibilityError("Мощности блока питания недостаточно для видеокарты");
-            return false;
-        }
-    }
+    if (categoryKey === "gpu" && pcCase && item.length > pcCase.gpu_max_length)
+        return "Видеокарта слишком длинная для корпуса";
 
-    return true;
+    if (categoryKey === "case" && gpu && gpu.length > item.gpu_max_length)
+        return "Корпус слишком маленький для видеокарты";
+
+    if (categoryKey === "cooler" && pcCase && item.height > pcCase.cooler_max_height)
+        return "Кулер слишком высокий для корпуса";
+
+    if (categoryKey === "case" && cooler && cooler.height > item.cooler_max_height)
+        return "Корпус слишком низкий для кулера";
+
+    if (categoryKey === "psu" && gpu && item.power < gpu.recommended_psu)
+        return "Мощности блока питания недостаточно для видеокарты";
+
+    if (categoryKey === "gpu" && psu && psu.power < item.recommended_psu)
+        return "Текущий блок питания слабый для этой видеокарты";
+
+    return null;
 }
-function selectPart(category, item) {
 
-    // временно подставляем, чтобы проверить
-    const old = build[category];
-    build[category] = item;
-
-    if (!validateCompatibility()) {
-        build[category] = old; // откат
-        return;
-    }
-
-    // сохраняем
-    localStorage.setItem(category, JSON.stringify(item));
-
-    updateSlot(category);
-    updateSidePanel();
-    updatePrice();
+/* Загрузка выбранных компонентов */
+function loadSelectedParts() {
+    const parts = {};
+    Object.keys(CATEGORY_NAMES).forEach(key => {
+        const saved = localStorage.getItem("selected_" + key);
+        if (saved) parts[key] = JSON.parse(saved);
+    });
+    return parts;
 }
+
+/* Удаление компонента */
+function deletePart(key) {
+    localStorage.removeItem("selected_" + key);
+    renderBuilder();
+}
+
+/* Изменение компонента*/
+function editPart(key) {
+    window.location.href = `list.html?category=${key}&return=builder`;
+}
+
+/* Рендер строки */ 
+function renderBuilder() {
+    const partsList = document.getElementById("partsList");
+    const summaryTable = document.getElementById("summaryTable");
+    const totalPriceEl = document.getElementById("totalPrice");
+
+    partsList.innerHTML = "";
+    summaryTable.innerHTML = "";
+
+    const selectedParts = loadSelectedParts();
+    let total = 0;
+
+    /* Левая панель */
+    Object.keys(CATEGORY_NAMES).forEach(key => {
+        const item = selectedParts[key];
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${CATEGORY_NAMES[key]}</td>
+            <td>${item ? item.name : "—"}</td>
+            <td>${item && item.price ? item.price + " ₽" : "—"}</td>
+        `;
+
+        summaryTable.appendChild(row);
+
+        if (item && item.price) {
+            total += Number(item.price.toString().replace(/\D/g, "")); // тут короче ниче не работало, пришлось букавы туда сюда делать
+}
+
+    });
+
+    totalPriceEl.textContent = total + " ₽";
+
+    /* Правая таблица*/
+    Object.keys(CATEGORY_NAMES).forEach(key => {
+        const item = selectedParts[key];
+        const row = document.createElement("tr");
+
+        if (!item) {
+            row.innerHTML = `
+                <td>${CATEGORY_NAMES[key]}</td>
+                <td><button onclick="editPart('${key}')">Выбрать</button></td>
+                <td>—</td>
+                <td>—</td>
+            `;
+        } else {
+            const reason = checkCompatibility(key, item, selectedParts);
+            const compatText = reason ? `${reason}` : "Совместимо";
+            const compatClass = reason ? "incompat" : "compat";
+
+            row.innerHTML = `
+                <td>${CATEGORY_NAMES[key]}</td>
+
+                <td>
+                    <button onclick="editPart('${key}')">Изменить</button>
+                    <button onclick="deletePart('${key}')">Удалить</button>
+                </td>
+
+                <td class="${compatClass}">${compatText}</td>
+
+                <td>${item.price ? item.price + " ₽" : "—"}</td>
+            `;
+        }
+
+        partsList.appendChild(row);
+    });
+}
+
+renderBuilder();

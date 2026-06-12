@@ -2,12 +2,15 @@
 
 const API_BASE = 'http://localhost:3001/api';
 
+let pendingCategory = null;
+let pendingItem = null;
+
 const CATEGORY_ENDPOINTS = {
     cpu: 'cpus',
     gpu: 'gpus',
     motherboard: 'motherboards',
     ram: 'rams',
-    psu: 'psus',
+    psus: 'psus',
     case: 'cases',
     cooler: 'coolers',
     storage: 'storages'
@@ -41,7 +44,6 @@ const RU_NAMES = {
 
 document.getElementById("title").textContent = RU_NAMES[category] || category.toUpperCase();
 
-
 let allItems = [];
 let showOnlyCompatible = false;
 
@@ -51,14 +53,37 @@ let showOnlyCompatible = false;
 const modal = document.getElementById("compatModal");
 const modalText = document.getElementById("compatModalText");
 const modalClose = document.getElementById("compatModalClose");
+const modalForce = document.getElementById("compatForceAdd");
 
 modalClose.onclick = () => modal.style.display = "none";
 window.onclick = e => { if (e.target === modal) modal.style.display = "none"; };
 
-function showCompatibilityError(text) {
+function showCompatibilityError(text, item) {
+    pendingCategory = category;
+    pendingItem = item;
+
     modalText.textContent = text;
     modal.style.display = "flex";
 }
+
+modalForce.onclick = () => {
+    if (!pendingCategory || !pendingItem) return;
+
+    localStorage.setItem("selected_" + pendingCategory, JSON.stringify(pendingItem));
+
+    modal.style.display = "none";
+
+    const item = pendingItem;
+    pendingCategory = null;
+    pendingItem = null;
+
+    if (returnTo === "builder") {
+        window.location.href = "builder.html";
+        return;
+    }
+
+    window.location.href = `product.html?id=${item.id}&category=${category}`;
+};
 
 /* ===============================
    ЗАГРУЗКА ТОВАРОВ
@@ -123,6 +148,7 @@ document.getElementById("applyFilters").onclick = () => {
 
     renderItems(filtered);
 };
+
 document.getElementById("clearFilters").onclick = () => {
     document.getElementById("priceMin").value = "";
     document.getElementById("priceMax").value = "";
@@ -176,65 +202,35 @@ function checkCompatibility(categoryKey, item, selectedParts) {
     const cooler = selectedParts.cooler;
     const pcCase = selectedParts.case;
 
-    // CPU ↔ Motherboard
-    if (categoryKey === "motherboard" && cpu) {
-        if (item.socket !== cpu.socket) {
-            return "Сокет материнской платы не подходит к процессору";
-        }
-    }
-    if (categoryKey === "cpu" && mb) {
-        if (item.socket !== mb.socket) {
-            return "Сокет процессора не подходит к материнской плате";
-        }
-    }
+    if (categoryKey === "motherboard" && cpu && item.socket !== cpu.socket)
+        return "Сокет материнской платы не подходит к процессору";
 
-    // Motherboard ↔ RAM
-    if (categoryKey === "ram" && mb) {
-        if (item.type !== mb.memory_type) {
-            return "Тип оперативной памяти не подходит к материнской плате";
-        }
-    }
-    if (categoryKey === "motherboard" && ram) {
-        if (ram.type !== item.memory_type) {
-            return "Материнская плата не поддерживает выбранную память";
-        }
-    }
+    if (categoryKey === "cpu" && mb && item.socket !== mb.socket)
+        return "Сокет процессора не подходит к материнской плате";
 
-    // GPU ↔ Case
-    if (categoryKey === "gpu" && pcCase) {
-        if (item.length > pcCase.gpu_max_length) {
-            return "Видеокарта слишком длинная для корпуса";
-        }
-    }
-    if (categoryKey === "case" && gpu) {
-        if (gpu.length > item.gpu_max_length) {
-            return "Корпус слишком маленький для видеокарты";
-        }
-    }
+    if (categoryKey === "ram" && mb && item.type !== mb.memory_type)
+        return "Тип оперативной памяти не подходит к материнской плате";
 
-    // Cooler ↔ Case
-    if (categoryKey === "cooler" && pcCase) {
-        if (item.height > pcCase.cooler_max_height) {
-            return "Кулер слишком высокий для корпуса";
-        }
-    }
-    if (categoryKey === "case" && cooler) {
-        if (cooler.height > item.cooler_max_height) {
-            return "Корпус слишком низкий для кулера";
-        }
-    }
+    if (categoryKey === "motherboard" && ram && ram.type !== item.memory_type)
+        return "Материнская плата не поддерживает выбранную память";
 
-    // PSU ↔ GPU
-    if (categoryKey === "psu" && gpu) {
-        if (item.power < gpu.recommended_psu) {
-            return "Мощности блока питания недостаточно для видеокарты";
-        }
-    }
-    if (categoryKey === "gpu" && psu) {
-        if (psu.power < item.recommended_psu) {
-            return "Текущий блок питания слабый для этой видеокарты";
-        }
-    }
+    if (categoryKey === "gpu" && pcCase && item.length > pcCase.gpu_max_length)
+        return "Видеокарта слишком длинная для корпуса";
+
+    if (categoryKey === "case" && gpu && gpu.length > item.gpu_max_length)
+        return "Корпус слишком маленький для видеокарты";
+
+    if (categoryKey === "cooler" && pcCase && item.height > pcCase.cooler_max_height)
+        return "Кулер слишком высокий для корпуса";
+
+    if (categoryKey === "case" && cooler && cooler.height > item.cooler_max_height)
+        return "Корпус слишком низкий для кулера";
+
+    if (categoryKey === "psu" && gpu && item.power < gpu.recommended_psu)
+        return "Мощности блока питания недостаточно для видеокарты";
+
+    if (categoryKey === "gpu" && psu && psu.power < item.recommended_psu)
+        return "Текущий блок питания слабый для этой видеокарты";
 
     return null;
 }
@@ -246,14 +242,13 @@ function renderItems(items) {
     const list = document.getElementById("itemsList");
     list.innerHTML = "";
     list.style.opacity = "0";
-setTimeout(() => list.style.opacity = "1", 10);
+    setTimeout(() => list.style.opacity = "1", 10);
 
     const selectedParts = getSelectedPartsFromStorage();
 
     items.forEach(item => {
         const reason = checkCompatibility(category, item, selectedParts);
 
-        // Фильтр "только совместимые"
         if (showOnlyCompatible && reason) return;
 
         const img = item.image || PLACEHOLDERS[category];
@@ -261,14 +256,10 @@ setTimeout(() => list.style.opacity = "1", 10);
         const div = document.createElement("div");
         div.className = "product-card";
 
-        // Несовместимые → красная подсветка
         if (reason) {
             div.classList.add("incompatible");
             div.setAttribute("data-reason", "❌ " + reason);
-        }
-
-        // Совместимые → зелёная подсветка
-        else if (Object.keys(selectedParts).length > 0) {
+        } else if (Object.keys(selectedParts).length > 0) {
             div.classList.add("compatible");
         }
 
@@ -278,10 +269,9 @@ setTimeout(() => list.style.opacity = "1", 10);
             <p>${item.price} ₽</p>
         `;
 
-        // Клик: несовместимый → модалка, совместимый → выбор
         div.onclick = () => {
             if (reason) {
-                showCompatibilityError(reason);
+                showCompatibilityError(reason, item);
                 return;
             }
             selectItem(item);

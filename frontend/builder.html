@@ -7,15 +7,21 @@
 
   <link rel="stylesheet" href="styles/builder.css">
 </head>
+
+<body>
+
+<!-- МОДАЛКА СОВМЕСТИМОСТИ -->
 <div id="compatModal" class="compat-modal">
   <div class="compat-modal-content">
     <h3>Ошибка совместимости</h3>
     <p id="compatModalText"></p>
-    <button id="compatModalClose">Понятно</button>
+
+    <div class="compat-buttons">
+      <button id="compatModalClose">Понятно</button>
+    </div>
+
   </div>
 </div>
-
-<body>
 
 <a href="index.html" class="back-btn">← На главную</a>
 
@@ -45,6 +51,7 @@
         <tr>
           <th>Компонент</th>
           <th>Действия</th>
+          <th>Совместимость</th>
           <th>Цена</th>
         </tr>
       </thead>

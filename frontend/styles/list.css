@@ -1,7 +1,5 @@
 @import url("root.css");
 
-/* ===== БАЗА СТРАНИЦЫ ===== */
-
 body {
     background: linear-gradient(-45deg, rgb(160, 5, 5), var(--black) 45%, var(--white) 150%);
     background-repeat: no-repeat;
@@ -48,7 +46,7 @@ h1 {
     font-weight: 600;
 }
 
-/* ===== ЛЕЙАУТ ===== */
+/* лейаут */
 
 .layout {
     display: grid;
@@ -57,7 +55,7 @@ h1 {
     align-items: flex-start;
 }
 
-/* ===== ФИЛЬТРЫ (Citilink‑карточка) ===== */
+/* фильтры */
 
 .filters {
     background: rgba(27, 27, 27, 0.65);
@@ -139,7 +137,7 @@ h1 {
     background: #303030;
 }
 
-/* ===== СПИСОК ТОВАРОВ ===== */
+/* список товаров= */
 
 .products-wrapper {
     background: rgba(21, 21, 21, 0.55);
@@ -155,7 +153,7 @@ h1 {
     gap: 14px;
 }
 
-/* ===== КАРТОЧКА ТОВАРА (Citilink‑стиль) ===== */
+/* карточка товара */
 
 .product-card {
     background: rgba(29, 29, 29, 0.55);
@@ -196,7 +194,7 @@ h1 {
     font-weight: 600;
 }
 
-/* ===== НЕСОВМЕСТИМЫЕ ===== */
+/* несовместимые */
 
 .incompatible {
     opacity: 0.45;
@@ -224,7 +222,7 @@ h1 {
     pointer-events: none;
 }
 
-/* ===== СОВМЕСТИМЫЕ ===== */
+/* совместимые */
 
 .compatible {
     border: 1px solid #024e02 !important;
@@ -235,7 +233,7 @@ h1 {
     box-shadow: 0 0 0 1px #024d02;
 }
 
-/* ===== МОДАЛКА ===== */
+/* модалка */
 
 .compat-modal {
     display: none;
@@ -292,7 +290,7 @@ h1 {
     to   { opacity: 1; transform: scale(1); }
 }
 
-/* ===== АДАПТИВ ===== */
+/* Адаптив */
 
 @media (max-width: 900px) {
     .layout {
@@ -340,9 +338,31 @@ h1 {
         filter 0.25s ease;
 }
 
-/* При наведении — чуть ярче и чуть выше */
 .product-card:hover {
     transform: translateY(-6px);
     filter: brightness(1.12);
     box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+}
+
+.compat-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+#compatForceAdd {
+    background: #ff8c00;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    color: #111;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.25s ease;
+}
+
+#compatForceAdd:hover {
+    background: #ffa733;
+    transform: translateY(-2px);
 }
