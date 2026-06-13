@@ -207,9 +207,10 @@ h1 {
 
 .items-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
 }
+
 
 /* карточка товара */
 
@@ -472,4 +473,25 @@ input[type=number]::-webkit-outer-spin-button {
     animation: filtersSlideIn 1.5s ease forwards;
     opacity: 0; 
     transform: translateX(-70px);
+}
+.pagination {
+    margin-top: 10px;
+    display: flex !important;
+    gap: 4px !important;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.page-btn {
+    padding: 6px 12px;
+    background: #222;
+    color: white;
+    border: 1px solid #444;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.page-btn.active {
+    background: #e60000;
+    border-color: #e60000;
 }

@@ -18,6 +18,7 @@
         <h1 id="title">Категория</h1>
     </header>
 
+    <!-- Модалка совместимости -->
     <div id="compatModal" class="compat-modal">
         <div class="compat-modal-content">
             <h3>Несовместимо</h3>
@@ -32,6 +33,7 @@
 
     <main class="layout">
 
+        <!-- Фильтры -->
         <aside class="filters">
             <h2 class="filters-title">Фильтры</h2>
 
@@ -48,12 +50,14 @@
                 <label>Цена до:</label>
                 <input type="number" id="priceMax" placeholder="∞">
             </div>
+
             <div class="filter-block" data-filter="generation">
                 <label>Поколение:</label>
                 <select id="generationFilter">
                     <option value="">Все</option>
                 </select>
             </div>
+
             <div class="filter-block" data-filter="brand">
                 <label>Бренд:</label>
                 <select id="brandFilter">
@@ -68,7 +72,6 @@
                 </select>
             </div>
 
-            <!-- фильтр серии остаётся, но скрывается для CPU -->
             <div class="filter-block" data-filter="series">
                 <label>Серия:</label>
                 <select id="seriesFilter">
@@ -76,7 +79,6 @@
                 </select>
             </div>
 
-            <!-- фильтр SSD/HDD -->
             <div class="filter-block" data-filter="type">
                 <label>Тип накопителя:</label>
                 <select id="typeFilter">
@@ -87,14 +89,17 @@
             </div>
 
             <div class="filters-buttons">
-                <button id="applyFilters" class="filter-btn primary">Применить</button>
-                <button id="clearFilters" class="filter-btn secondary">Удалить все фильтры</button>
+                <button id="clearFilters" class="filter-btn secondary">Сбросить фильтры</button>
                 <button id="toggleCompatible" class="filter-btn secondary">Показать только совместимые</button>
             </div>
         </aside>
 
+        <!-- Список товаров -->
         <section class="products-wrapper">
             <div id="itemsList" class="items-list"></div>
+
+            <!-- Пагинация -->
+            <div id="pagination" class="pagination"></div>
         </section>
 
     </main>
