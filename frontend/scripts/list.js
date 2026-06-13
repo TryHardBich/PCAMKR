@@ -1,11 +1,13 @@
 /* eslint-disable no-undef */
 
+/* базовый URL API */
 const API_BASE = 'http://localhost:3001/api';
 
+/* временные переменные для модалки */
 let pendingCategory = null;
 let pendingItem = null;
 
-/* набор фильтров */
+/* какие фильтры показывать для каждой категории */
 const FILTER_SETS = {
     cpu: ["brand", "socket", "generation", "price"],
     motherboard: ["brand", "socket", "chipset", "price"],
@@ -17,7 +19,7 @@ const FILTER_SETS = {
     case: ["brand", "formfactor", "gpu_length_limit", "cooler_height_limit", "price"]
 };
 
-/* эндпоинты */
+/* эндпоинты API */
 const CATEGORY_ENDPOINTS = {
     cpu: 'cpus',
     gpu: 'gpus',
@@ -29,7 +31,7 @@ const CATEGORY_ENDPOINTS = {
     storage: 'storages'
 };
 
-/* плейсхолдеры */
+/* плейсхолдеры картинок */
 const PLACEHOLDERS = {
     cpu: "images/placeholders/cpu.svg",
     gpu: "images/placeholders/gpu.svg",
@@ -41,13 +43,13 @@ const PLACEHOLDERS = {
     storage: "images/placeholders/storage.svg"
 };
 
-/* параметры */
+/* параметры URL */
 const params = new URLSearchParams(window.location.search);
 const category = params.get("category");
 const returnTo = params.get("return");
 const forcedType = params.get("type");
 
-/* названия */
+/* русские названия категорий */
 const RU_NAMES = {
     cpu: "Процессоры",
     gpu: "Видеокарты",
@@ -63,18 +65,21 @@ const RU_NAMES = {
 
 document.getElementById("title").textContent = RU_NAMES[category] || category.toUpperCase();
 
+/* массив всех товаров */
 let allItems = [];
 let showOnlyCompatible = false;
 
-/* модалка */
+/* модалка несовместимости */
 const modal = document.getElementById("compatModal");
 const modalText = document.getElementById("compatModalText");
 const modalClose = document.getElementById("compatModalClose");
 const modalForce = document.getElementById("compatForceAdd");
 
+/* закрытие модалки */
 modalClose.onclick = () => modal.style.display = "none";
 window.onclick = e => { if (e.target === modal) modal.style.display = "none"; };
 
+/* показать ошибку совместимости */
 function showCompatibilityError(text, item) {
     pendingCategory = category;
     pendingItem = item;
@@ -82,6 +87,7 @@ function showCompatibilityError(text, item) {
     modal.style.display = "flex";
 }
 
+/* принудительное добавление несовместимого товара */
 modalForce.onclick = () => {
     if (!pendingCategory || !pendingItem) return;
 
@@ -110,72 +116,50 @@ function detectStorageType(item) {
 
 /* определение поколения CPU */
 function detectCpuGeneration(name) {
-    name = name.toLowerCase();
+    const lower = name.toLowerCase();
 
-    // Intel
-    if (name.includes("i3") || name.includes("i5") || name.includes("i7") || name.includes("i9")) {
-        const match = name.match(/(\d{4,5})/);
-        if (match) {
-            const num = Number(match[1]);
-            const gen = Math.floor(num / 1000);
-            return "Intel " + gen;
-        }
+    const intelMatch = lower.match(/i[3579]-?\s*(\d{4,5})/);
+    if (intelMatch) {
+        const num = Number(intelMatch[1]);
+        return "Intel " + Math.floor(num / 1000);
     }
 
-    // Ryzen
-    if (name.includes("ryzen")) {
-        const match = name.match(/ryzen\s+(\d)/);
-        if (match) {
-            return "Ryzen " + match[1];
-        }
+    const ryzenMatch = lower.match(/ryzen\s+(\d)/);
+    if (ryzenMatch) {
+        return "Ryzen " + ryzenMatch[1];
     }
 
     return "";
 }
 
-/* загрузка */
+/* загрузка товаров */
 async function loadItems() {
-  const list = document.getElementById("itemsList");
-  if (!list) return;
-  list.innerHTML = "<p>Загрузка...</p>";
+    const list = document.getElementById("itemsList");
+    list.innerHTML = "<p>Загрузка...</p>";
 
-  try {
-    const endpoint = CATEGORY_ENDPOINTS[category];
-    if (!endpoint) {
-      list.innerHTML = "<p>Неизвестная категория</p>";
-      return;
+    try {
+        const endpoint = CATEGORY_ENDPOINTS[category];
+        const res = await fetch(`${API_BASE}/${endpoint}`);
+        const data = await res.json();
+
+        allItems = data.map(i => ({
+            ...i,
+            price: Number(i.price) || 0,
+            type: category === "storage" ? detectStorageType(i) : null,
+            generation: category === "cpu" ? detectCpuGeneration(i.name) : ""
+        }));
+
+        fillFilterOptions(allItems);
+        applyFilterVisibility();
+        renderItems(allItems);
+        enableLiveFilters();
+
+    } catch (err) {
+        list.innerHTML = "<p>Ошибка загрузки</p>";
     }
-
-    const res = await fetch(`${API_BASE}/${endpoint}`);
-    if (!res.ok) {
-      list.innerHTML = `<p>Ошибка сервера: ${res.status}</p>`;
-      return;
-    }
-
-    const data = await res.json();
-
-    allItems = (Array.isArray(data) ? data : []).map(i => ({
-      ...i,
-      price: Number(i.price) || 0,
-      gpu_length_limit: Number(i.gpu_length_limit || i.gpu_max_length || i.length || 0),
-      cooler_height_limit: Number(i.cooler_height_limit || i.cooler_max_height || i.height || 0),
-      tdp: Number(i.tdp || 0),
-      power: Number(i.power || 0),
-      recommended_psu: Number(i.recommended_psu || i.recommended_power || 0),
-      type: category === "storage" ? detectStorageType(i) : null,
-      generation: category === "cpu" ? detectCpuGeneration(i.name) : ""
-    }));
-
-    fillFilterOptions(allItems);
-    applyFilterVisibility();
-    renderItems(allItems);
-
-  } catch (err) {
-    list.innerHTML = "<p>Ошибка загрузки</p>";
-  }
 }
 
-/* включение/выключение фильтров */
+/* включение/выключение фильтров по категории */
 function applyFilterVisibility() {
     const active = FILTER_SETS[category] || [];
 
@@ -192,6 +176,11 @@ function fillFilterOptions(items) {
     const seriesSelect = document.getElementById("seriesFilter");
     const generationSelect = document.getElementById("generationFilter");
 
+    brandSelect.innerHTML = '<option value="">Все</option>';
+    socketSelect.innerHTML = '<option value="">Все</option>';
+    seriesSelect.innerHTML = '<option value="">Все</option>';
+    generationSelect.innerHTML = '<option value="">Все</option>';
+
     const brands = new Set();
     const sockets = new Set();
     const series = new Set();
@@ -201,35 +190,45 @@ function fillFilterOptions(items) {
         if (i.brand) brands.add(i.brand);
         if (i.socket) sockets.add(i.socket);
 
-        if (i.name) {
-            const parts = i.name.split(" ");
-            if (parts.length > 1) series.add(parts[0] + " " + parts[1]);
-        }
+        const parts = i.name.split(" ");
+        if (parts.length > 1) series.add(parts[0] + " " + parts[1]);
 
         if (i.generation) generations.add(i.generation);
     });
 
     brands.forEach(b => brandSelect.innerHTML += `<option value="${b}">${b}</option>`);
-    sockets.forEach(s => socketSelect.innerHTML += `<option value="${s}">${s}</option>`);
+
+    const allSockets = [...sockets];
+
+    const intel = allSockets.filter(s => s.toUpperCase().startsWith("LGA"));
+    const amd = allSockets.filter(s => s.toUpperCase().startsWith("AM"));
+    const tr = allSockets.filter(s => s.toUpperCase().startsWith("TR"));
+    const str = allSockets.filter(s => s.toUpperCase().startsWith("STR"));
+
+    const sortByNum = (a, b) =>
+        (parseInt(a.replace(/\D/g, "")) || 0) - (parseInt(b.replace(/\D/g, "")) || 0);
+
+    intel.sort(sortByNum);
+    amd.sort(sortByNum);
+    tr.sort(sortByNum);
+    str.sort(sortByNum);
+
+    [...intel, ...amd, ...tr, ...str].forEach(s =>
+        socketSelect.innerHTML += `<option value="${s}">${s}</option>`
+    );
+
     series.forEach(s => seriesSelect.innerHTML += `<option value="${s}">${s}</option>`);
 
-    /* фильтруем только реальные поколения */
-    const sorted = [...generations]
-        .filter(g => /^Intel \d+$/.test(g) || /^Ryzen \d+$/.test(g))
-        .sort((a, b) => {
-            const [ab, ag] = a.split(" ");
-            const [bb, bg] = b.split(" ");
-            if (ab !== bb) return ab.localeCompare(bb);
-            return Number(ag) - Number(bg);
-        });
-
-    sorted.forEach(g => generationSelect.innerHTML += `<option value="${g}">${g}‑е</option>`);
+    [...generations]
+        .sort()
+        .forEach(g => generationSelect.innerHTML += `<option value="${g}">${g}</option>`);
 }
 
 /* применение фильтров */
-document.getElementById("applyFilters").onclick = () => {
+function applyFilters() {
     const min = Number(document.getElementById("priceMin").value) || 0;
     const max = Number(document.getElementById("priceMax").value) || Infinity;
+
     const brand = document.getElementById("brandFilter").value;
     const socket = document.getElementById("socketFilter").value;
     const series = document.getElementById("seriesFilter").value;
@@ -239,46 +238,77 @@ document.getElementById("applyFilters").onclick = () => {
     const filtered = allItems.filter(i => {
         if (forcedType && i.type !== forcedType) return false;
         if (type && i.type !== type) return false;
-        if (generation && i.generation !== generation) return false;
+
         if (i.price < min || i.price > max) return false;
+
         if (brand && i.brand !== brand) return false;
+
         if (socket && i.socket !== socket) return false;
+
         if (series && !i.name.includes(series)) return false;
+
+        if (generation && i.generation !== generation) return false;
+
         return true;
     });
 
     renderItems(filtered);
+}
+
+/* LIVE‑фильтры */
+function enableLiveFilters() {
+    const ids = [
+        "priceMin",
+        "priceMax",
+        "brandFilter",
+        "socketFilter",
+        "seriesFilter",
+        "typeFilter",
+        "generationFilter"
+    ];
+
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        const eventName = el.tagName === "SELECT" ? "change" : "input";
+
+        el.addEventListener(eventName, applyFilters);
+    });
+}
+
+/* кнопка "только совместимые" */
+document.getElementById("toggleCompatible").onclick = () => {
+    showOnlyCompatible = !showOnlyCompatible;
+
+    document.getElementById("toggleCompatible").textContent =
+        showOnlyCompatible ? "Показать все" : "Показать только совместимые";
+
+    applyFilters();
 };
 
-/* сброс */
+/* кнопка "Сбросить фильтры" */
 document.getElementById("clearFilters").onclick = () => {
     document.getElementById("priceMin").value = "";
     document.getElementById("priceMax").value = "";
     document.getElementById("brandFilter").value = "";
     document.getElementById("socketFilter").value = "";
     document.getElementById("seriesFilter").value = "";
-    if (document.getElementById("typeFilter")) document.getElementById("typeFilter").value = "";
-    if (document.getElementById("generationFilter")) document.getElementById("generationFilter").value = "";
+    document.getElementById("generationFilter").value = "";
+    if (document.getElementById("typeFilter")) {
+        document.getElementById("typeFilter").value = "";
+    }
+
+    document.getElementById("searchInput").value = "";
 
     showOnlyCompatible = false;
-    document.getElementById("toggleCompatible").textContent = "Показать только совместимые";
+    document.getElementById("toggleCompatible").textContent =
+        "Показать только совместимые";
 
-    renderItems(allItems);
+    applyFilters();
 };
 
-/* совместимость */
-document.getElementById("toggleCompatible").onclick = () => {
-    showOnlyCompatible = !showOnlyCompatible;
-
-    const btn = document.getElementById("toggleCompatible");
-    btn.textContent = showOnlyCompatible
-        ? "Показать все"
-        : "Показать только совместимые";
-
-    renderItems(allItems);
-};
-
-/* чтение сборки */
+/* чтение выбранных комплектующих */
 function getSelectedPartsFromStorage() {
     const parts = {};
     Object.keys(CATEGORY_ENDPOINTS).forEach(key => {
@@ -290,40 +320,34 @@ function getSelectedPartsFromStorage() {
 
 /* проверка совместимости */
 function checkCompatibility(categoryKey, item, selectedParts) {
-  const cpu = selectedParts.cpu;
-  const mb = selectedParts.motherboard;
-  const ram = selectedParts.ram;
-  const gpu = selectedParts.gpu;
-  const psu = selectedParts.psu;
+    const cpu = selectedParts.cpu;
+    const mb = selectedParts.motherboard;
+    const ram = selectedParts.ram;
+    const gpu = selectedParts.gpu;
+    const psu = selectedParts.psu;
 
-  if (categoryKey === "motherboard" && cpu && item.socket && cpu.socket !== item.socket)
-    return "Сокет материнской платы не подходит";
+    if (categoryKey === "motherboard" && cpu && item.socket !== cpu.socket)
+        return "Сокет материнской платы не подходит";
 
-  if (categoryKey === "cpu" && mb && item.socket && mb.socket !== item.socket)
-    return "Сокет процессора не подходит";
+    if (categoryKey === "cpu" && mb && item.socket !== mb.socket)
+        return "Сокет процессора не подходит";
 
-  if (categoryKey === "ram" && mb && item.type && mb.memory_type && item.type !== mb.memory_type)
-    return "Тип памяти не подходит";
+    if (categoryKey === "ram" && mb && item.type !== mb.memory_type)
+        return "Тип памяти не подходит";
 
-  const itemPower = Number(item.power || 0);
-  const gpuTdp = Number(gpu ? gpu.tdp : 0);
-  const psuPower = Number(psu ? psu.power : 0);
+    if (categoryKey === "psu" && gpu && item.power < gpu.tdp)
+        return "БП слабый для видеокарты";
 
-  if (categoryKey === "psu" && gpu && itemPower < gpuTdp)
-      return "БП слабый для видеокарты";
+    if (categoryKey === "gpu" && psu && gpu.tdp > psu.power)
+        return "БП слабый для этой видеокарты";
 
-  if (categoryKey === "gpu" && psu && gpuTdp > psuPower)
-      return "БП слабый для этой видеокарты";
-
-  return null;
+    return null;
 }
 
-/* рендер */
+/* рендер списка товаров */
 function renderItems(items) {
     const list = document.getElementById("itemsList");
     list.innerHTML = "";
-    list.style.opacity = "0";
-    setTimeout(() => list.style.opacity = "1", 10);
 
     const selectedParts = getSelectedPartsFromStorage();
 
@@ -341,8 +365,6 @@ function renderItems(items) {
         if (reason) {
             div.classList.add("incompatible");
             div.setAttribute("data-reason", reason);
-        } else if (Object.keys(selectedParts).length > 0) {
-            div.classList.add("compatible");
         }
 
         div.innerHTML = `
@@ -364,17 +386,17 @@ function renderItems(items) {
 }
 
 /* поиск */
-const searchInput = document.getElementById("searchInput");
+document.getElementById("searchInput").addEventListener("input", () => {
+    const q = document.getElementById("searchInput").value.toLowerCase();
 
-searchInput.addEventListener("input", () => {
-    const query = searchInput.value.toLowerCase();
-    const filtered = allItems.filter(item =>
-        item.name.toLowerCase().includes(query)
+    const filtered = allItems.filter(i =>
+        i.name.toLowerCase().includes(q)
     );
+
     renderItems(filtered);
 });
 
-/* выбор */
+/* выбор товара */
 function selectItem(item) {
     localStorage.setItem("selected_" + category, JSON.stringify(item));
 
@@ -386,4 +408,5 @@ function selectItem(item) {
     window.location.href = `product.html?id=${item.id}&category=${category}`;
 }
 
+/* старт */
 loadItems();
