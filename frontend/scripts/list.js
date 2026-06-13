@@ -10,7 +10,7 @@ const CATEGORY_ENDPOINTS = {
     gpu: 'gpus',
     motherboard: 'motherboards',
     ram: 'rams',
-    psus: 'psus',
+    psu: 'psus',
     case: 'cases',
     cooler: 'coolers',
     storage: 'storages'
@@ -89,20 +89,46 @@ modalForce.onclick = () => {
    ЗАГРУЗКА ТОВАРОВ
 ================================= */
 async function loadItems() {
-    const list = document.getElementById("itemsList");
+  const list = document.getElementById("itemsList");
+  if (!list) return;
+  list.innerHTML = "<p>Загрузка...</p>";
 
-    try {
-        const url = `${API_BASE}/${CATEGORY_ENDPOINTS[category]}`;
-        const res = await fetch(url);
-        allItems = await res.json();
-
-        fillFilterOptions(allItems);
-        renderItems(allItems);
-
-    } catch (err) {
-        console.error("Ошибка загрузки:", err);
-        list.innerHTML = "<p>Ошибка загрузки данных</p>";
+  try {
+    const endpoint = CATEGORY_ENDPOINTS[category];
+    if (!endpoint) {
+      console.error('Unknown category:', category);
+      list.innerHTML = "<p>Неизвестная категория. Проверь параметр ?category=...</p>";
+      return;
     }
+
+    const url = `${API_BASE}/${endpoint}`;
+    console.log('Fetching items from', url);
+
+    const res = await fetch(url);
+    if (!res.ok) {
+      console.error('Fetch failed', res.status, await res.text());
+      list.innerHTML = `<p>Ошибка сервера: ${res.status}</p>`;
+      return;
+    }
+
+    const data = await res.json();
+    allItems = (Array.isArray(data) ? data : []).map(i => ({
+      ...i,
+      price: Number(i.price) || 0,
+      gpu_length_limit: Number(i.gpu_length_limit || i.gpu_max_length || i.length || 0),
+      cooler_height_limit: Number(i.cooler_height_limit || i.cooler_max_height || i.height || 0),
+      tdp: Number(i.tdp || 0),
+      power: Number(i.power || 0),
+      recommended_psu: Number(i.recommended_psu || i.recommended_power || 0)
+    }));
+
+    fillFilterOptions(allItems);
+    renderItems(allItems);
+
+  } catch (err) {
+    console.error("Ошибка загрузки:", err);
+    list.innerHTML = "<p>Ошибка загрузки данных</p>";
+  }
 }
 
 /* ===============================
@@ -194,46 +220,42 @@ function getSelectedPartsFromStorage() {
    ПРОВЕРКА СОВМЕСТИМОСТИ
 ================================= */
 function checkCompatibility(categoryKey, item, selectedParts) {
-    const cpu = selectedParts.cpu;
-    const mb = selectedParts.motherboard;
-    const ram = selectedParts.ram;
-    const gpu = selectedParts.gpu;
-    const psu = selectedParts.psu;
-    const cooler = selectedParts.cooler;
-    const pcCase = selectedParts.case;
+  const cpu = selectedParts.cpu;
+  const mb = selectedParts.motherboard;
+  const ram = selectedParts.ram;
+  const gpu = selectedParts.gpu;
+  const psu = selectedParts.psu;
+  const cooler = selectedParts.cooler;
+  const pcCase = selectedParts.case;
 
-    if (categoryKey === "motherboard" && cpu && item.socket !== cpu.socket)
-        return "Сокет материнской платы не подходит к процессору";
+  // сокеты и память — без изменений
+  if (categoryKey === "motherboard" && cpu && item.socket && cpu.socket && item.socket !== cpu.socket)
+    return "Сокет материнской платы не подходит к процессору";
+  if (categoryKey === "cpu" && mb && item.socket && mb.socket && item.socket !== mb.socket)
+    return "Сокет процессора не подходит к материнской плате";
+  if (categoryKey === "ram" && mb && item.type && mb.memory_type && item.type !== mb.memory_type)
+    return "Тип оперативной памяти не подходит к материнской плате";
 
-    if (categoryKey === "cpu" && mb && item.socket !== mb.socket)
-        return "Сокет процессора не подходит к материнской плате";
+  // Нормализуем мощности и TDP
+  const itemPower = Number(item.power || item.watt || item.max_power || 0);
+  const gpuTdp = Number(gpu ? (gpu.tdp || gpu.recommended_psu || gpu.recommended_power || 0) : 0);
+  const psuPower = Number(psu ? (psu.power || psu.watt || psu.max_power || 0) : 0);
 
-    if (categoryKey === "ram" && mb && item.type !== mb.memory_type)
-        return "Тип оперативной памяти не подходит к материнской плате";
+  // PSU выбранный vs GPU
+  if (categoryKey === "psu" && gpu) {
+    if (itemPower > 0 && gpuTdp > 0 && itemPower < gpuTdp)
+      return "Мощности блока питания недостаточно для видеокарты";
+  }
 
-    if (categoryKey === "motherboard" && ram && ram.type !== item.memory_type)
-        return "Материнская плата не поддерживает выбранную память";
+  // GPU выбранный vs PSU
+  if (categoryKey === "gpu" && psu) {
+    if (psuPower > 0 && Number(item.tdp || item.recommended_psu || item.recommended_power || 0) > psuPower)
+      return "Текущий блок питания слабый для этой видеокарты";
+  }
 
-    if (categoryKey === "gpu" && pcCase && item.length > pcCase.gpu_max_length)
-        return "Видеокарта слишком длинная для корпуса";
-
-    if (categoryKey === "case" && gpu && gpu.length > item.gpu_max_length)
-        return "Корпус слишком маленький для видеокарты";
-
-    if (categoryKey === "cooler" && pcCase && item.height > pcCase.cooler_max_height)
-        return "Кулер слишком высокий для корпуса";
-
-    if (categoryKey === "case" && cooler && cooler.height > item.cooler_max_height)
-        return "Корпус слишком низкий для кулера";
-
-    if (categoryKey === "psu" && gpu && item.power < gpu.recommended_psu)
-        return "Мощности блока питания недостаточно для видеокарты";
-
-    if (categoryKey === "gpu" && psu && psu.power < item.recommended_psu)
-        return "Текущий блок питания слабый для этой видеокарты";
-
-    return null;
+  return null;
 }
+
 
 /* ===============================
    РЕНДЕР КАРТОЧЕК

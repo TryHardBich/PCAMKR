@@ -24,48 +24,43 @@ function showCompatibilityError(text) {
     compatModal.style.display = "flex";
 }
 
-/* Проверка совместимости */
 function checkCompatibility(categoryKey, item, selectedParts) {
-    const cpu = selectedParts.cpu;
-    const mb = selectedParts.motherboard;
-    const ram = selectedParts.ram;
-    const gpu = selectedParts.gpu;
-    const psu = selectedParts.psu;
-    const cooler = selectedParts.cooler;
-    const pcCase = selectedParts.case;
+  const cpu = selectedParts.cpu;
+  const mb = selectedParts.motherboard;
+  const ram = selectedParts.ram;
+  const gpu = selectedParts.gpu;
+  const psu = selectedParts.psu;
+  const cooler = selectedParts.cooler;
+  const pcCase = selectedParts.case;
 
-    if (categoryKey === "motherboard" && cpu && item.socket !== cpu.socket)
-        return "Сокет материнской платы не подходит к процессору";
+  // сокеты и память — без изменений
+  if (categoryKey === "motherboard" && cpu && item.socket && cpu.socket && item.socket !== cpu.socket)
+    return "Сокет материнской платы не подходит к процессору";
+  if (categoryKey === "cpu" && mb && item.socket && mb.socket && item.socket !== mb.socket)
+    return "Сокет процессора не подходит к материнской плате";
+  if (categoryKey === "ram" && mb && item.type && mb.memory_type && item.type !== mb.memory_type)
+    return "Тип оперативной памяти не подходит к материнской плате";
 
-    if (categoryKey === "cpu" && mb && item.socket !== mb.socket)
-        return "Сокет процессора не подходит к материнской плате";
+  // Нормализуем мощности и TDP
+  const itemPower = Number(item.power || item.watt || item.max_power || 0);
+  const gpuTdp = Number(gpu ? (gpu.tdp || gpu.recommended_psu || gpu.recommended_power || 0) : 0);
+  const psuPower = Number(psu ? (psu.power || psu.watt || psu.max_power || 0) : 0);
 
-    if (categoryKey === "ram" && mb && item.type !== mb.memory_type)
-        return "Тип оперативной памяти не подходит к материнской плате";
+  // PSU выбранный vs GPU
+  if (categoryKey === "psu" && gpu) {
+    if (itemPower > 0 && gpuTdp > 0 && itemPower < gpuTdp)
+      return "Мощности блока питания недостаточно для видеокарты";
+  }
 
-    if (categoryKey === "motherboard" && ram && ram.type !== item.memory_type)
-        return "Материнская плата не поддерживает выбранную память";
+  // GPU выбранный vs PSU
+  if (categoryKey === "gpu" && psu) {
+    if (psuPower > 0 && Number(item.tdp || item.recommended_psu || item.recommended_power || 0) > psuPower)
+      return "Текущий блок питания слабый для этой видеокарты";
+  }
 
-    if (categoryKey === "gpu" && pcCase && item.length > pcCase.gpu_max_length)
-        return "Видеокарта слишком длинная для корпуса";
-
-    if (categoryKey === "case" && gpu && gpu.length > item.gpu_max_length)
-        return "Корпус слишком маленький для видеокарты";
-
-    if (categoryKey === "cooler" && pcCase && item.height > pcCase.cooler_max_height)
-        return "Кулер слишком высокий для корпуса";
-
-    if (categoryKey === "case" && cooler && cooler.height > item.cooler_max_height)
-        return "Корпус слишком низкий для кулера";
-
-    if (categoryKey === "psu" && gpu && item.power < gpu.recommended_psu)
-        return "Мощности блока питания недостаточно для видеокарты";
-
-    if (categoryKey === "gpu" && psu && psu.power < item.recommended_psu)
-        return "Текущий блок питания слабый для этой видеокарты";
-
-    return null;
+  return null;
 }
+
 
 /* Загрузка выбранных компонентов */
 function loadSelectedParts() {

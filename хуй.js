@@ -20,8 +20,8 @@ export const keywordsMap = {
   "сертифицирован в стандарте": "certification",
   "отсоединяющиеся кабели": "modular",
   "объем одного модуля": "capacity",
-  "скорость": "speed",
+  скорость: "speed",
   "объем накопителя": "capacity",
-  "интерфейс": "interface",
+  интерфейс: "interface",
   
 };
