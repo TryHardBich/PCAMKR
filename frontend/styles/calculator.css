@@ -17,9 +17,19 @@ body {
 }
 
 .back-btn {
+  top: 15px;
+  left: 15px;
+  z-index: 9999;
+  padding: 5px 14px;
   color: var(--white);
   text-decoration: none;
-  font-size: 18px;
+  border: none;
+  transition: 0.2s;
+  display: inline-block;
+}
+
+.back-btn:hover {
+  transform: translateY(-2px);
 }
 
 .title {
