@@ -347,7 +347,7 @@ input[type=number] {
 }
 
 .page-layout.loaded .filters-right {
-  transition-delay: 0.6s;
+  transition-delay: 0.2s;
 }
 
 /* адаптив */
