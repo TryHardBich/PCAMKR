@@ -11,7 +11,7 @@ const CATEGORY_NAMES = {
     case: "Корпус"
 };
 
-/* Модалка совместимости */
+// модалка совместимости
 const compatModal = document.getElementById("compatModal");
 const compatModalText = document.getElementById("compatModalText");
 const compatModalClose = document.getElementById("compatModalClose");
@@ -62,7 +62,7 @@ function checkCompatibility(categoryKey, item, selectedParts) {
 }
 
 
-/* Загрузка выбранных компонентов */
+// загрузка выбранных компонентов
 function loadSelectedParts() {
     const parts = {};
     Object.keys(CATEGORY_NAMES).forEach(key => {
@@ -72,18 +72,18 @@ function loadSelectedParts() {
     return parts;
 }
 
-/* Удаление компонента */
+// удаление компонента
 function deletePart(key) {
     localStorage.removeItem("selected_" + key);
     renderBuilder();
 }
 
-/* Изменение компонента*/
+// изменение компонента
 function editPart(key) {
     window.location.href = `list.html?category=${key}&return=builder`;
 }
 
-/* Рендер строки */ 
+// рендер строки
 function renderBuilder() {
     const partsList = document.getElementById("partsList");
     const summaryTable = document.getElementById("summaryTable");
@@ -95,7 +95,7 @@ function renderBuilder() {
     const selectedParts = loadSelectedParts();
     let total = 0;
 
-    /* Левая панель */
+    // левая панель
     Object.keys(CATEGORY_NAMES).forEach(key => {
         const item = selectedParts[key];
         const row = document.createElement("tr");
@@ -116,7 +116,7 @@ function renderBuilder() {
 
     totalPriceEl.textContent = total + " ₽";
 
-    /* Правая таблица*/
+    // правая таблица
     Object.keys(CATEGORY_NAMES).forEach(key => {
         const item = selectedParts[key];
         const row = document.createElement("tr");

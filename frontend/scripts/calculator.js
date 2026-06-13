@@ -1,11 +1,6 @@
-// ===============================
-// API
-// ===============================
 const API = "http://localhost:3001/api";
 
-// ===============================
-// ЗАГРУЗКА ДАННЫХ ИЗ БД
-// ===============================
+// загрузка из бд
 async function loadOptions(endpoint, selectId) {
   try {
     const res = await fetch(`${API}/${endpoint}`);
@@ -23,9 +18,7 @@ async function loadOptions(endpoint, selectId) {
   }
 }
 
-// ===============================
-// АВТО-ОБНОВЛЕНИЕ
-// ===============================
+// автоапдейт
 function autoUpdate() {
   calculatePSU();
 }
@@ -33,9 +26,7 @@ window.addEventListener("DOMContentLoaded", () => {
   document.querySelector(".page-layout").classList.add("loaded");
 });
 
-// ===============================
-// РАСЧЁТ МОЩНОСТИ
-// ===============================
+// рассчет мощности
 function calculatePSU() {
   const cpu = Number(document.getElementById("cpuSelect").value) || 0;
   const gpu = Number(document.getElementById("gpuSelect").value) || 0;
@@ -65,20 +56,15 @@ function calculatePSU() {
   // Точный расчёт + запас 25%
   const withHeadroom = Math.round(sum * 1.25);
 
-  // БЕЗ округления до 50
   showResult(`${withHeadroom} Вт`);
 }
 
-// ===============================
-// ВЫВОД РЕЗУЛЬТАТА
-// ===============================
+// вывод
 function showResult(text) {
   document.getElementById("resultValue").textContent = text;
 }
 
-// ===============================
-// ОЧИСТКА
-// ===============================
+// удалить
 function clearAll() {
   document.querySelectorAll("select").forEach(s => s.value = "");
   document.querySelectorAll("input").forEach(i => i.value = "");
@@ -87,17 +73,12 @@ function clearAll() {
   showResult("Вы ничего не выбрали");
 }
 
-// ===============================
-// АККОРДЕОН
-// ===============================
+// аккордеон
 function toggleFilter(headerEl) {
   const group = headerEl.parentElement;
   group.classList.toggle("open");
 }
-
-// ===============================
-// ИНИЦИАЛИЗАЦИЯ
-// ===============================
+// инициализация
 document.addEventListener("DOMContentLoaded", async () => {
   await loadOptions("cpus", "cpuSelect");
   await loadOptions("gpus", "gpuSelect");
@@ -111,7 +92,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("clearBtn").addEventListener("click", clearAll);
 });
 
- // Запрет уйти в отрицательные значения
+ // запрет уйти в отрицательные значения
 document.querySelectorAll("input[type=number]").forEach(inp => {
   inp.addEventListener("input", () => {
     if (inp.value < 0) inp.value = 0;

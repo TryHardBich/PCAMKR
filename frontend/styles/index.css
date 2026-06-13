@@ -59,7 +59,6 @@ html, body {
   max-width: 600px;
 }
 
-/* Стили для кнопок-ссылок */
 .hero-buttons {
   display: flex;
   gap: 15px;

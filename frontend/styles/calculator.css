@@ -17,6 +17,7 @@ body {
 }
 
 .back-btn {
+  position: fixed;
   top: 15px;
   left: 15px;
   z-index: 9999;
@@ -25,7 +26,6 @@ body {
   text-decoration: none;
   border: none;
   transition: 0.2s;
-  display: inline-block;
 }
 
 .back-btn:hover {
@@ -38,9 +38,7 @@ body {
   font-size: 32px;
 }
 
-/* ============================
-   ГЛАВНАЯ СЕТКА
-   ============================ */
+/* главная сетка */
 
 .page-layout {
   display: grid;
@@ -51,9 +49,7 @@ body {
   margin-top: 30px;
 }
 
-/* ============================
-   ЛЕВАЯ И ПРАВАЯ ПАНЕЛИ
-   ============================ */
+/* левая и правая панель */
 
 .filters-left,
 .filters-right {
@@ -65,9 +61,7 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.575);
 }
 
-/* ============================
-   АККОРДЕОН
-   ============================ */
+/* аккордеон */
 
 .filter-group {
   border: 1px solid rgba(255,255,255,0.15);
@@ -130,9 +124,7 @@ body {
   font-size: 14px;
 }
 
-/* ============================
-   СКРОЛЛ
-   ============================ */
+/* скролл */
 
 .scrollable {
   max-height: 180px;
@@ -149,9 +141,7 @@ body {
   border-radius: 4px;
 }
 
-/* ============================
-   КНОПКИ
-   ============================ */
+/* кнопки */
 .filter-btn {
   width: 100%;
   padding: 10px;
@@ -176,17 +166,15 @@ body {
 }
 
 #clearBtn {
-  flex: 0 0 auto;   /* перестаёт растягиваться */
-  width: 60%;     /* теперь ширина работает */
+  flex: 0 0 auto;
+  width: 60%;
   padding: 8px 12px;
   font-size: 14px;
   border: 1px solid var(--darkred);
   background: #ff000013;
 }
 
-/* ============================
-   ЦЕНТРАЛЬНЫЙ БЛОК
-   ============================ */
+/* центральный блок */
 
 .result-panel {
   display: flex;
@@ -236,9 +224,7 @@ body {
   color: #ccc;
 }
 
-/* ============================
-   SELECT — ТЁМНЫЙ
-   ============================ */
+/* селект темный */
 
 select {
   background: rgba(0, 0, 0, 0.35);
@@ -265,9 +251,7 @@ select option:checked {
   color: white;
 }
 
-/* ============================
-   NUMBER — БЕЗ СТРЕЛОК
-   ============================ */
+/* без стрелок */
 
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
@@ -279,9 +263,7 @@ input[type=number] {
   -moz-appearance: textfield;
 }
 
-/* ============================
-   КРАСНЫЕ ЧЕКБОКСЫ
-   ============================ */
+/* красные чекбоксы */
 
 .extra-list label {
   display: flex;
@@ -368,9 +350,7 @@ input[type=number] {
   transition-delay: 0.6s;
 }
 
-/* ============================
-   АДАПТИВ
-   ============================ */
+/* адаптив */
 
 @media (max-width: 1100px) {
   .page-layout {
