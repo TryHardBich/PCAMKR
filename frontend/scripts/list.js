@@ -258,7 +258,7 @@ function renderItems(items) {
 
         if (reason) {
             div.classList.add("incompatible");
-            div.setAttribute("data-reason", "❌ " + reason);
+            div.setAttribute("data-reason", "" + reason);
         } else if (Object.keys(selectedParts).length > 0) {
             div.classList.add("compatible");
         }

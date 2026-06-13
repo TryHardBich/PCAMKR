@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Калькулятор мощности БП</title>
+  <link rel="stylesheet" href="styles/calculator.css">
+</head>
+
+<body>
+
+<a href="index.html" class="back-btn">← Назад</a>
+
+<h1 class="title">Калькулятор мощности блока питания</h1>
+
+<div class="page-layout">
+
+  <!-- ЛЕВАЯ КОЛОНКА -->
+  <aside class="filters-left">
+
+    <!-- CPU -->
+    <div class="filter-group">
+      <div class="filter-header" onclick="toggleFilter(this)">
+        <span>Процессор</span><span class="arrow">▼</span>
+      </div>
+      <div class="filter-body">
+        <label>Выберите процессор:</label>
+        <select id="cpuSelect"></select>
+      </div>
+    </div>
+
+    <!-- GPU -->
+    <div class="filter-group">
+      <div class="filter-header" onclick="toggleFilter(this)">
+        <span>Видеокарта</span><span class="arrow">▼</span>
+      </div>
+      <div class="filter-body">
+        <label>Выберите видеокарту:</label>
+        <select id="gpuSelect"></select>
+      </div>
+    </div>
+
+    <!-- RAM -->
+    <div class="filter-group">
+      <div class="filter-header" onclick="toggleFilter(this)">
+        <span>Оперативная память</span><span class="arrow">▼</span>
+      </div>
+      <div class="filter-body">
+        <label>Количество модулей ОЗУ:</label>
+        <input type="number" id="ramModules" placeholder="Например: 2">
+      </div>
+    </div>
+
+    <!-- Motherboard -->
+    <div class="filter-group">
+      <div class="filter-header" onclick="toggleFilter(this)">
+        <span>Материнская плата</span><span class="arrow">▼</span>
+      </div>
+      <div class="filter-body">
+        <label>Выберите материнскую плату:</label>
+        <select id="motherboardSelect"></select>
+      </div>
+    </div>
+
+  </aside>
+
+  <!-- ЦЕНТРАЛЬНЫЙ БЛОК -->
+  <section class="result-panel">
+
+    <div id="result" class="result">
+      <h2>Рекомендуемая мощность блока питания:</h2>
+      <p id="resultValue">Вы ничего не выбрали</p>
+      <p class="hint">Учтён запас ~25% для пиковых нагрузок.</p>
+    </div>
+
+    <div class="center-buttons">
+      <button id="clearBtn" class="filter-btn secondary">Очистить всё</button>
+    </div>
+
+  </section>
+
+  <!-- ПРАВАЯ КОЛОНКА -->
+  <aside class="filters-right">
+
+    <!-- Drives -->
+    <div class="filter-group">
+      <div class="filter-header" onclick="toggleFilter(this)">
+        <span>Накопители</span><span class="arrow">▼</span>
+      </div>
+      <div class="filter-body">
+        <label>Количество SSD / HDD:</label>
+        <input type="number" id="drives" placeholder="0">
+      </div>
+    </div>
+
+    <!-- Fans -->
+    <div class="filter-group">
+      <div class="filter-header" onclick="toggleFilter(this)">
+        <span>Вентиляторы</span><span class="arrow">▼</span>
+      </div>
+      <div class="filter-body">
+        <label>Количество вентиляторов:</label>
+        <select id="fans">
+          <option value="">Выберите количество</option>
+          <option value="1">1 вентилятор</option>
+          <option value="2">2 вентилятора</option>
+          <option value="3">3 вентилятора</option>
+          <option value="4">4 вентилятора</option>
+          <option value="5">5 вентиляторов</option>
+          <option value="6">6 вентиляторов</option>
+          <option value="7">7 вентиляторов</option>
+          <option value="8">8 вентиляторов</option>
+          <option value="9">9 вентиляторов</option>
+          <option value="10">10 вентиляторов</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Extras -->
+    <div class="filter-group">
+      <div class="filter-header" onclick="toggleFilter(this)">
+        <span>Дополнительные параметры</span><span class="arrow">▼</span>
+      </div>
+
+      <div class="filter-body extra-list scrollable">
+
+        <label><input type="checkbox" class="extra-part" data-watt="20"> СЖО (1 контур)</label>
+        <label><input type="checkbox" class="extra-part" data-watt="35"> СЖО (2 контура)</label>
+
+        <label><input type="checkbox" class="extra-part" data-watt="15"> RGB подсветка</label>
+        <label><input type="checkbox" class="extra-part" data-watt="10"> Fan‑hub</label>
+
+        <label><input type="checkbox" class="extra-part" data-watt="10"> PCI‑E Wi‑Fi карта</label>
+        <label><input type="checkbox" class="extra-part" data-watt="12"> PCI‑E звуковая карта</label>
+        <label><input type="checkbox" class="extra-part" data-watt="15"> PCI‑E карта захвата</label>
+        <label><input type="checkbox" class="extra-part" data-watt="18"> PCI‑E RAID контроллер</label>
+
+        <label><input type="checkbox" class="extra-part" data-watt="25"> Внешний SSD / HDD</label>
+        <label><input type="checkbox" class="extra-part" data-watt="8"> USB‑микрофон</label>
+        <label><input type="checkbox" class="extra-part" data-watt="6"> USB‑веб‑камера</label>
+
+        <label><input type="checkbox" class="extra-part" data-watt="30"> VR‑шлем</label>
+
+        <label><input type="checkbox" class="extra-part" data-watt="20"> NVMe Gen4</label>
+        <label><input type="checkbox" class="extra-part" data-watt="25"> NVMe Gen5</label>
+
+        <label><input type="checkbox" class="extra-part" data-watt="10"> HDD 7200rpm</label>
+        <label><input type="checkbox" class="extra-part" data-watt="7"> HDD 5400rpm</label>
+
+      </div>
+    </div>
+
+  </aside>
+
+</div>
+
+<script src="scripts/calculator.js"></script>
+
+</body>
+</html>

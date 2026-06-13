@@ -1,0 +1,382 @@
+@import url("root.css");
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: linear-gradient(-45deg, rgb(160, 5, 5), var(--black) 45%, var(--white) 150%);
+  background-attachment: fixed;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  color: var(--white);
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+}
+
+.back-btn {
+  color: var(--white);
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.title {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 32px;
+}
+
+/* ============================
+   ГЛАВНАЯ СЕТКА
+   ============================ */
+
+.page-layout {
+  display: grid;
+  grid-template-columns: 340px minmax(500px, 900px) 340px;
+  justify-content: center;
+  gap: 55px;
+  align-items: flex-start;
+  margin-top: 30px;
+}
+
+/* ============================
+   ЛЕВАЯ И ПРАВАЯ ПАНЕЛИ
+   ============================ */
+
+.filters-left,
+.filters-right {
+  width: 340px;
+  flex-shrink: 0;
+  background: rgba(0,0,0,0.45);
+  border-radius: 10px;
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.575);
+}
+
+/* ============================
+   АККОРДЕОН
+   ============================ */
+
+.filter-group {
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  background: rgba(255,255,255,0.05);
+}
+
+.filter-header {
+  padding: 10px 12px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+  color: white;
+  user-select: none;
+  transition: 0.2s;
+}
+
+.filter-header:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+.arrow {
+  transition: transform 0.25s;
+}
+
+.filter-group.open .arrow {
+  transform: rotate(180deg);
+}
+
+.filter-body {
+  max-height: 0;
+  overflow: hidden;
+  padding: 0 12px;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+}
+
+.filter-group:not(.open) .filter-body {
+  max-height: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.filter-group.open .filter-body {
+  max-height: 260px;
+  padding: 10px 12px 12px;
+}
+
+.filter-body input,
+.filter-body select {
+  width: 100%;
+  padding: 7px 8px;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+  background: rgba(255,255,255,0.12);
+  color: white;
+  font-size: 14px;
+}
+
+/* ============================
+   СКРОЛЛ
+   ============================ */
+
+.scrollable {
+  max-height: 180px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.scrollable::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.25);
+  border-radius: 4px;
+}
+
+/* ============================
+   КНОПКИ
+   ============================ */
+.filter-btn {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.filter-btn.secondary {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.25);
+  color: white;
+}
+
+.filter-btn.secondary:hover {
+  background: rgba(255,255,255,0.18);
+}
+.center-buttons {
+  justify-content: center; /* центрируем содержимое */
+}
+
+#clearBtn {
+  flex: 0 0 auto;   /* перестаёт растягиваться */
+  width: 60%;     /* теперь ширина работает */
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid var(--darkred);
+  background: #ff000013;
+}
+
+/* ============================
+   ЦЕНТРАЛЬНЫЙ БЛОК
+   ============================ */
+
+.result-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background: rgba(0,0,0,0.45);
+  border-radius: 10px;
+  padding: 18px 20px;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.result {
+  width: 90%;
+  min-height: 350px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.18);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.center-buttons {
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+  gap: 10px;
+}
+
+.center-buttons button {
+  flex: 1;
+}
+
+#resultValue {
+  font-size: 28px;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.hint {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #ccc;
+}
+
+/* ============================
+   SELECT — ТЁМНЫЙ
+   ============================ */
+
+select {
+  background: rgba(0, 0, 0, 0.35);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.25);
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+select option {
+  background: #262626;
+  color: white;
+}
+
+select option:hover {
+  background: rgb(180, 0, 0);
+  color: white;
+}
+
+select option:checked {
+  background: rgb(120, 0, 0);
+  color: white;
+}
+
+/* ============================
+   NUMBER — БЕЗ СТРЕЛОК
+   ============================ */
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* ============================
+   КРАСНЫЕ ЧЕКБОКСЫ
+   ============================ */
+
+.extra-list label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0;
+  cursor: pointer;
+  user-select: none;
+}
+
+.extra-list input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgb(255, 40, 40);
+  border-radius: 4px;
+  background: rgba(0,0,0,0.4);
+  cursor: pointer;
+  position: relative;
+  transition: 0.15s;
+}
+
+.extra-list input[type="checkbox"]:hover {
+  border-color: rgb(255, 80, 80);
+}
+
+.extra-list input[type="checkbox"]:checked {
+  background: rgb(255, 40, 40);
+  border-color: rgb(255, 40, 40);
+}
+
+.extra-list input[type="checkbox"]:checked::after {
+  content: "✔";
+  position: absolute;
+  top: -3px;
+  left: 2px;
+  font-size: 16px;
+  color: white;
+}
+.filters-left {
+  transform: translateX(-120%);
+  opacity: 0;
+}
+
+.filters-right {
+  transform: translateX(120%);
+  opacity: 0;
+}
+
+.result-panel {
+  transform: translateY(-80px);
+  opacity: 0;
+  border-color: white;
+}
+.filters-left,
+.filters-right,
+.result-panel {
+  transition: transform 1.5s ease, opacity 1.5s ease;
+}
+.page-layout.loaded .filters-left {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.page-layout.loaded .filters-right {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.page-layout.loaded .result-panel {
+  transform: translateY(0);
+  opacity: 1;
+}
+.page-layout.loaded .filters-left {
+  transition-delay: 0.2s;
+}
+
+.page-layout.loaded .result-panel {
+  transition-delay: 0.4s;
+}
+
+.page-layout.loaded .filters-right {
+  transition-delay: 0.6s;
+}
+
+/* ============================
+   АДАПТИВ
+   ============================ */
+
+@media (max-width: 1100px) {
+  .page-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .filters-left,
+  .filters-right {
+    width: 100%;
+  }
+
+  .result {
+    width: 100%;
+  }
+
+  .center-buttons {
+    width: 100%;
+  }
+}

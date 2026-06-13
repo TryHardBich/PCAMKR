@@ -23,7 +23,6 @@ const PLACEHOLDERS = {
     storage: "images/placeholders/storage.svg"
 };
 
-// Названия характеристик
 const FIELD_NAMES = {
     brand: "Бренд",
     cores: "Ядер",
@@ -58,7 +57,6 @@ async function loadItem() {
     document.getElementById("price").textContent = item.price + " ₽";
     document.getElementById("productImage").src = item.image || PLACEHOLDERS[category];
 
-    // Характеристики
     const specsBox = document.getElementById("specs");
     specsBox.innerHTML = "";
 
@@ -79,16 +77,22 @@ async function loadItem() {
         specsBox.appendChild(row);
     });
 
-    // Описание
     document.getElementById("description").textContent =
         item.description || "Описание отсутствует";
+}
+
+function showAddedModal() {
+    const modal = document.getElementById("addedModal");
+    if (modal) {
+        modal.classList.add("show");
+    }
 }
 
 document.getElementById("addToBuild").onclick = () => {
     const build = JSON.parse(localStorage.getItem("build")) || {};
     build[category] = id;
     localStorage.setItem("build", JSON.stringify(build));
-    alert("Добавлено в сборку!");
+    showAddedModal();
 };
 
 loadItem();

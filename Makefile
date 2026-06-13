@@ -6,4 +6,4 @@ lint:
 lint-fix:
 	npm run lint:fix
 database:
-	sudo -u postgres psql
+	sudo -u postgres psql -d pcamkr_db

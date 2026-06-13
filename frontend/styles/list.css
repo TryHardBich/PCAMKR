@@ -351,7 +351,7 @@ h1 {
 }
 
 #compatForceAdd {
-    background: rgba(202, 15, 15, 0.404);
+    background: #262626;
     border: 1px solid red;
     padding: 8px 16px;
     border-radius: 6px;
@@ -362,7 +362,7 @@ h1 {
 }
 
 #compatForceAdd:hover {
-    background: rgb(170, 13, 13);
+    background: rgba(255, 0, 0, 0.37);
     transform: translateY(-2px);
 }
 /* поиск */

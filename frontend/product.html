@@ -29,6 +29,23 @@
   </div>
 </div>
 
+<!-- МОДАЛКА "ДОБАВЛЕНО В СБОРКУ" -->
+<div id="addedModal" class="added-modal">
+  <div class="added-modal-content">
+    <h2>Добавлено в сборку</h2>
+
+    <div class="added-buttons">
+      <a href="builder.html" class="go-builder">Перейти к сборщику</a>
+      <button class="stay-here" onclick="closeAddedModal()">Остаться на странице</button>
+    </div>
+  </div>
+</div>
+
 <script src="scripts/product.js"></script>
+<script>
+  function closeAddedModal() {
+    document.getElementById('addedModal').classList.remove('show');
+  }
+</script>
 </body>
 </html>

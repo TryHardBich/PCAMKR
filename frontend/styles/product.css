@@ -66,16 +66,86 @@
   display: inline-block;
   margin-top: 20px;
   padding: 14px 24px;
-  background: var(--darkred);
+  background: #262626;
   color: white;
   border-radius: 10px;
   text-decoration: none;
   font-size: 20px;
   transition: 0.2s;
+  border: 1px solid red;
 }
 
 .add-btn:hover {
-  background: red;
+  background: rgba(255, 0, 0, 0.205);
   cursor: pointer;
 }
 
+.added-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(4px);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.added-modal.show {
+  display: flex;
+  animation: fadeIn 0.25s ease forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.96); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.added-modal-content {
+  background: #181818;
+  border-radius: 12px;
+  padding: 22px 26px;
+  border: 1px solid rgba(255,255,255,0.18);
+  color: #fff;
+  text-align: center;
+  width: 320px;
+}
+
+.added-buttons {
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.go-builder {
+  padding: 10px;
+  background: #262626;
+  border: 1px solid rgb(255, 0, 0);
+  border-radius: 8px;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.go-builder:hover {
+  background: rgba(255,0,0,0.55);
+  transform: translateY(-2px);
+}
+
+.stay-here {
+  padding: 10px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.2s;
+}
+
+.stay-here:hover {
+  background: rgba(255,255,255,0.14);
+  transform: translateY(-2px);
+}
