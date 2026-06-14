@@ -495,3 +495,155 @@ input[type=number]::-webkit-outer-spin-button {
     background: #e60000;
     border-color: #e60000;
 }
+
+/* Стилизация выпадающих списков (select) */
+.filter-block select {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    color: #fff;
+    padding: 10px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 14px;
+}
+
+.filter-block select:hover {
+    border-color: #555;
+    background-color: #222;
+}
+
+.filter-block select:focus {
+    outline: none;
+    border-color: #e60000;
+    box-shadow: 0 0 0 2px rgba(230, 0, 0, 0.2);
+}
+
+/* Стили для option внутри select */
+.filter-block select option {
+    background-color: #1a1a1a;
+    color: #fff;
+    padding: 10px;
+}
+
+.filter-block select option:hover,
+.filter-block select option:checked {
+    background-color: #e60000;
+    color: white;
+}
+
+/* Для браузеров на WebKit (Chrome, Edge, Safari) - стилизация выпадающего списка */
+.filter-block select::-webkit-scrollbar {
+    width: 8px;
+}
+
+.filter-block select::-webkit-scrollbar-track {
+    background: #1a1a1a;
+    border-radius: 4px;
+}
+
+.filter-block select::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 4px;
+}
+
+.filter-block select::-webkit-scrollbar-thumb:hover {
+    background: #e60000;
+}
+
+/* Стилизация input полей */
+.filter-block input {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    color: #fff;
+    padding: 10px 12px;
+    font-size: 14px;
+}
+
+.filter-block input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(230, 0, 0, 0.2);
+}
+
+.filter-block input::placeholder {
+    color: #666;
+}
+
+/* Стилизация поля поиска */
+.search-box input {
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    color: #fff;
+    padding: 10px 12px;
+    font-size: 14px;
+}
+
+.search-box input:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(230, 0, 0, 0.2);
+}
+
+.search-box input::placeholder {
+    color: #666;
+}
+
+/* Стили кнопок фильтров */
+.filter-btn {
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.filter-btn.secondary {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    color: #fff;
+}
+
+.filter-btn.secondary:hover {
+    background: #2a2a2a;
+    border-color: #555;
+    transform: translateY(-1px);
+}
+
+.filter-btn.secondary:active {
+    transform: translateY(0);
+}
+
+/* Заголовок фильтров */
+.filters-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #333;
+    color: #fff;
+}
+
+/* Отступы между блоками фильтров */
+.filter-block {
+    margin-bottom: 14px;
+}
+
+.filter-block label {
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 6px;
+    color: #aaa;
+    letter-spacing: 0.3px;
+}
+
+/* Группа кнопок внизу фильтров */
+.filters-buttons {
+    margin-top: 8px;
+    gap: 10px;
+}

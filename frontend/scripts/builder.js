@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 /* eslint-disable no-undef */
 
 const CATEGORY_NAMES = {
@@ -18,6 +19,20 @@ const compatModalClose = document.getElementById("compatModalClose");
 
 compatModalClose.onclick = () => compatModal.style.display = "none";
 window.onclick = e => { if (e.target === compatModal) compatModal.style.display = "none"; };
+
+// функция очистки всех компонентов
+function clearAllComponents() {
+    Object.keys(CATEGORY_NAMES).forEach(key => {
+        localStorage.removeItem("selected_" + key);
+    });
+    renderBuilder();
+}
+
+// Кнопка очистки
+const clearAllBtn = document.getElementById("clearAllBtn");
+if (clearAllBtn) {
+    clearAllBtn.onclick = clearAllComponents;
+}
 
 function showCompatibilityError(text) {
     compatModalText.textContent = text;
@@ -83,6 +98,15 @@ function editPart(key) {
     window.location.href = `list.html?category=${key}&return=builder`;
 }
 
+// форматирование цены
+function formatPrice(price) {
+    if (!price && price !== 0) return "—";
+    // Очищаем от нецифровых символов и форматируем
+    const cleanPrice = String(price).replace(/\D/g, "");
+    if (!cleanPrice || cleanPrice === "0") return "—";
+    return new Intl.NumberFormat('ru-RU').format(Number(cleanPrice)) + " ₽";
+}
+
 // рендер строки
 function renderBuilder() {
     const partsList = document.getElementById("partsList");
@@ -95,7 +119,7 @@ function renderBuilder() {
     const selectedParts = loadSelectedParts();
     let total = 0;
 
-    // левая панель
+    // левая панель (сводка)
     Object.keys(CATEGORY_NAMES).forEach(key => {
         const item = selectedParts[key];
         const row = document.createElement("tr");
@@ -103,18 +127,18 @@ function renderBuilder() {
         row.innerHTML = `
             <td>${CATEGORY_NAMES[key]}</td>
             <td>${item ? item.name : "—"}</td>
-            <td>${item && item.price ? item.price + " ₽" : "—"}</td>
+            <td class="price-cell">${item && item.price ? formatPrice(item.price) : "—"}</td>
         `;
 
         summaryTable.appendChild(row);
 
         if (item && item.price) {
-            total += Number(item.price.toString().replace(/\D/g, "")); // тут короче ниче не работало, пришлось букавы туда сюда делать
-}
-
+            const cleanPrice = String(item.price).replace(/\D/g, "");
+            if (cleanPrice) total += Number(cleanPrice);
+        }
     });
 
-    totalPriceEl.textContent = total + " ₽";
+    totalPriceEl.textContent = formatPrice(total);
 
     // правая таблица
     Object.keys(CATEGORY_NAMES).forEach(key => {
@@ -127,7 +151,7 @@ function renderBuilder() {
                 <td>${CATEGORY_NAMES[key]}</td>
                 <td><button onclick="editPart('${key}')">Выбрать</button></td>
                 <td>—</td>
-                <td>—</td>
+                <td class="price-cell">—</td>
             `;
         } else {
             const reason = checkCompatibility(key, item, selectedParts);
@@ -136,15 +160,12 @@ function renderBuilder() {
 
             row.innerHTML = `
                 <td>${CATEGORY_NAMES[key]}</td>
-
                 <td>
                     <button onclick="editPart('${key}')">Изменить</button>
                     <button onclick="deletePart('${key}')">Удалить</button>
                 </td>
-
                 <td class="${compatClass}">${compatText}</td>
-
-                <td>${item.price ? item.price + " ₽" : "—"}</td>
+                <td class="price-cell">${item.price ? formatPrice(item.price) : "—"}</td>
             `;
         }
 

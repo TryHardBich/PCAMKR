@@ -31,7 +31,7 @@ const PLACEHOLDERS = {
 const FILTER_SETS = {
     cpu: ["brand", "socket", "generation", "price"],
     motherboard: ["brand", "socket", "chipset", "price"],
-    gpu: ["brand", "series", "vram", "price"],
+    gpu: ["brand", "model", "price"],
     ram: ["brand", "type", "frequency", "capacity", "price"],
     storage: ["brand", "type", "capacity", "interface", "price"],
     psu: ["brand", "power", "certificate", "modular", "price"],
@@ -109,8 +109,105 @@ modalForce.onclick = () => {
 };
 
 // ===============================
-// Хелперы
+// Функция извлечения модели видеокарты
 // ===============================
+function extractGpuModel(name) {
+    if (!name) return "Другое";
+    
+    const upperName = name.toUpperCase();
+    
+    // RTX серия
+    if (upperName.includes("RTX 5090")) return "RTX 5090";
+    if (upperName.includes("RTX 5080")) return "RTX 5080";
+    if (upperName.includes("RTX 5070 TI")) return "RTX 5070 Ti";
+    if (upperName.includes("RTX 5070")) return "RTX 5070";
+    if (upperName.includes("RTX 5060 TI")) return "RTX 5060 Ti";
+    if (upperName.includes("RTX 5060")) return "RTX 5060";
+    if (upperName.includes("RTX 4090")) return "RTX 4090";
+    if (upperName.includes("RTX 4080")) return "RTX 4080";
+    if (upperName.includes("RTX 4070 TI")) return "RTX 4070 Ti";
+    if (upperName.includes("RTX 4070")) return "RTX 4070";
+    if (upperName.includes("RTX 4060 TI")) return "RTX 4060 Ti";
+    if (upperName.includes("RTX 4060")) return "RTX 4060";
+    if (upperName.includes("RTX 3090")) return "RTX 3090";
+    if (upperName.includes("RTX 3080")) return "RTX 3080";
+    if (upperName.includes("RTX 3070")) return "RTX 3070";
+    if (upperName.includes("RTX 3060")) return "RTX 3060";
+    if (upperName.includes("RTX 3050")) return "RTX 3050";
+    
+    // RX серия
+    if (upperName.includes("RX 7900")) return "RX 7900";
+    if (upperName.includes("RX 7800 XT")) return "RX 7800 XT";
+    if (upperName.includes("RX 7700")) return "RX 7700";
+    if (upperName.includes("RX 7600")) return "RX 7600";
+    if (upperName.includes("RX 6900")) return "RX 6900";
+    if (upperName.includes("RX 6800")) return "RX 6800";
+    if (upperName.includes("RX 6700")) return "RX 6700";
+    if (upperName.includes("RX 6600")) return "RX 6600";
+    if (upperName.includes("RX 6500")) return "RX 6500";
+    
+    // GTX серия
+    if (upperName.includes("GTX 1660")) return "GTX 1660";
+    if (upperName.includes("GTX 1650")) return "GTX 1650";
+    if (upperName.includes("GTX 1080")) return "GTX 1080";
+    if (upperName.includes("GTX 1070")) return "GTX 1070";
+    if (upperName.includes("GTX 1060")) return "GTX 1060";
+    
+    return "Другое";
+}
+
+// Функция сортировки моделей по возрастанию
+function sortModelsByNumber(models) {
+    const order = [
+        "GTX 1060", "GTX 1070", "GTX 1080",
+        "GTX 1650", "GTX 1660",
+        "RTX 3050", "RTX 3060", "RTX 3070", "RTX 3080", "RTX 3090",
+        "RTX 4060", "RTX 4060 Ti", "RTX 4070", "RTX 4070 Ti", "RTX 4080", "RTX 4090",
+        "RTX 5060", "RTX 5060 Ti", "RTX 5070", "RTX 5070 Ti", "RTX 5080", "RTX 5090",
+        "RX 6500", "RX 6600", "RX 6700", "RX 6800", "RX 6900",
+        "RX 7600", "RX 7700", "RX 7800 XT", "RX 7900",
+        "Другое"
+    ];
+    
+    return models.sort((a, b) => {
+        const indexA = order.indexOf(a);
+        const indexB = order.indexOf(b);
+        if (indexA === -1 && indexB === -1) return a.localeCompare(b);
+        if (indexA === -1) return 1;
+        if (indexB === -1) return -1;
+        return indexA - indexB;
+    });
+}
+
+// Функция заполнения фильтра моделей
+function fillModelFilter(items) {
+    const modelSelect = document.getElementById("modelFilter");
+    if (!modelSelect) {
+        console.log("modelFilter not found");
+        return;
+    }
+    
+    modelSelect.innerHTML = '<option value="">Все</option>';
+    
+    const models = new Set();
+    
+    items.forEach(item => {
+        const model = extractGpuModel(item.name);
+        models.add(model);
+    });
+    
+    const sortedModels = sortModelsByNumber([...models]);
+    
+    console.log("Found models:", sortedModels);
+    
+    sortedModels.forEach(model => {
+        const option = document.createElement("option");
+        option.value = model;
+        option.textContent = model;
+        modelSelect.appendChild(option);
+    });
+}
+
 function detectStorageType(item) {
     const name = (item.name || "").toLowerCase();
     if (name.includes("ssd") || name.includes("nvme") || name.includes("m.2") || name.includes("m2")) {
@@ -148,26 +245,19 @@ function applyFilterVisibility() {
 function fillFilterOptions(items) {
     const brandSelect = document.getElementById("brandFilter");
     const socketSelect = document.getElementById("socketFilter");
-    const seriesSelect = document.getElementById("seriesFilter");
     const generationSelect = document.getElementById("generationFilter");
 
     if (brandSelect) brandSelect.innerHTML = '<option value="">Все</option>';
     if (socketSelect) socketSelect.innerHTML = '<option value="">Все</option>';
-    if (seriesSelect) seriesSelect.innerHTML = '<option value="">Все</option>';
     if (generationSelect) generationSelect.innerHTML = '<option value="">Все</option>';
 
     const brands = new Set();
     const sockets = new Set();
-    const series = new Set();
     const generations = new Set();
 
     items.forEach(i => {
         if (i.brand) brands.add(i.brand);
         if (i.socket) sockets.add(i.socket);
-
-        const parts = (i.name || "").split(" ");
-        if (parts.length > 1) series.add(parts[0] + " " + parts[1]);
-
         if (i.generation) generations.add(i.generation);
     });
 
@@ -193,13 +283,14 @@ function fillFilterOptions(items) {
         if (socketSelect) socketSelect.innerHTML += `<option value="${s}">${s}</option>`;
     });
 
-    series.forEach(s => {
-        if (seriesSelect) seriesSelect.innerHTML += `<option value="${s}">${s}</option>`;
-    });
-
     [...generations].sort().forEach(g => {
         if (generationSelect) generationSelect.innerHTML += `<option value="${g}">${g}</option>`;
     });
+    
+    // Заполняем фильтр моделей только для видеокарт
+    if (category === "gpu") {
+        fillModelFilter(items);
+    }
 }
 
 // ===============================
@@ -233,6 +324,7 @@ async function loadItems() {
         console.error(err);
     }
 }
+
 // ===============================
 // Пагинация
 // ===============================
@@ -269,38 +361,29 @@ function renderPagination(totalItems) {
         container.appendChild(btn);
     }
 
-    // ← предыдущая страница
     addButton("←", currentPage - 1, currentPage === 1);
-
-    // 1
     addButton(1, 1, false, currentPage === 1);
 
-    // ... слева
     if (currentPage > 4) {
         addButton("...", null, true);
     }
 
-    // центральные страницы
     for (let p = currentPage - 1; p <= currentPage + 1; p++) {
         if (p > 1 && p < totalPages) {
             addButton(p, p, false, p === currentPage);
         }
     }
 
-    // ... справа
     if (currentPage < totalPages - 3) {
         addButton("...", null, true);
     }
 
-    // последняя страница
     if (totalPages > 1) {
         addButton(totalPages, totalPages, false, currentPage === totalPages);
     }
 
-    // NEXT →
     addButton("→", currentPage + 1, currentPage === totalPages);
 }
-
 
 // ===============================
 // Совместимость
@@ -348,7 +431,7 @@ function enableLiveFilters() {
         "priceMax",
         "brandFilter",
         "socketFilter",
-        "seriesFilter",
+        "modelFilter",
         "typeFilter",
         "generationFilter",
         "searchInput"
@@ -373,7 +456,7 @@ function applyFilters() {
 
     const brand = document.getElementById("brandFilter")?.value || "";
     const socket = document.getElementById("socketFilter")?.value || "";
-    const series = document.getElementById("seriesFilter")?.value || "";
+    const model = document.getElementById("modelFilter")?.value || "";
     const type = document.getElementById("typeFilter")?.value || "";
     const generation = document.getElementById("generationFilter")?.value || "";
     const q = (document.getElementById("searchInput")?.value || "").toLowerCase();
@@ -381,19 +464,17 @@ function applyFilters() {
     filteredItems = allItems.filter(i => {
         if (forcedType && i.type !== forcedType) return false;
         if (type && i.type !== type) return false;
-
         if (i.price < min || i.price > max) return false;
-
         if (brand && i.brand !== brand) return false;
-
         if (socket && i.socket !== socket) return false;
-
-        if (series && !i.name.includes(series)) return false;
-
+        
+        if (model && category === "gpu") {
+            const itemModel = extractGpuModel(i.name);
+            if (itemModel !== model) return false;
+        }
+        
         if (generation && i.generation !== generation) return false;
-
         if (q && !i.name.toLowerCase().includes(q)) return false;
-
         return true;
     });
 
@@ -402,43 +483,46 @@ function applyFilters() {
 }
 
 // Кнопка "только совместимые"
-document.getElementById("toggleCompatible").onclick = () => {
-    showOnlyCompatible = !showOnlyCompatible;
-
-    document.getElementById("toggleCompatible").textContent =
-        showOnlyCompatible ? "Показать все" : "Показать только совместимые";
-
-    currentPage = 1;
-    renderItems();
-};
+const toggleBtn = document.getElementById("toggleCompatible");
+if (toggleBtn) {
+    toggleBtn.onclick = () => {
+        showOnlyCompatible = !showOnlyCompatible;
+        toggleBtn.textContent = showOnlyCompatible ? "Показать все" : "Показать только совместимые";
+        currentPage = 1;
+        renderItems();
+    };
+}
 
 // Кнопка "сбросить фильтры"
-document.getElementById("clearFilters").onclick = () => {
-    const ids = [
-        "priceMin",
-        "priceMax",
-        "brandFilter",
-        "socketFilter",
-        "seriesFilter",
-        "typeFilter",
-        "generationFilter",
-        "searchInput"
-    ];
+const clearBtn = document.getElementById("clearFilters");
+if (clearBtn) {
+    clearBtn.onclick = () => {
+        const ids = [
+            "priceMin",
+            "priceMax",
+            "brandFilter",
+            "socketFilter",
+            "modelFilter",
+            "typeFilter",
+            "generationFilter",
+            "searchInput"
+        ];
 
-    ids.forEach(id => {
-        const el = document.getElementById(id);
-        if (!el) return;
-        if (el.tagName === "SELECT" || el.tagName === "INPUT") el.value = "";
-    });
+        ids.forEach(id => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (el.tagName === "SELECT" || el.tagName === "INPUT") el.value = "";
+        });
 
-    showOnlyCompatible = false;
-    document.getElementById("toggleCompatible").textContent =
-        "Показать только совместимые";
+        showOnlyCompatible = false;
+        const toggleBtn = document.getElementById("toggleCompatible");
+        if (toggleBtn) toggleBtn.textContent = "Показать только совместимые";
 
-    filteredItems = [...allItems];
-    currentPage = 1;
-    renderItems();
-};
+        filteredItems = [...allItems];
+        currentPage = 1;
+        renderItems();
+    };
+}
 
 // ===============================
 // Рендер списка

@@ -71,10 +71,10 @@ h1 {
     margin-bottom: 20px;
 }
 
-.save-btn {
+.clear-btn {
     width: 100%;
     padding: 12px;
-    background: var(--darkred);
+    background: #dc2626;
     border: none;
     border-radius: 8px;
     color: white;
@@ -83,8 +83,13 @@ h1 {
     transition: 0.2s;
 }
 
-.save-btn:hover {
-    background: rgb(200, 0, 0);
+.clear-btn:hover {
+    background: #b91c1c;
+    transform: scale(1.02);
+}
+
+.clear-btn:active {
+    transform: scale(0.98);
 }
 
 /* Правая таблица */
@@ -260,3 +265,36 @@ h1 {
         opacity: 1;
     }
 }
+
+/* Выравнивание цен по вертикали */
+.price-cell {
+    white-space: nowrap;
+    vertical-align: middle;
+    line-height: 1.4;
+}
+
+/* Для левой панели */
+.summary-table .price-cell {
+    text-align: right;
+    white-space: nowrap;
+}
+
+/* Для правой таблицы - выравниваем все ячейки по центру по вертикали */
+.parts-table td,
+.summary-table td {
+    vertical-align: middle;
+}
+
+/* Для общего итога */
+.total {
+    font-size: 20px;
+    margin-bottom: 20px;
+    text-align: right;
+}
+
+.total span {
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+
