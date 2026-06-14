@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 /* eslint-disable no-undef */
 
 // ===============================
@@ -250,19 +251,56 @@ function renderPagination(totalItems) {
     const totalPages = Math.ceil(totalItems / itemsPerPage);
     if (totalPages <= 1) return;
 
-    for (let i = 1; i <= totalPages; i++) {
+    function addButton(label, page, disabled = false, active = false) {
         const btn = document.createElement("button");
-        btn.textContent = i;
-        btn.className = "page-btn" + (i === currentPage ? " active" : "");
+        btn.textContent = label;
 
-        btn.onclick = () => {
-            currentPage = i;
-            renderItems();
-        };
+        btn.className = "page-btn";
+        if (active) btn.classList.add("active");
+        if (disabled) btn.disabled = true;
+
+        if (!disabled && !active) {
+            btn.onclick = () => {
+                currentPage = page;
+                renderItems();
+            };
+        }
 
         container.appendChild(btn);
     }
+
+    // ← предыдущая страница
+    addButton("←", currentPage - 1, currentPage === 1);
+
+    // 1
+    addButton(1, 1, false, currentPage === 1);
+
+    // ... слева
+    if (currentPage > 4) {
+        addButton("...", null, true);
+    }
+
+    // центральные страницы
+    for (let p = currentPage - 1; p <= currentPage + 1; p++) {
+        if (p > 1 && p < totalPages) {
+            addButton(p, p, false, p === currentPage);
+        }
+    }
+
+    // ... справа
+    if (currentPage < totalPages - 3) {
+        addButton("...", null, true);
+    }
+
+    // последняя страница
+    if (totalPages > 1) {
+        addButton(totalPages, totalPages, false, currentPage === totalPages);
+    }
+
+    // NEXT →
+    addButton("→", currentPage + 1, currentPage === totalPages);
 }
+
 
 // ===============================
 // Совместимость

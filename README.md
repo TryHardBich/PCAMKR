@@ -45,9 +45,3 @@
     ```bash
     node backend/server.js
     ```
-
-    и переходим по ссылке в браузере 
-    ```bash
-    Узнать свой ip: ip -br addr
-    http://172.29.167.229:3001/api/test
-    ```

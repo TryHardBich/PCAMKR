@@ -25,7 +25,24 @@
       </div>
       <div class="filter-body">
         <label>Выберите процессор:</label>
-        <select id="cpuSelect"></select>
+
+        <select id="cpuSelect" style="display:none;"></select>
+<!-- кастомный dropdown -->
+      <div class="cpu-select">
+        <div class="cpu-selected" id="cpuSelected">Не выбрано</div>
+          <div class="cpu-dropdown" id="cpuDropdown">
+            <input type="text" id="cpuSearch" placeholder="Поиск..." />
+
+          <div class="cpu-filters">
+            <button data-filter="AM4">AM4</button>
+            <button data-filter="AM5">AM5</button>
+            <button data-filter="LGA1700">LGA1700</button>
+          </div>
+
+        <div class="cpu-list" id="cpuList"></div>
+
+          </div>
+      </div>
       </div>
     </div>
 
@@ -36,7 +53,29 @@
       </div>
       <div class="filter-body">
         <label>Выберите видеокарту:</label>
-        <select id="gpuSelect"></select>
+
+        <select id="gpuSelect" style="display:none;"></select>
+
+        <div class="gpu-select">
+          <div class="gpu-selected" id="gpuSelected">Не выбрано</div>
+
+        <div class="gpu-dropdown" id="gpuDropdown">
+          <input type="text" id="gpuSearch" placeholder="Поиск..." />
+          <div class="gpu-filters-scroll">
+
+            <div class="gpu-filters">
+              <button data-filter="PALIT">Palit</button>
+              <button data-filter="GIGABYTE">Gigabyte</button>
+              <button data-filter="MSI">MSI</button>
+              <button data-filter="BIOSTAR">Biostar</button>
+              <button data-filter="AFOX">AFOX</button>
+            </div>
+
+          </div>
+        <div class="gpu-list" id="gpuList"></div>
+
+          </div>
+        </div>
       </div>
     </div>
 
@@ -58,9 +97,37 @@
       </div>
       <div class="filter-body">
         <label>Выберите материнскую плату:</label>
-        <select id="motherboardSelect"></select>
-      </div>
+        <!-- скрытый select, чтобы калькулятор не сломался -->
+<select id="motherboardSelect" style="display:none;"></select>
+
+<!-- кастомный dropdown -->
+<div class="mb-select">
+  <div class="mb-selected" id="mbSelected">Не выбрано</div>
+
+  <div class="mb-dropdown" id="mbDropdown">
+
+    <!-- ПОИСК -->
+    <input type="text" id="mbSearch" placeholder="Поиск..." />
+
+    <!-- ФИЛЬТРЫ -->
+    <div class="mb-filters">
+      <button data-filter="AM4">AM4</button>
+      <button data-filter="AM5">AM5</button>
+      <button data-filter="LGA1700">LGA1700</button>
     </div>
+
+    <div class="mb-filters">
+      <button data-filter="ATX">ATX</button>
+      <button data-filter="mATX">mATX</button>
+      <button data-filter="ITX">ITX</button>
+    </div>
+
+    <!-- СПИСОК МАТЕРИНОК -->
+    <div class="mb-list" id="mbList"></div>
+
+    </div>
+  </div>
+
 
   </aside>
 

@@ -82,6 +82,434 @@ body {
   transition: 0.2s;
 }
 
+/* фильтры процессоров */
+.cpu-select {
+  position: relative;
+  width: 100%;
+  z-index: 9999;
+}
+
+.cpu-selected {
+  background: #1f1f1f;
+  padding: 12px;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.cpu-dropdown {
+  top: calc(100% + 6px);
+  left: 0;
+  width: 100%;
+  background: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  border-radius: 10px;
+  padding: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.35);
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transition: max-height .25s ease, opacity .25s ease;
+  margin-top: 10px;
+}
+
+.cpu-dropdown.open {
+  max-height: 420px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#cpuSearch {
+  width: 100%;
+  padding: 8px 10px;
+  background: #1f1f1f;
+  border: 1px solid #3a3a3a;
+  border-radius: 6px;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.cpu-filters {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.cpu-filters button {
+  padding: 6px 10px;
+  background: #1f1f1f;
+  border: 1px solid #3a3a3a;
+  border-radius: 6px;
+  color: #ddd;
+  cursor: pointer;
+  font-size: 13px;
+  transition: .15s;
+}
+
+.cpu-filters button:hover {
+  background: #333;
+}
+
+.cpu-filters button.active {
+  background: #ff6600;
+  border-color: #ff6600;
+  color: #fff;
+}
+
+.cpu-list {
+  max-height: 260px;
+  overflow-y: auto;
+  margin-top: 10px;
+}
+
+/* красивый скролл */
+.cpu-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.cpu-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.cpu-list::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ff3c00, #b30000);
+  border-radius: 10px;
+  box-shadow: 0 0 6px rgba(255, 60, 0, 0.6);
+}
+
+.cpu-list::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ff5500, #cc0000);
+}
+
+.cpu-item {
+  padding: 8px;
+  background: #1f1f1f;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  transition: .15s;
+}
+
+.cpu-item:hover {
+  background: #333;
+}
+
+/* Фильтры для видюх */
+.gpu-select {
+  position: relative;
+  width: 100%;
+  z-index: 9999;
+}
+
+.gpu-selected {
+  background: #1f1f1f;
+  padding: 12px;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.gpu-dropdown {
+  top: calc(100% + 6px);
+  left: 0;
+  width: 100%;
+  background: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  border-radius: 10px;
+  padding: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.35);
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transition: max-height .25s ease, opacity .25s ease;
+}
+
+.gpu-dropdown.open {
+  max-height: 420px;
+  opacity: 1;
+  pointer-events: auto;
+  margin-top: 10px;
+}
+
+#gpuSearch {
+  width: 100%;
+  padding: 8px 10px;
+  background: #1f1f1f;
+  border: 1px solid #3a3a3a;
+  border-radius: 6px;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.gpu-filters {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.gpu-filters button {
+  padding: 6px 10px;
+  background: #1f1f1f;
+  border: 1px solid #3a3a3a;
+  border-radius: 6px;
+  color: #ddd;
+  cursor: pointer;
+  font-size: 13px;
+  transition: .15s;
+}
+
+.gpu-filters button:hover {
+  background: #333;
+}
+
+.gpu-filters button.active {
+  background: #ff6600;
+  border-color: #ff6600;
+  color: #fff;
+}
+
+.gpu-list {
+  max-height: 260px;
+  overflow-y: auto;
+  margin-top: 10px;
+}
+
+/* красивый скролл */
+.gpu-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.gpu-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.gpu-list::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ff3c00, #b30000);
+  border-radius: 10px;
+  box-shadow: 0 0 6px rgba(255, 60, 0, 0.6);
+}
+
+.gpu-list::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ff5500, #cc0000);
+}
+
+.gpu-item {
+  padding: 8px;
+  background: #1f1f1f;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  transition: .15s;
+}
+
+.gpu-item:hover {
+  background: #333;
+}
+
+/* горизонтальный скролл для фильтров видюх*/
+
+.gpu-filters-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+}
+
+/* скрываем стандартный скролл */
+.gpu-filters-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.gpu-filters-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.gpu-filters-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #ff3c00, #b30000);
+  border-radius: 10px;
+  box-shadow: 0 0 6px rgba(255, 60, 0, 0.6);
+}
+
+.gpu-filters-scroll::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(90deg, #ff5500, #cc0000);
+}
+
+.gpu-filters {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.gpu-filters button {
+  padding: 6px 12px;
+  background: #1f1f1f;
+  border: 1px solid #3a3a3a;
+  border-radius: 6px;
+  color: #ddd;
+  cursor: pointer;
+  font-size: 13px;
+  transition: .15s;
+  white-space: nowrap;
+}
+
+.gpu-filters button.active {
+  background: #ff6600;
+  border-color: #ff6600;
+  color: #fff;
+}
+
+
+/* Фильтры материнок */
+.mb-select {
+  position: relative;
+  width: 100%;
+  z-index: 9999; /* поверх всех блоков */
+}
+
+/* Кнопка */
+.mb-selected {
+  background: #1f1f1f;
+  padding: 12px;
+  border: 1px solid #3a3a3a;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #fff;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+/* Выпадающий список */
+.mb-dropdown {
+  top: calc(100% + 6px);
+  left: 0;
+  width: 100%;
+
+  background: #2a2a2a;
+  border: 1px solid #3a3a3a;
+  border-radius: 10px;
+
+  padding: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.35);
+
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+
+  transition: max-height .25s ease, opacity .25s ease;
+}
+
+/* Открытый */
+.mb-dropdown.open {
+  max-height: 620px;
+  opacity: 1;
+  pointer-events: auto;
+  margin-top: 10px;
+}
+
+/* Поиск */
+#mbSearch {
+  width: 100%;
+  padding: 8px 10px;
+  background: #1f1f1f;
+  border: 1px solid #3a3a3a;
+  border-radius: 6px;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+/* Фильтры */
+.mb-filters {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.mb-filters button {
+  padding: 6px 10px;
+  background: #1f1f1f;
+  border: 1px solid #3a3a3a;
+  border-radius: 6px;
+  color: #ddd;
+  cursor: pointer;
+  font-size: 13px;
+  transition: .15s;
+}
+
+.mb-filters button:hover {
+  background: #333;
+}
+
+.mb-filters button.active {
+  background: #ff6600; /* DNS оранжевый */
+  border-color: #ff6600;
+  color: #fff;
+}
+
+/* Список */
+.mb-list {
+  max-height: 260px;
+  overflow-y: auto;
+  margin-top: 10px;
+}
+
+.mb-item {
+  padding: 8px;
+  background: #1f1f1f;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  transition: .15s;
+}
+
+.mb-item:hover {
+  background: #333;
+}
+
+/* Стилизация скролла для фильтра материнок */
+.mb-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.mb-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+.mb-list::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #ff3c00, #b30000);
+  border-radius: 10px;
+  box-shadow: 0 0 6px rgba(255, 60, 0, 0.6);
+  transition: background 0.2s ease;
+}
+
+.mb-list::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ff5500, #cc0000);
+}
+
+
+
+
 .filter-header:hover {
   background: rgba(255,255,255,0.08);
 }
@@ -101,6 +529,10 @@ body {
   transition: max-height 0.3s ease, padding 0.3s ease;
 }
 
+.filter-body extra-list scrollable {
+  margin-top: 10px;
+}
+
 .filter-group:not(.open) .filter-body {
   max-height: 0 !important;
   padding-top: 0 !important;
@@ -108,7 +540,8 @@ body {
 }
 
 .filter-group.open .filter-body {
-  max-height: 260px;
+  max-height: max-content;
+  overflow: visible;
   padding: 10px 12px 12px;
 }
 
@@ -122,6 +555,7 @@ body {
   background: rgba(255,255,255,0.12);
   color: white;
   font-size: 14px;
+  margin-top: 4px;
 }
 
 /* скролл */
