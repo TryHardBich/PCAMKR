@@ -538,7 +538,7 @@ function renderItems() {
         const reason = checkCompatibility(category, item, selectedParts);
         if (showOnlyCompatible && reason) return;
 
-        const img = item.image || PLACEHOLDERS[category];
+        const img = item.img_url || PLACEHOLDERS[category];
 
         const div = document.createElement("div");
         div.className = "product-card";

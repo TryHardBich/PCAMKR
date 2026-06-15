@@ -15,7 +15,7 @@ export const keywordsMap = {
     column: "max_ram",
     type: "integer",
   },
-  типоразмер: "form_factor",
+  типоразмер: { column: "form_factor", type: "text" },
   "максимальная длина видеокарты": {
     column: "gpu_length_limit",
     type: "integer",
@@ -29,7 +29,7 @@ export const keywordsMap = {
   "сертифицирован в стандарте": { column: "certification", type: "text" },
   "отсоединяющиеся кабели": { column: "modular", type: "boolean" },
   "объем одного модуля": { column: "capacity", type: "integer" },
-  скорость: { column: "speed", type: "integer" },
+  "тактовая частота": { column: "speed", type: "integer" },
   "объем накопителя": { column: "capacity", type: "integer" },
   интерфейс: { column: "interface", type: "text" },
 };

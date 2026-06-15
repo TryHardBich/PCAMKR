@@ -41,7 +41,13 @@ const FIELD_NAMES = {
     size: "Размер",
     power: "Мощность",
     connector: "Разъёмы",
-    cache: "Кэш"
+    cache: "Кэш",
+    ram_type: "Тип памяти",
+    ram_slots: "Максимальное количество модулей памяти",
+    max_ram: "Максимальный объем памяти",
+    socket_support: "Поддержка сокетов",
+    gpu_length_limit: "Максимальная длина видеокарты",
+    cooler_height_limit: "Максимальная высота кулера"
 };
 
 const params = new URLSearchParams(window.location.search);
@@ -55,12 +61,12 @@ async function loadItem() {
 
     document.getElementById("name").textContent = item.name;
     document.getElementById("price").textContent = item.price + " ₽";
-    document.getElementById("productImage").src = item.image || PLACEHOLDERS[category];
+    document.getElementById("productImage").src = item.img_url || PLACEHOLDERS[category];
 
     const specsBox = document.getElementById("specs");
     specsBox.innerHTML = "";
 
-    const ignore = ["id", "name", "price", "image", "description"];
+    const ignore = ["id", "name", "price", "img_url", "description"];
 
     Object.keys(item).forEach(key => {
         if (ignore.includes(key)) return;

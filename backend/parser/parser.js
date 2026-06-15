@@ -8,6 +8,8 @@ import { keywordsMap } from "./keywordsMap.js";
 
 import { booleanMap } from "./booleanMap.js";
 
+import cron from "node-cron";
+
 const MIN_LINKS_ON_LOADED_PAGE = 30;
 
 const LINKS_ON_LAST_PAGE = 32;
@@ -21,6 +23,9 @@ const MOTHERBOARD_URL = "https://www.citilink.ru/catalog/materinskie-platy?p=";
 const SSD_URL = "https://www.citilink.ru/catalog/ssd-nakopiteli?p=";
 const HDD_URL = "https://www.citilink.ru/catalog/zhestkie-diski?p=";
 const PSU_URL = "https://www.citilink.ru/catalog/bloki-pitaniya?p=";
+const COOLERS_URL =
+  "https://www.citilink.ru/catalog/sistemy-ohlazhdeniya-kompyutera?p=";
+const CASES_URL = "https://www.citilink.ru/catalog/korpusa?p=";
 
 const browser = await puppeteer.launch();
 
@@ -75,6 +80,10 @@ const parsePipeline = async (pageNumber) => {
     hddPage.goto(HDD_URL + pageNumber),
 
     psuPage.goto(PSU_URL + pageNumber),
+
+    coolersPage.goto(COOLERS_URL + pageNumber),
+
+    casesPage.goto(CASES_URL + pageNumber),
   ]);
   const cpuLoaded = await waitForLoad(cpuFullPage.page);
 
@@ -90,6 +99,8 @@ const parsePipeline = async (pageNumber) => {
 
   const psuLoaded = await waitForLoad(psuFullPage.page);
 
+  const coolersLoaded = await waitForLoad(coolersFullPage.page);
+
   if (
     !cpuLoaded &&
     !gpuLoaded &&
@@ -97,7 +108,8 @@ const parsePipeline = async (pageNumber) => {
     !motherboardLoaded &&
     !ssdLoaded &&
     !hddLoaded &&
-    !psuLoaded
+    !psuLoaded &&
+    !coolersLoaded
   ) {
     console.warn(
       "page does not exist, it might be due to exceeding max count of pages on site",
@@ -161,6 +173,12 @@ const parsePipeline = async (pageNumber) => {
           '[class*="PropertiesItem-components"]',
         );
 
+        const img = itemRoot.querySelector('[src*="width:400/height:400"]');
+
+        const img_url = img?._attrs?.src;
+
+        console.log(img_url, img);
+
         console.log("pr", properties.length);
 
         const columns = [];
@@ -222,16 +240,23 @@ const parsePipeline = async (pageNumber) => {
           columns.push("name");
           values.push(title?._attrs?.title);
         }
-
-        console.log("page index", i);
-        /*       console.log(
-        title?._attrs?.title,
-        parseInt(price?.textContent?.split("₽")[0]?.trim()),
-      ); */
         const formattedPrice = price?.textContent
           ?.split("₽")[0]
           .split(" ")
           .join("");
+        if (formattedPrice) {
+          columns.push("price");
+          values.push(parseInt(formattedPrice));
+        }
+        if (img_url) {
+          columns.push("img_url");
+          values.push(img_url);
+        }
+        /*       console.log(
+        title?._attrs?.title,
+        parseInt(price?.textContent?.split("₽")[0]?.trim()),
+      ); */
+
         console.log(formattedPrice);
         const partInfo = {
           name: title?._attrs?.title,
@@ -243,7 +268,7 @@ const parsePipeline = async (pageNumber) => {
           const insertRes = await db.query(
             `INSERT INTO ${pages[j].pageTitle} (${columns.join(
               ", ",
-            )}) VALUES (${placeholders}) ON CONFLICT DO NOTHING`,
+            )}) VALUES (${placeholders}) ON CONFLICT (name) DO UPDATE SET price = EXCLUDED.price`,
             values,
             (err) => {
               console.log(err);
@@ -266,6 +291,8 @@ const motherboardPage = await browser.newPage();
 const ssdPage = await browser.newPage();
 const hddPage = await browser.newPage();
 const psuPage = await browser.newPage();
+const coolersPage = await browser.newPage();
+const casesPage = await browser.newPage();
 
 const cpuFullPage = {
   pageTitle: "cpus",
@@ -300,6 +327,14 @@ const motherboardFullPage = {
   pageTitle: "motherboards",
   page: motherboardPage,
 };
+const coolersFullPage = {
+  pageTitle: "coolers",
+  page: coolersPage,
+};
+const casesFullPage = {
+  pageTitle: "cases",
+  page: casesPage,
+};
 
 const pages = [
   cpuFullPage,
@@ -309,17 +344,44 @@ const pages = [
   ssdFullPage,
   hddFullPage,
   psuFullPage,
+  coolersFullPage,
+  casesFullPage,
 ];
 
-var i = 0;
-while (true) {
-  i++;
-  console.log(i);
-  const result = await parsePipeline(i);
-  if (!result) {
-    console.log("stopped parsing");
-    break;
+var isRunning = false;
+
+try {
+  var i = 1;
+  isRunning = true;
+  while (true) {
+    const result = await parsePipeline(i);
+    if (!result) {
+      console.log("stopped parsing");
+      break;
+    }
+    i++;
   }
+} finally {
+  isRunning = false;
 }
 
-browser.close();
+cron.schedule("0 0 */2 * * *", async () => {
+  if (isRunning) {
+    console.log("процесс уже запущен");
+    return;
+  }
+  var i = 1;
+  isRunning = true;
+  try {
+    while (true) {
+      const result = await parsePipeline(i);
+      if (!result) {
+        console.log("stopped parsing");
+        break;
+      }
+      i++;
+    }
+  } finally {
+    isRunning = false;
+  }
+});

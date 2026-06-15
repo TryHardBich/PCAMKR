@@ -32,7 +32,8 @@ CREATE TABLE public.cases (
     form_factor text NOT NULL,
     gpu_length_limit integer,
     cooler_height_limit integer,
-    price numeric
+    price numeric,
+    img_url text
 );
 
 
@@ -67,11 +68,11 @@ ALTER SEQUENCE public.cases_id_seq OWNED BY public.cases.id;
 CREATE TABLE public.coolers (
     id integer NOT NULL,
     name text NOT NULL,
-    brand text NOT NULL,
-    type text NOT NULL,
+    brand text,
     tdp_support integer,
     socket_support text[],
-    price numeric
+    price numeric,
+    img_url text
 );
 
 
@@ -114,7 +115,8 @@ CREATE TABLE public.cpus (
     tdp integer,
     socket text NOT NULL,
     price numeric,
-    ram_type text
+    ram_type text,
+    img_url text
 );
 
 
@@ -153,7 +155,8 @@ CREATE TABLE public.gpus (
     vram integer NOT NULL,
     tdp integer,
     price numeric,
-    interface text
+    interface text,
+    img_url text
 );
 
 
@@ -195,7 +198,8 @@ CREATE TABLE public.motherboards (
     ram_type text NOT NULL,
     ram_slots integer,
     max_ram integer,
-    price numeric
+    price numeric,
+    img_url text
 );
 
 
@@ -234,7 +238,8 @@ CREATE TABLE public.psus (
     wattage integer NOT NULL,
     certification text,
     modular boolean,
-    price numeric
+    price numeric,
+    img_url text
 );
 
 
@@ -273,7 +278,8 @@ CREATE TABLE public.rams (
     capacity integer NOT NULL,
     speed integer NOT NULL,
     price numeric,
-    ram_type text
+    ram_type text,
+    img_url text
 );
 
 
@@ -311,7 +317,8 @@ CREATE TABLE public.storages (
     brand text,
     capacity integer NOT NULL,
     interface text NOT NULL,
-    price numeric
+    price numeric,
+    img_url text
 );
 
 
@@ -399,10 +406,18 @@ ALTER TABLE ONLY public.storages ALTER COLUMN id SET DEFAULT nextval('public.sto
 -- Data for Name: cases; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.cases (id, name, brand, form_factor, gpu_length_limit, cooler_height_limit, price) FROM stdin;
-1	NZXT H510	NZXT	ATX	380	165	80
-2	Corsair 4000D Airflow	Corsair	ATX	360	170	95
-3	Fractal Meshify C	Fractal	ATX	340	170	100
+COPY public.cases (id, name, brand, form_factor, gpu_length_limit, cooler_height_limit, price, img_url) FROM stdin;
+4	Корпус ATX Formula Crystal Z1, Midi-Tower, без БП,  черный [crystal z1 black]	FORMULA	Midi-Tower	300	165	2550	\N
+5	Корпус ATX Zalman S2, Midi-Tower, без БП,  черный [s2 black]	ZALMAN	Midi-Tower	330	156	3550	\N
+6	Корпус mATX BLOODY BD-CC103, Mini-Tower, без БП,  белый [bd-cc103-wh]	BLOODY	Mini-Tower	330	165	2990	\N
+7	Корпус mATX Thermaltake Versa H18 Window, Micro-Tower, без БП,  черный [ca-1j4-00s1wn-00]	THERMALTAKE	Micro-Tower	350	155	4190	\N
+8	Корпус miniITX Thermaltake Core V1, SFF, без БП,  черный [ca-1b8-00s]	THERMALTAKE	SFF	255	140	6190	\N
+9	Корпус mATX BLOODY BD-CC103, Mini-Tower, без БП,  черный [bd-cc103-bk]	BLOODY	Mini-Tower	330	165	2990	\N
+10	Корпус mATX BLOODY CC-125, Mini-Tower, без БП,  черный [cc-125-bk]	BLOODY	Mini-Tower	280	165	2490	\N
+11	Корпус mATX DeepCool MATREXX 30, Mini-Tower, без БП,  черный [dp-matx-matrexx30]	DEEPCOOL	Mini-Tower	250	151	1968	\N
+12	Корпус mATX KINGPRICE KPCC-MN210, Mini-Tower, без БП,  черный	KINGPRICE	Mini-Tower	260	135	1190	\N
+13	Корпус ATX Zalman N5 MF, Midi-Tower, без БП,  черный [n5 mf black]	ZALMAN	Midi-Tower	365	158	4280	\N
+14	Корпус ATX Aerocool Aero One Eclipse-G-BK-v1, Midi-Tower, без БП,  черный [accm-pb17143.11]	AEROCOOL	Midi-Tower	327	161	9400	\N
 \.
 
 
@@ -410,10 +425,41 @@ COPY public.cases (id, name, brand, form_factor, gpu_length_limit, cooler_height
 -- Data for Name: coolers; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.coolers (id, name, brand, type, tdp_support, socket_support, price) FROM stdin;
-1	Cooler Master Hyper 212	Cooler Master	Air	150	{AM4,LGA1700}	35
-2	Noctua NH-D15	Noctua	Air	250	{AM4,LGA1700}	100
-3	DeepCool AK620	DeepCool	Air	260	{AM4,LGA1700}	70
+COPY public.coolers (id, name, brand, tdp_support, socket_support, price, img_url) FROM stdin;
+13	Устройство охлаждения (кулер) ID-COOLING SE-214-XT Basic,  4-pin,  120мм,  черный,  retail	ID-COOLING	\N	{AM4,AM5,"LGA 1150","LGA 1151","LGA 1155","LGA 1156","LGA 1200","LGA 1700","LGA 1851"}	1050	\N
+14	Устройство охлаждения (кулер) ID-COOLING SE-224-XTS,  4-pin,  120мм,  черный,  retail	ID-COOLING	\N	{AM4,AM5,"LGA 1150","LGA 1151","LGA 1155","LGA 1156","LGA 1200","LGA 1700","LGA 1851"}	1570	\N
+15	Устройство охлаждения (кулер) ID-COOLING SE-214-XT,  4-pin,  RGB,  120мм,  черный,  retail	ID-COOLING	\N	{AM4,AM5,"LGA 1150","LGA 1151","LGA 1155","LGA 1156","LGA 1200","LGA 1700","LGA 1851"}	1190	\N
+16	Система водяного охлаждения DeepCool LE360 V2,  4-pin,  ARGB,  120мм,  черный,  retail [r-le360-bkammc-g-2]	DEEPCOOL	\N	{AM4,AM5,FM1,"LGA 1150","LGA 1151","LGA 1155","LGA 1156","LGA 1200","LGA 1700","LGA 1851"}	5040	\N
+17	Устройство охлаждения (кулер) DeepCool Gammaxx 400 Blue Basic,  4-pin,  одноцветная,  120мм,  черный,  retail [dp-mch4-gmx400p-bl]	DEEPCOOL	\N	{AM4,AM5,"LGA 1150","LGA 1151","LGA 1155","LGA 1156","LGA 1200","LGA 1700","LGA 1851"}	1350	\N
+18	Устройство охлаждения (кулер) DeepCool AG400,  4-pin,  120мм,  черный,  retail [r-ag400-bknnmn-g-1]	DEEPCOOL	\N	{AM4,AM5,"LGA 1150","LGA 1151","LGA 1155","LGA 1156","LGA 1200","LGA 1700","LGA 1851"}	1160	\N
+19	Устройство охлаждения (кулер) DeepCool AG300,  4-pin,  92мм,  черный,  retail [r-ag300-bknnmn-g]	DEEPCOOL	\N	{AM4,AM5,"LGA 1150","LGA 1151","LGA 1155","LGA 1156","LGA 1200","LGA 1700","LGA 1851"}	780	\N
+20	Устройство охлаждения (кулер) ID-COOLING SE-224-XTS,  4-pin,  ARGB,  120мм,  черный,  retail [se-224-xts argb]	ID-COOLING	\N	{AM4,AM5,"LGA 1150","LGA 1151","LGA 1155","LGA 1156","LGA 1200","LGA 1700","LGA 1851"}	1720	\N
+21	Устройство охлаждения (кулер) DeepCool Gamma Archer Pro V2,  4-pin,  120мм,  черный,  retail [g-u-archer-arnnnn-g-2]	DEEPCOOL	\N	{AM4,AM5,"LGA 1150","LGA 1151","LGA 1155","LGA 1156","LGA 1200","LGA 1700","LGA 1851"}	730	\N
+56	Вентилятор ID-COOLING AS-140-K 140мм, 4-pin, 1800об/мин, 14 - 30 дБ, черный, Ret	\N	\N	\N	550	\N
+57	Вентилятор Zalman ZM-F3 (SF) 120мм, 3-pin, 1200об/мин, 20 - 23 дБ, черный, Ret	\N	\N	\N	400	\N
+58	Вентилятор ID-COOLING FL-12025K 120мм, 3-pin, 1250об/мин, 21 дБ, черный, Ret	\N	\N	\N	250	\N
+59	Вентилятор DeepCool FL12R SE Reverse, 120мм, 4-pin, 1500об/мин, 25.79 дБ, ARGB, черный, Ret [r-fl12rse-bkapn1-g]	\N	\N	\N	790	\N
+35	Термопаста ARCTIC COOLING MX-4 шприц,  4грамм [actcp00002b]	ARCTIC COOLING	\N	\N	800	\N
+36	Термопаста ARCTIC COOLING MX-4 шприц,  8грамм [actcp00008b]	ARCTIC COOLING	\N	\N	960	\N
+37	Термопаста Zalman ZM-STC8 шприц,  1.5грамм	ZALMAN	\N	\N	500	\N
+38	Термопаста ARCTIC COOLING MX-6 шприц,  8грамм [actcp00081a]	ARCTIC COOLING	\N	\N	1050	\N
+39	Термопаста ARCTIC COOLING MX-4 шприц,  20грамм [actcp00001b]	ARCTIC COOLING	\N	\N	1990	\N
+40	Термопаста Thermalright TF7-2G шприц,  2грамм	THERMALRIGHT	\N	\N	550	\N
+41	Термопаста ARCTIC COOLING MX-4 шприц,  4грамм [actcp00031b]	ARCTIC COOLING	\N	\N	500	\N
+42	Термопаста ID-COOLING FROST X05 3g шприц,  3грамм	ID-COOLING	\N	\N	400	\N
+43	Термопаста EXEGATE ETG-9WMK Gold шприц,  20грамм [ex282345rus]	EXEGATE	\N	\N	1280	\N
+44	Термопаста ID-COOLING FROST X25 2g шприц,  2грамм	ID-COOLING	\N	\N	500	\N
+45	Крепления Aerocool ACTC-XX1XX30.00	AEROCOOL	\N	\N	170	\N
+46	Решетка ARCTIC COOLING ACFAN00085A	ARCTIC COOLING	\N	\N	450	\N
+60	Вентилятор Formula Air Fusion 1 120мм, 4-pin, 1800об/мин, 29.93 дБ, ARGB, черный, Ret [air fusion 1 bk]	\N	\N	\N	590	\N
+61	Вентилятор Formula Air Fusion 3 Reverse, 3шт, 120мм, 4-pin, 1800об/мин, 36.97 дБ, ARGB, черный, Ret [air fusion 3 bk reverse]	\N	\N	\N	1710	\N
+62	Вентилятор DeepCool XFan 80 80мм, от БП:4-pin (Molex), 1800об/мин, 20 дБ, черный, Ret [dp-fdc-xf80]	\N	\N	\N	120	\N
+63	Вентилятор Formula Cosmic 12BK 120мм, 3-pin, от БП:4-pin (Molex), 1100об/мин, 22.3 дБ, RGB, черный, Ret [cosmic 12bk fr]	\N	\N	\N	200	\N
+64	Вентилятор BLOODY CF-12 LCD 120мм, 4-pin, 1800об/мин, 11 - 32 дБ, ARGB, черный, Ret [cf-12-argb120-bk]	\N	\N	\N	490	\N
+65	Вентилятор Formula Nulight 12WH 120мм, 4-pin, 1500об/мин, 25.34 дБ, ARGB, белый, Ret [nulight 12wh arpw]	\N	\N	\N	350	\N
+66	Радиатор Digma DGRDRM2A для 2280, металлический, Ret	\N	\N	\N	290	\N
+67	Радиатор Digma DGRDRM2B для 2280, металлический, Ret	\N	\N	\N	490	\N
+68	Радиатор ID-COOLING Zero M25 для 2280, с вентилятором 20мм, алюминиевый, Ret	\N	\N	\N	950	\N
 \.
 
 
@@ -421,233 +467,13 @@ COPY public.coolers (id, name, brand, type, tdp_support, socket_support, price) 
 -- Data for Name: cpus; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.cpus (id, name, brand, cores, threads, base_clock, boost_clock, tdp, socket, price, ram_type) FROM stdin;
-1	Ryzen 5 5600	AMD	6	12	3.5	4.4	65	AM4	120	\N
-2	Core i5-12400F	Intel	6	12	2.5	4.4	65	LGA1700	150	\N
-3	Ryzen 5 5600	AMD	6	12	3.5	4.4	65	AM4	120	\N
-4	Ryzen 7 5800X	AMD	8	16	3.8	4.7	105	AM4	220	\N
-5	Core i5-12400F	Intel	6	12	2.5	4.4	65	LGA1700	150	\N
-6	Core i7-12700K	Intel	12	20	3.6	5.0	125	LGA1700	350	\N
-14	Процессор AMD Ryzen 7 5700X, AM4,  OEM [100-000000926]	AMD	8	16	3	\N	65	AM4	\N	DDR4
-15	Процессор Intel Core i5 12400F, LGA 1700,  OEM [cm8071504650609 srl5z]	INTEL	6	12	2	\N	65	LGA 1700	\N	DDR5/ DDR4
-16	Процессор AMD Ryzen 5 5600, AM4,  OEM [100-000000927]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-17	Процессор AMD Ryzen 5 5600X, AM4,  OEM [100-000000065]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-18	Процессор AMD Ryzen 7 9800x3d, AM5,  OEM [100-000001084]	AMD	8	16	4	\N	120	AM5	\N	DDR5
-19	Процессор AMD Ryzen 7 7800X3D, AM5,  OEM [100-000000910]	AMD	8	16	4	\N	120	AM5	\N	DDR5
-20	Процессор AMD Ryzen 7 7700, AM5,  OEM [100-000000592]	AMD	8	16	3	\N	65	AM5	\N	DDR5
-21	Процессор AMD Ryzen 5 5500, AM4,  OEM [100-000000457]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-22	Процессор AMD Ryzen 5 3600, AM4,  OEM [100-000000031]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-23	Процессор AMD Ryzen 5 5600G, AM4,  OEM [100-000000252]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-24	Процессор AMD Ryzen 5 7500F, AM5,  OEM [100-000000597]	AMD	6	12	3	\N	65	AM5	\N	DDR5
-25	Процессор Intel Core i3 12100F, LGA 1700,  OEM [cm8071504651013 srl63]	INTEL	4	8	3	\N	58	LGA 1700	\N	DDR5/ DDR4
-26	Процессор Intel Core i5 14600KF, LGA 1700,  OEM [cm8071504821014 srn42]	INTEL	14	20	3	\N	125	LGA 1700	\N	DDR5/ DDR4
-27	Процессор AMD Ryzen 7 9700X, AM5,  OEM [100-000001404]	AMD	8	16	3	\N	65	AM5	\N	DDR5
-28	Процессор Intel Core i5 12400, LGA 1700,  OEM [cm8071504650608 srl5y]	INTEL	6	12	2	\N	65	LGA 1700	\N	DDR5/ DDR4
-29	Процессор AMD Ryzen 7 5800X, AM4,  OEM [100-000000063]	AMD	8	16	3	\N	105	AM4	\N	DDR4
-30	Процессор Intel Core i3 12100, LGA 1700,  OEM [cm8071504651012 srl62]	INTEL	4	8	3	\N	60	LGA 1700	\N	DDR5/ DDR4
-31	Процессор Intel Core i5 12400F, LGA 1700,  OEM [cm8071504555318 srl4w]	INTEL	6	12	2	\N	65	LGA 1700	\N	DDR5/ DDR4
-32	Процессор AMD Ryzen 9 5950X, AM4,  OEM [100-000000059]	AMD	16	32	3	\N	105	AM4	\N	DDR4
-33	Процессор AMD Ryzen 7 5700G, AM4,  OEM [100-000000263]	AMD	8	16	3	\N	65	AM4	\N	DDR4
-34	Процессор AMD Ryzen 5 3500X, AM4,  OEM [100-000000158]	AMD	6	6	3	\N	65	AM4	\N	DDR4
-35	Процессор AMD Ryzen 5 8400F, AM5,  OEM [100-000001591]	AMD	6	12	4	\N	65	AM5	\N	DDR5
-36	Процессор Intel Core i7 14700KF, LGA 1700,  OEM [cm8071504820722 srn3y]	INTEL	20	28	3	\N	125	LGA 1700	\N	DDR5/ DDR4
-37	Процессор Intel Core i5 12600KF, LGA 1700,  OEM [cm8071504555228 srl4u]	INTEL	10	16	3	\N	125	LGA 1700	\N	DDR5/ DDR4
-38	Процессор Intel Core i5 13600KF, LGA 1700,  OEM [cm8071504821006 srmbe]	INTEL	14	20	3	\N	125	LGA 1700	\N	DDR5/ DDR4
-39	Процессор AMD Ryzen 9 9950X, AM5,  OEM [100-000001277]	AMD	16	32	4	\N	170	AM5	\N	DDR5
-40	Процессор Intel Core i5 10400F, LGA 1200,  OEM [cm8070104290716 srh3d]	INTEL	6	12	2	\N	65	LGA 1200	\N	DDR4
-41	Процессор AMD Ryzen 9 9950X3D, AM5,  OEM [100-000000719]	AMD	16	32	4	\N	170	AM5	\N	DDR5
-42	Процессор AMD Ryzen 5 9600X, AM5,  OEM [100-000001405]	AMD	6	12	3	\N	65	AM5	\N	DDR5
-43	Процессор Intel Core i5 14400F, LGA 1700,  OEM [cm8071505093011 srn3r]	INTEL	10	16	2	\N	65	LGA 1700	\N	DDR5/ DDR4
-44	Процессор Intel Core i5 12600K, LGA 1700,  OEM [cm8071504555227 srl4t]	INTEL	10	16	3	\N	125	LGA 1700	\N	DDR5/ DDR4
-60	Процессор AMD Ryzen 7 5700X, AM4,  OEM [100-000000926]	AMD	8	16	3	\N	65	AM4	\N	DDR4
-61	Процессор Intel Core i5 12400F, LGA 1700,  OEM [cm8071504650609 srl5z]	INTEL	6	12	2	\N	65	LGA 1700	\N	DDR5/ DDR4
-62	Процессор AMD Ryzen 5 5600, AM4,  OEM [100-000000927]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-63	Процессор AMD Ryzen 5 5600X, AM4,  OEM [100-000000065]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-64	Процессор AMD Ryzen 7 9800x3d, AM5,  OEM [100-000001084]	AMD	8	16	4	\N	120	AM5	\N	DDR5
-65	Процессор AMD Ryzen 7 7800X3D, AM5,  OEM [100-000000910]	AMD	8	16	4	\N	120	AM5	\N	DDR5
-66	Процессор AMD Ryzen 7 7700, AM5,  OEM [100-000000592]	AMD	8	16	3	\N	65	AM5	\N	DDR5
-67	Процессор AMD Ryzen 5 5500, AM4,  OEM [100-000000457]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-68	Процессор AMD Ryzen 5 3600, AM4,  OEM [100-000000031]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-69	Процессор AMD Ryzen 5 5600G, AM4,  OEM [100-000000252]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-70	Процессор AMD Ryzen 5 7500F, AM5,  OEM [100-000000597]	AMD	6	12	3	\N	65	AM5	\N	DDR5
-71	Процессор Intel Core i3 12100F, LGA 1700,  OEM [cm8071504651013 srl63]	INTEL	4	8	3	\N	58	LGA 1700	\N	DDR5/ DDR4
-72	Процессор Intel Core i5 14600KF, LGA 1700,  OEM [cm8071504821014 srn42]	INTEL	14	20	3	\N	125	LGA 1700	\N	DDR5/ DDR4
-73	Процессор AMD Ryzen 7 9700X, AM5,  OEM [100-000001404]	AMD	8	16	3	\N	65	AM5	\N	DDR5
-74	Процессор Intel Core i5 12400, LGA 1700,  OEM [cm8071504650608 srl5y]	INTEL	6	12	2	\N	65	LGA 1700	\N	DDR5/ DDR4
-75	Процессор AMD Ryzen 7 5800X, AM4,  OEM [100-000000063]	AMD	8	16	3	\N	105	AM4	\N	DDR4
-76	Процессор Intel Core i3 12100, LGA 1700,  OEM [cm8071504651012 srl62]	INTEL	4	8	3	\N	60	LGA 1700	\N	DDR5/ DDR4
-77	Процессор Intel Core i5 12400F, LGA 1700,  OEM [cm8071504555318 srl4w]	INTEL	6	12	2	\N	65	LGA 1700	\N	DDR5/ DDR4
-78	Процессор AMD Ryzen 9 5950X, AM4,  OEM [100-000000059]	AMD	16	32	3	\N	105	AM4	\N	DDR4
-79	Процессор AMD Ryzen 7 5700G, AM4,  OEM [100-000000263]	AMD	8	16	3	\N	65	AM4	\N	DDR4
-106	Процессор AMD Ryzen 7 5700X, AM4,  OEM [100-000000926]	AMD	8	16	3	\N	65	AM4	\N	DDR4
-107	Процессор Intel Core i5 12400F, LGA 1700,  OEM [cm8071504650609 srl5z]	INTEL	6	12	2	\N	65	LGA 1700	\N	DDR5/ DDR4
-108	Процессор AMD Ryzen 5 5600, AM4,  OEM [100-000000927]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-109	Процессор AMD Ryzen 5 5600X, AM4,  OEM [100-000000065]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-110	Процессор AMD Ryzen 7 9800x3d, AM5,  OEM [100-000001084]	AMD	8	16	4	\N	120	AM5	\N	DDR5
-111	Процессор AMD Ryzen 7 7800X3D, AM5,  OEM [100-000000910]	AMD	8	16	4	\N	120	AM5	\N	DDR5
-112	Процессор AMD Ryzen 7 7700, AM5,  OEM [100-000000592]	AMD	8	16	3	\N	65	AM5	\N	DDR5
-113	Процессор AMD Ryzen 5 5500, AM4,  OEM [100-000000457]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-114	Процессор AMD Ryzen 5 3600, AM4,  OEM [100-000000031]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-115	Процессор AMD Ryzen 5 5600G, AM4,  OEM [100-000000252]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-116	Процессор AMD Ryzen 5 7500F, AM5,  OEM [100-000000597]	AMD	6	12	3	\N	65	AM5	\N	DDR5
-117	Процессор Intel Core i3 12100F, LGA 1700,  OEM [cm8071504651013 srl63]	INTEL	4	8	3	\N	58	LGA 1700	\N	DDR5/ DDR4
-118	Процессор Intel Core i5 14600KF, LGA 1700,  OEM [cm8071504821014 srn42]	INTEL	14	20	3	\N	125	LGA 1700	\N	DDR5/ DDR4
-119	Процессор AMD Ryzen 7 9700X, AM5,  OEM [100-000001404]	AMD	8	16	3	\N	65	AM5	\N	DDR5
-120	Процессор Intel Core i5 12400, LGA 1700,  OEM [cm8071504650608 srl5y]	INTEL	6	12	2	\N	65	LGA 1700	\N	DDR5/ DDR4
-121	Процессор AMD Ryzen 7 5800X, AM4,  OEM [100-000000063]	AMD	8	16	3	\N	105	AM4	\N	DDR4
-122	Процессор Intel Core i3 12100, LGA 1700,  OEM [cm8071504651012 srl62]	INTEL	4	8	3	\N	60	LGA 1700	\N	DDR5/ DDR4
-123	Процессор Intel Core i5 12400F, LGA 1700,  OEM [cm8071504555318 srl4w]	INTEL	6	12	2	\N	65	LGA 1700	\N	DDR5/ DDR4
-152	Процессор AMD Ryzen 7 5700X, AM4,  OEM [100-000000926]	AMD	8	16	3	\N	65	AM4	\N	DDR4
-153	Процессор Intel Core i5 12400F, LGA 1700,  OEM [cm8071504650609 srl5z]	INTEL	6	12	2	\N	65	LGA 1700	\N	DDR5/ DDR4
-154	Процессор AMD Ryzen 5 5600, AM4,  OEM [100-000000927]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-155	Процессор AMD Ryzen 5 5600X, AM4,  OEM [100-000000065]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-156	Процессор AMD Ryzen 7 9800x3d, AM5,  OEM [100-000001084]	AMD	8	16	4	\N	120	AM5	\N	DDR5
-157	Процессор AMD Ryzen 7 7800X3D, AM5,  OEM [100-000000910]	AMD	8	16	4	\N	120	AM5	\N	DDR5
-158	Процессор AMD Ryzen 7 7700, AM5,  OEM [100-000000592]	AMD	8	16	3	\N	65	AM5	\N	DDR5
-159	Процессор AMD Ryzen 5 5500, AM4,  OEM [100-000000457]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-160	Процессор AMD Ryzen 5 3600, AM4,  OEM [100-000000031]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-161	Процессор AMD Ryzen 7 5700X, AM4,  OEM [100-000000926]	AMD	8	16	3	\N	65	AM4	\N	DDR4
-162	Процессор Intel Core i5 12400F, LGA 1700,  OEM [cm8071504650609 srl5z]	INTEL	6	12	2	\N	65	LGA 1700	\N	DDR5/ DDR4
-163	Процессор AMD Ryzen 5 5600, AM4,  OEM [100-000000927]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-164	Процессор AMD Ryzen 5 5600X, AM4,  OEM [100-000000065]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-165	Процессор AMD Ryzen 7 9800x3d, AM5,  OEM [100-000001084]	AMD	8	16	4	\N	120	AM5	\N	DDR5
-166	Процессор AMD Ryzen 7 7800X3D, AM5,  OEM [100-000000910]	AMD	8	16	4	\N	120	AM5	\N	DDR5
-167	Процессор AMD Ryzen 7 7700, AM5,  OEM [100-000000592]	AMD	8	16	3	\N	65	AM5	\N	DDR5
-168	Процессор AMD Ryzen 5 5500, AM4,  OEM [100-000000457]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-169	Процессор AMD Ryzen 5 3600, AM4,  OEM [100-000000031]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-170	Процессор AMD Ryzen 5 5600G, AM4,  OEM [100-000000252]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-171	Процессор AMD Ryzen 5 7500F, AM5,  OEM [100-000000597]	AMD	6	12	3	\N	65	AM5	\N	DDR5
-172	Процессор Intel Core i3 12100F, LGA 1700,  OEM [cm8071504651013 srl63]	INTEL	4	8	3	\N	58	LGA 1700	\N	DDR5/ DDR4
-173	Процессор Intel Core i5 14600KF, LGA 1700,  OEM [cm8071504821014 srn42]	INTEL	14	20	3	\N	125	LGA 1700	\N	DDR5/ DDR4
-174	Процессор AMD Ryzen 7 9700X, AM5,  OEM [100-000001404]	AMD	8	16	3	\N	65	AM5	\N	DDR5
-175	Процессор Intel Core i5 12400, LGA 1700,  OEM [cm8071504650608 srl5y]	INTEL	6	12	2	\N	65	LGA 1700	\N	DDR5/ DDR4
-176	Процессор AMD Ryzen 7 5800X, AM4,  OEM [100-000000063]	AMD	8	16	3	\N	105	AM4	\N	DDR4
-177	Процессор Intel Core i3 12100, LGA 1700,  OEM [cm8071504651012 srl62]	INTEL	4	8	3	\N	60	LGA 1700	\N	DDR5/ DDR4
-178	Процессор Intel Core i5 12400F, LGA 1700,  OEM [cm8071504555318 srl4w]	INTEL	6	12	2	\N	65	LGA 1700	\N	DDR5/ DDR4
-179	Процессор AMD Ryzen 9 5950X, AM4,  OEM [100-000000059]	AMD	16	32	3	\N	105	AM4	\N	DDR4
-180	Процессор AMD Ryzen 7 5700G, AM4,  OEM [100-000000263]	AMD	8	16	3	\N	65	AM4	\N	DDR4
-181	Процессор AMD Ryzen 5 3500X, AM4,  OEM [100-000000158]	AMD	6	6	3	\N	65	AM4	\N	DDR4
-182	Процессор AMD Ryzen 5 8400F, AM5,  OEM [100-000001591]	AMD	6	12	4	\N	65	AM5	\N	DDR5
-183	Процессор Intel Core i7 14700KF, LGA 1700,  OEM [cm8071504820722 srn3y]	INTEL	20	28	3	\N	125	LGA 1700	\N	DDR5/ DDR4
-184	Процессор Intel Core i5 12600KF, LGA 1700,  OEM [cm8071504555228 srl4u]	INTEL	10	16	3	\N	125	LGA 1700	\N	DDR5/ DDR4
-185	Процессор Intel Core i5 13600KF, LGA 1700,  OEM [cm8071504821006 srmbe]	INTEL	14	20	3	\N	125	LGA 1700	\N	DDR5/ DDR4
-186	Процессор AMD Ryzen 9 9950X, AM5,  OEM [100-000001277]	AMD	16	32	4	\N	170	AM5	\N	DDR5
-187	Процессор Intel Core i5 10400F, LGA 1200,  OEM [cm8070104290716 srh3d]	INTEL	6	12	2	\N	65	LGA 1200	\N	DDR4
-188	Процессор AMD Ryzen 9 9950X3D, AM5,  OEM [100-000000719]	AMD	16	32	4	\N	170	AM5	\N	DDR5
-189	Процессор AMD Ryzen 5 9600X, AM5,  OEM [100-000001405]	AMD	6	12	3	\N	65	AM5	\N	DDR5
-190	Процессор Intel Core i5 14400F, LGA 1700,  OEM [cm8071505093011 srn3r]	INTEL	10	16	2	\N	65	LGA 1700	\N	DDR5/ DDR4
-191	Процессор Intel Core i5 12600K, LGA 1700,  OEM [cm8071504555227 srl4t]	INTEL	10	16	3	\N	125	LGA 1700	\N	DDR5/ DDR4
-195	Процессор Intel Core i5 14600K, LGA 1700,  OEM [cm8071504821015 srn43]	INTEL	14	20	3	\N	125	LGA 1700	\N	DDR5/ DDR4
-196	Процессор AMD Ryzen 3 3200G, AM4,  OEM [yd3200c5m4mfh]	AMD	4	4	3	\N	65	AM4	\N	DDR4
-197	Процессор AMD Ryzen 7 5700X, AM4,  OEM [100-000000926]	AMD	8	16	3	\N	65	AM4	\N	DDR4
-198	Процессор AMD Ryzen 7 7800X3D, AM5,  OEM [100-000000910]	AMD	8	16	4	\N	120	AM5	\N	DDR5
-199	Процессор AMD Ryzen 5 5600, AM4,  OEM [100-000000927]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-200	Процессор AMD Ryzen 7 9800x3d, AM5,  OEM [100-000001084]	AMD	8	16	4	\N	120	AM5	\N	DDR5
-201	Процессор Intel Core i5 12400F, LGA 1700,  OEM [cm8071504650609 srl5z]	INTEL	6	12	2	\N	65	LGA 1700	\N	DDR5/ DDR4
-202	Процессор AMD Ryzen 5 5600X, AM4,  OEM [100-000000065]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-203	Процессор AMD Ryzen 5 7500F, AM5,  OEM [100-000000597]	AMD	6	12	3	\N	65	AM5	\N	DDR5
-204	Процессор AMD Ryzen 5 5500X3d, AM4,  OEM [100-000001504]	AMD	6	12	3	\N	105	AM4	\N	DDR4
-205	Процессор AMD Ryzen 9 9950X3D, AM5,  OEM [100-000000719]	AMD	16	32	4	\N	170	AM5	\N	DDR5
-206	Процессор AMD Ryzen 7 5800X, AM4,  OEM [100-000000063]	AMD	8	16	3	\N	105	AM4	\N	DDR4
-207	Процессор AMD Ryzen 7 5700X, AM4,  OEM [100-000000926]	AMD	8	16	3	\N	65	AM4	\N	DDR4
-208	Процессор Intel Core i5 12400F, LGA 1700,  OEM [cm8071504650609 srl5z]	INTEL	6	12	2	\N	65	LGA 1700	\N	DDR5/ DDR4
-209	Процессор AMD Ryzen 5 5600, AM4,  OEM [100-000000927]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-210	Процессор AMD Ryzen 5 5600X, AM4,  OEM [100-000000065]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-211	Процессор AMD Ryzen 7 9800x3d, AM5,  OEM [100-000001084]	AMD	8	16	4	\N	120	AM5	\N	DDR5
-212	Процессор AMD Ryzen 7 7800X3D, AM5,  OEM [100-000000910]	AMD	8	16	4	\N	120	AM5	\N	DDR5
-213	Процессор AMD Ryzen 7 7700, AM5,  OEM [100-000000592]	AMD	8	16	3	\N	65	AM5	\N	DDR5
-214	Процессор AMD Ryzen 5 5500, AM4,  OEM [100-000000457]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-215	Процессор AMD Ryzen 5 3600, AM4,  OEM [100-000000031]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-216	Процессор AMD Ryzen 5 5600G, AM4,  OEM [100-000000252]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-217	Процессор AMD Ryzen 5 7500F, AM5,  OEM [100-000000597]	AMD	6	12	3	\N	65	AM5	\N	DDR5
-218	Процессор Intel Core i3 12100F, LGA 1700,  OEM [cm8071504651013 srl63]	INTEL	4	8	3	\N	58	LGA 1700	\N	DDR5/ DDR4
-219	Процессор Intel Core i5 14600KF, LGA 1700,  OEM [cm8071504821014 srn42]	INTEL	14	20	3	\N	125	LGA 1700	\N	DDR5/ DDR4
-220	Процессор AMD Ryzen 7 9700X, AM5,  OEM [100-000001404]	AMD	8	16	3	\N	65	AM5	\N	DDR5
-221	Процессор Intel Core i5 12400, LGA 1700,  OEM [cm8071504650608 srl5y]	INTEL	6	12	2	\N	65	LGA 1700	\N	DDR5/ DDR4
-222	Процессор AMD Ryzen 7 5800X, AM4,  OEM [100-000000063]	AMD	8	16	3	\N	105	AM4	\N	DDR4
-223	Процессор Intel Core i3 12100, LGA 1700,  OEM [cm8071504651012 srl62]	INTEL	4	8	3	\N	60	LGA 1700	\N	DDR5/ DDR4
-224	Процессор Intel Core i5 12400F, LGA 1700,  OEM [cm8071504555318 srl4w]	INTEL	6	12	2	\N	65	LGA 1700	\N	DDR5/ DDR4
-225	Процессор AMD Ryzen 9 5950X, AM4,  OEM [100-000000059]	AMD	16	32	3	\N	105	AM4	\N	DDR4
-226	Процессор AMD Ryzen 7 5700G, AM4,  OEM [100-000000263]	AMD	8	16	3	\N	65	AM4	\N	DDR4
-227	Процессор AMD Ryzen 5 3500X, AM4,  OEM [100-000000158]	AMD	6	6	3	\N	65	AM4	\N	DDR4
-228	Процессор AMD Ryzen 5 8400F, AM5,  OEM [100-000001591]	AMD	6	12	4	\N	65	AM5	\N	DDR5
-229	Процессор Intel Core i7 14700KF, LGA 1700,  OEM [cm8071504820722 srn3y]	INTEL	20	28	3	\N	125	LGA 1700	\N	DDR5/ DDR4
-230	Процессор Intel Core i5 12600KF, LGA 1700,  OEM [cm8071504555228 srl4u]	INTEL	10	16	3	\N	125	LGA 1700	\N	DDR5/ DDR4
-231	Процессор Intel Core i5 13600KF, LGA 1700,  OEM [cm8071504821006 srmbe]	INTEL	14	20	3	\N	125	LGA 1700	\N	DDR5/ DDR4
-232	Процессор AMD Ryzen 9 9950X, AM5,  OEM [100-000001277]	AMD	16	32	4	\N	170	AM5	\N	DDR5
-233	Процессор Intel Core i5 10400F, LGA 1200,  OEM [cm8070104290716 srh3d]	INTEL	6	12	2	\N	65	LGA 1200	\N	DDR4
-234	Процессор AMD Ryzen 9 9950X3D, AM5,  OEM [100-000000719]	AMD	16	32	4	\N	170	AM5	\N	DDR5
-235	Процессор AMD Ryzen 5 9600X, AM5,  OEM [100-000001405]	AMD	6	12	3	\N	65	AM5	\N	DDR5
-236	Процессор Intel Core i5 14400F, LGA 1700,  OEM [cm8071505093011 srn3r]	INTEL	10	16	2	\N	65	LGA 1700	\N	DDR5/ DDR4
-237	Процессор Intel Core i5 12600K, LGA 1700,  OEM [cm8071504555227 srl4t]	INTEL	10	16	3	\N	125	LGA 1700	\N	DDR5/ DDR4
-239	Процессор AMD Ryzen 5 5500X3d, AM4,  OEM [100-000001504]	AMD	6	12	3	\N	105	AM4	\N	DDR4
-240	Процессор Intel Core i7 14700K, LGA 1700,  OEM [cm8071504820721 srn3x]	INTEL	20	28	3	\N	125	LGA 1700	\N	DDR5/ DDR4
-241	Процессор Intel Core i5 14600K, LGA 1700,  OEM [cm8071504821015 srn43]	INTEL	14	20	3	\N	125	LGA 1700	\N	DDR5/ DDR4
-242	Процессор AMD Ryzen 3 3200G, AM4,  OEM [yd3200c5m4mfh]	AMD	4	4	3	\N	65	AM4	\N	DDR4
-243	Процессор AMD Ryzen 7 5700X, AM4,  OEM [100-000000926]	AMD	8	16	3	\N	65	AM4	\N	DDR4
-244	Процессор AMD Ryzen 7 7800X3D, AM5,  OEM [100-000000910]	AMD	8	16	4	\N	120	AM5	\N	DDR5
-245	Процессор AMD Ryzen 5 5600, AM4,  OEM [100-000000927]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-246	Процессор AMD Ryzen 7 9800x3d, AM5,  OEM [100-000001084]	AMD	8	16	4	\N	120	AM5	\N	DDR5
-247	Процессор Intel Core i5 12400F, LGA 1700,  OEM [cm8071504650609 srl5z]	INTEL	6	12	2	\N	65	LGA 1700	\N	DDR5/ DDR4
-248	Процессор AMD Ryzen 5 5600X, AM4,  OEM [100-000000065]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-249	Процессор AMD Ryzen 5 7500F, AM5,  OEM [100-000000597]	AMD	6	12	3	\N	65	AM5	\N	DDR5
-250	Процессор AMD Ryzen 5 5500X3d, AM4,  OEM [100-000001504]	AMD	6	12	3	\N	105	AM4	\N	DDR4
-251	Процессор AMD Ryzen 9 9950X3D, AM5,  OEM [100-000000719]	AMD	16	32	4	\N	170	AM5	\N	DDR5
-252	Процессор AMD Ryzen 7 5800X, AM4,  OEM [100-000000063]	AMD	8	16	3	\N	105	AM4	\N	DDR4
-253	Процессор AMD Ryzen 7 5700X, AM4,  OEM [100-000000926]	AMD	8	16	3	\N	65	AM4	\N	DDR4
-254	Процессор Intel Core i5 12400F, LGA 1700,  OEM [cm8071504650609 srl5z]	INTEL	6	12	2	\N	65	LGA 1700	\N	DDR5/ DDR4
-255	Процессор AMD Ryzen 5 5600, AM4,  OEM [100-000000927]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-256	Процессор AMD Ryzen 5 5600X, AM4,  OEM [100-000000065]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-257	Процессор AMD Ryzen 7 9800x3d, AM5,  OEM [100-000001084]	AMD	8	16	4	\N	120	AM5	\N	DDR5
-258	Процессор AMD Ryzen 7 7800X3D, AM5,  OEM [100-000000910]	AMD	8	16	4	\N	120	AM5	\N	DDR5
-259	Процессор AMD Ryzen 7 7700, AM5,  OEM [100-000000592]	AMD	8	16	3	\N	65	AM5	\N	DDR5
-260	Процессор AMD Ryzen 5 5500, AM4,  OEM [100-000000457]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-261	Процессор AMD Ryzen 5 3600, AM4,  OEM [100-000000031]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-262	Процессор AMD Ryzen 5 5600G, AM4,  OEM [100-000000252]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-263	Процессор AMD Ryzen 5 7500F, AM5,  OEM [100-000000597]	AMD	6	12	3	\N	65	AM5	\N	DDR5
-264	Процессор Intel Core i3 12100F, LGA 1700,  OEM [cm8071504651013 srl63]	INTEL	4	8	3	\N	58	LGA 1700	\N	DDR5/ DDR4
-265	Процессор Intel Core i5 14600KF, LGA 1700,  OEM [cm8071504821014 srn42]	INTEL	14	20	3	\N	125	LGA 1700	\N	DDR5/ DDR4
-266	Процессор AMD Ryzen 7 9700X, AM5,  OEM [100-000001404]	AMD	8	16	3	\N	65	AM5	\N	DDR5
-267	Процессор Intel Core i5 12400, LGA 1700,  OEM [cm8071504650608 srl5y]	INTEL	6	12	2	\N	65	LGA 1700	\N	DDR5/ DDR4
-268	Процессор AMD Ryzen 7 5800X, AM4,  OEM [100-000000063]	AMD	8	16	3	\N	105	AM4	\N	DDR4
-269	Процессор Intel Core i3 12100, LGA 1700,  OEM [cm8071504651012 srl62]	INTEL	4	8	3	\N	60	LGA 1700	\N	DDR5/ DDR4
-270	Процессор Intel Core i5 12400F, LGA 1700,  OEM [cm8071504555318 srl4w]	INTEL	6	12	2	\N	65	LGA 1700	\N	DDR5/ DDR4
-271	Процессор AMD Ryzen 9 5950X, AM4,  OEM [100-000000059]	AMD	16	32	3	\N	105	AM4	\N	DDR4
-272	Процессор AMD Ryzen 7 5700G, AM4,  OEM [100-000000263]	AMD	8	16	3	\N	65	AM4	\N	DDR4
-273	Процессор AMD Ryzen 5 3500X, AM4,  OEM [100-000000158]	AMD	6	6	3	\N	65	AM4	\N	DDR4
-274	Процессор AMD Ryzen 5 8400F, AM5,  OEM [100-000001591]	AMD	6	12	4	\N	65	AM5	\N	DDR5
-275	Процессор Intel Core i7 14700KF, LGA 1700,  OEM [cm8071504820722 srn3y]	INTEL	20	28	3	\N	125	LGA 1700	\N	DDR5/ DDR4
-276	Процессор Intel Core i5 12600KF, LGA 1700,  OEM [cm8071504555228 srl4u]	INTEL	10	16	3	\N	125	LGA 1700	\N	DDR5/ DDR4
-277	Процессор Intel Core i5 13600KF, LGA 1700,  OEM [cm8071504821006 srmbe]	INTEL	14	20	3	\N	125	LGA 1700	\N	DDR5/ DDR4
-278	Процессор AMD Ryzen 9 9950X, AM5,  OEM [100-000001277]	AMD	16	32	4	\N	170	AM5	\N	DDR5
-279	Процессор Intel Core i5 10400F, LGA 1200,  OEM [cm8070104290716 srh3d]	INTEL	6	12	2	\N	65	LGA 1200	\N	DDR4
-280	Процессор AMD Ryzen 9 9950X3D, AM5,  OEM [100-000000719]	AMD	16	32	4	\N	170	AM5	\N	DDR5
-281	Процессор AMD Ryzen 5 9600X, AM5,  OEM [100-000001405]	AMD	6	12	3	\N	65	AM5	\N	DDR5
-282	Процессор Intel Core i5 14400F, LGA 1700,  OEM [cm8071505093011 srn3r]	INTEL	10	16	2	\N	65	LGA 1700	\N	DDR5/ DDR4
-283	Процессор Intel Core i5 12600K, LGA 1700,  OEM [cm8071504555227 srl4t]	INTEL	10	16	3	\N	125	LGA 1700	\N	DDR5/ DDR4
-287	Процессор Intel Core i5 14600K, LGA 1700,  OEM [cm8071504821015 srn43]	INTEL	14	20	3	\N	125	LGA 1700	\N	DDR5/ DDR4
-288	Процессор AMD Ryzen 3 3200G, AM4,  OEM [yd3200c5m4mfh]	AMD	4	4	3	\N	65	AM4	\N	DDR4
-289	Процессор AMD Ryzen 7 5700X, AM4,  OEM [100-000000926]	AMD	8	16	3	\N	65	AM4	\N	DDR4
-290	Процессор AMD Ryzen 7 7800X3D, AM5,  OEM [100-000000910]	AMD	8	16	4	\N	120	AM5	\N	DDR5
-291	Процессор AMD Ryzen 5 5600, AM4,  OEM [100-000000927]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-292	Процессор AMD Ryzen 7 9800x3d, AM5,  OEM [100-000001084]	AMD	8	16	4	\N	120	AM5	\N	DDR5
-293	Процессор Intel Core i5 12400F, LGA 1700,  OEM [cm8071504650609 srl5z]	INTEL	6	12	2	\N	65	LGA 1700	\N	DDR5/ DDR4
-294	Процессор AMD Ryzen 5 5600X, AM4,  OEM [100-000000065]	AMD	6	12	3	\N	65	AM4	\N	DDR4
-295	Процессор AMD Ryzen 5 7500F, AM5,  OEM [100-000000597]	AMD	6	12	3	\N	65	AM5	\N	DDR5
-296	Процессор AMD Ryzen 5 5500X3d, AM4,  OEM [100-000001504]	AMD	6	12	3	\N	105	AM4	\N	DDR4
-297	Процессор AMD Ryzen 9 9950X3D, AM5,  OEM [100-000000719]	AMD	16	32	4	\N	170	AM5	\N	DDR5
-298	Процессор AMD Ryzen 7 5800X, AM4,  OEM [100-000000063]	AMD	8	16	3	\N	105	AM4	\N	DDR4
-299	Процессор AMD Ryzen 7 8700F, AM5,  OEM [100-000001590]	AMD	8	16	4	\N	65	AM5	\N	DDR5
-300	Процессор AMD Ryzen 9 9900X, AM5,  OEM [100-000000662]	AMD	12	24	4	\N	120	AM5	\N	DDR5
-301	Процессор Intel Core i7 14700F, LGA 1700,  OEM [cm8071504820816 srn3z]	INTEL	20	28	2	\N	65	LGA 1700	\N	DDR5/ DDR4
-302	Процессор Intel Core i9 14900K, LGA 1700,  OEM [cm8071505094017 srn48]	INTEL	24	32	3	\N	125	LGA 1700	\N	DDR5/ DDR4
-303	Процессор Intel Core i5 13400F, LGA 1700,  OEM [cm8071505093005 srmbn]	INTEL	10	16	2	\N	65	LGA 1700	\N	DDR5/ DDR4
-304	Процессор Intel Core i5 13600K, LGA 1700,  OEM [cm8071504821005 srmbd]	INTEL	14	20	3	\N	125	LGA 1700	\N	DDR5/ DDR4
-305	Процессор AMD Ryzen Threadripper Pro 9995WX, sTR5,  OEM [100-000001361]	AMD	96	192	2	\N	350	sTR5	\N	DDR5
-306	Процессор AMD Ryzen 7 9850x3d, AM5,  OEM [100-000001973]	AMD	8	16	4	\N	120	AM5	\N	DDR5
-307	Процессор Intel Core Ultra 9 285K, LGA 1851,  OEM [at8076806419]	INTEL	24	24	3	\N	125	LGA 1851	\N	DDR5
-308	Процессор Intel Core i7 14700, LGA 1700,  OEM [cm8071504820817 srn40]	INTEL	20	28	2	\N	65	LGA 1700	\N	DDR5/ DDR4
-309	Процессор Intel Core i9 14900KF, LGA 1700,  OEM [cm8071505094018 srn49]	INTEL	24	32	3	\N	125	LGA 1700	\N	DDR5/ DDR4
+COPY public.cpus (id, name, brand, cores, threads, base_clock, boost_clock, tdp, socket, price, ram_type, img_url) FROM stdin;
+381	Процессор AMD Ryzen 7 5700X, AM4,  OEM [100-000000926]	AMD	8	16	3	\N	65	AM4	13990	DDR4	\N
+382	Процессор Intel Core i5 12400F, LGA 1700,  OEM [cm8071504650609 srl5z]	INTEL	6	12	2	\N	65	LGA 1700	11990	DDR5/ DDR4	\N
+383	Процессор AMD Ryzen 5 5600, AM4,  OEM [100-000000927]	AMD	6	12	3	\N	65	AM4	10990	DDR4	\N
+384	Процессор AMD Ryzen 5 5600X, AM4,  OEM [100-000000065]	AMD	6	12	3	\N	65	AM4	11790	DDR4	\N
+385	Процессор AMD Ryzen 7 9800x3d, AM5,  OEM [100-000001084]	AMD	8	16	4	\N	120	AM5	39990	DDR5	\N
+386	Процессор AMD Ryzen 7 7800X3D, AM5,  OEM [100-000000910]	AMD	8	16	4	\N	120	AM5	27990	DDR5	\N
 \.
 
 
@@ -655,36 +481,7 @@ COPY public.cpus (id, name, brand, cores, threads, base_clock, boost_clock, tdp,
 -- Data for Name: gpus; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.gpus (id, name, brand, vram, tdp, price, interface) FROM stdin;
-1	RTX 3060	NVIDIA	12	170	300	\N
-2	RTX 4070	NVIDIA	12	200	600	\N
-3	RX 6600	AMD	8	132	220	\N
-4	RX 7800 XT	AMD	16	263	500	\N
-92	Видеокарта Gigabyte NVIDIA  GeForce RTX 5070 GV-N5070WF3OC-12GD 1.0 12ГБ Windforce, GDDR7, OC,  Ret	GIGABYTE	12	250	\N	\N
-93	Видеокарта Palit NVIDIA  GeForce RTX 5060TI PA-RTX5060TI INFINITY 3 OC 16ГБ Infinity 3, GDDR7, OC,  Ret [ne7506ts19t1-gb2061s]	PALIT	16	180	\N	\N
-94	Видеокарта Gigabyte NVIDIA  GeForce RTX 5070TI GV-N507TWF3OC-16GD 1.0 16ГБ Windforce, GDDR7, OC,  Ret	GIGABYTE	16	300	\N	\N
-95	Видеокарта Palit NVIDIA  GeForce RTX 5060TI PA-RTX5060TI DUAL 8ГБ Dual, GDDR7, Ret [ne7506t019p1-gb2062d]	PALIT	8	180	\N	\N
-96	Видеокарта Palit NVIDIA  GeForce RTX 5060 PA-RTX5060 DUAL OC 8ГБ Dual, GDDR7, OC,  Ret [ne75060s19p1-gb2063d]	PALIT	8	145	\N	\N
-97	Видеокарта Palit NVIDIA  GeForce RTX 5060TI PA-RTX5060TI INFINITY 3 16ГБ Infinity 3, GDDR7, Ret [ne7506t019t1-gb2061s]	PALIT	16	180	\N	\N
-98	Видеокарта Gigabyte NVIDIA  GeForce RTX 5070 GV-N5070GAMING OC-12GD 1.0 12ГБ Gaming, GDDR7, OC,  Ret	GIGABYTE	12	250	\N	\N
-99	Видеокарта Gigabyte NVIDIA  GeForce RTX 5070 GV-N5070WF3OC-12GD 1.0 12ГБ Windforce, GDDR7, OC,  Ret	GIGABYTE	12	250	\N	\N
-100	Видеокарта Palit NVIDIA  GeForce RTX 5060TI PA-RTX5060TI INFINITY 3 OC 16ГБ Infinity 3, GDDR7, OC,  Ret [ne7506ts19t1-gb2061s]	PALIT	16	180	\N	\N
-101	Видеокарта MSI NVIDIA  GeForce RTX 3050 RTX 3050 VENTUS 2X XS 8G OC 8ГБ Ventus 2X, GDDR6, OC,  Ret	MSI	8	115	\N	\N
-102	Видеокарта Gigabyte NVIDIA  GeForce RTX 3060 GV-N3060GAMING OC-8GD 2.0 8ГБ Gaming, GDDR6, OC,  Ret	GIGABYTE	8	170	\N	\N
-103	Видеокарта Biostar AMD  Radeon RX 580 VA5815RQ82 8ГБ GDDR5, Ret	BIOSTAR	8	150	\N	\N
-104	Видеокарта Palit NVIDIA  GeForce RTX 5070 PA-RTX5070 Infinity 3 12ГБ Infinity 3, GDDR7, Ret [ne75070019k9-gb2050s]	PALIT	12	250	\N	\N
-105	Видеокарта AFOX NVIDIA  GeForce RTX 2060 AF2060-6144D6H4-V2 6ГБ GDDR6, Ret	AFOX	6	160	\N	\N
-106	Видеокарта Gigabyte NVIDIA  GeForce RTX 5070TI GV-N507TWF3OC-16GD 1.0 16ГБ Windforce, GDDR7, OC,  Ret	GIGABYTE	16	300	\N	\N
-107	Видеокарта MSI NVIDIA  GeForce RTX 5060TI RTX 5060 TI 16G GAMING OC 16ГБ Gaming, GDDR7, OC,  Ret	MSI	16	180	\N	\N
-108	Видеокарта Palit NVIDIA  GeForce RTX 5060 PA-RTX5060 DUAL 8ГБ Dual, GDDR7, Ret [ne75060019p1-gb2063d]	PALIT	8	145	\N	\N
-109	Видеокарта Gigabyte NVIDIA  GeForce RTX 5070TI GV-N507TGAMING OC-16GD 1.0 16ГБ Gaming, GDDR7, OC,  Ret	GIGABYTE	16	300	\N	\N
-110	Видеокарта Gigabyte NVIDIA  GeForce RTX 5060TI GV-N506TWF2MAX OC-8GD 1.0 8ГБ Windforce Max, GDDR7, OC,  Ret	GIGABYTE	8	180	\N	\N
-111	Видеокарта MSI NVIDIA  GeForce RTX 3050 RTX 3050 VENTUS 2X E 6G OC 6ГБ Ventus 2X, GDDR6, OC,  Ret	MSI	6	70	\N	\N
-112	Видеокарта Palit NVIDIA  GeForce RTX 5060 PA-RTX5060 DUAL OC 8ГБ Dual, GDDR7, OC,  Ret [ne75060s19p1-gb2063d]	PALIT	8	145	\N	\N
-113	Видеокарта ASRock INTEL  ARC B580 B580 CL 12GO 12ГБ Challenger, GDDR6, OC,  Ret	ASROCK	12	190	\N	\N
-114	Видеокарта Gigabyte NVIDIA  GeForce RTX 5070 GV-N5070EAGLE OC-12GD 1.0 12ГБ Eagle, GDDR7, OC,  Ret	GIGABYTE	12	250	\N	\N
-115	Видеокарта AFOX NVIDIA  GeForce GTX 1660SUPER AF1660S-6144D6H4-V2 6ГБ GDDR6, Ret	AFOX	6	\N	\N	\N
-116	Видеокарта Gigabyte NVIDIA  GeForce RTX 5070 GV-N5070AERO OC-12GD 1.0 12ГБ Aero, GDDR7, OC,  Ret	GIGABYTE	12	250	\N	\N
+COPY public.gpus (id, name, brand, vram, tdp, price, interface, img_url) FROM stdin;
 \.
 
 
@@ -692,57 +489,7 @@ COPY public.gpus (id, name, brand, vram, tdp, price, interface) FROM stdin;
 -- Data for Name: motherboards; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.motherboards (id, name, brand, socket, chipset, form_factor, ram_type, ram_slots, max_ram, price) FROM stdin;
-1	MSI B550 Tomahawk	MSI	AM4	B550	ATX	DDR4	4	128	160
-2	ASUS ROG Strix B550-F	ASUS	AM4	B550	ATX	DDR4	4	128	180
-3	Gigabyte Z690 UD	Gigabyte	LGA1700	Z690	ATX	DDR4	4	128	200
-4	ASUS Prime Z690-P	ASUS	LGA1700	Z690	ATX	DDR5	4	128	250
-97	Материнская плата Gigabyte B550 GAMING X V2, Socket AM4, AMD B550, ATX, Ret	GIGABYTE	Socket AM4	AMD B550	DIMM	DDR4	4	128	\N
-98	Материнская плата MSI MPG B550 GAMING PLUS, Socket AM4, AMD B550, ATX, Ret	MSI	Socket AM4	AMD B550	DIMM	DDR4	4	128	\N
-99	Материнская плата MSI A520M-A PRO, Socket AM4, AMD A520, mATX, Ret	MSI	Socket AM4	AMD A520	DIMM	DDR4	2	64	\N
-100	Материнская плата Gigabyte A520M K V2, Socket AM4, AMD A520, mATX, Ret	GIGABYTE	Socket AM4	AMD A520	DIMM	DDR4	2	64	\N
-101	Материнская плата Gigabyte B760M DS3H DDR4, Socket LGA 1700, Intel B760, mATX, Ret	GIGABYTE	Socket LGA 1700	Intel B760	DIMM	DDR4	4	128	\N
-102	Материнская плата MSI PRO H610M-E DDR4, Socket LGA 1700, Intel H610, mATX, Ret	MSI	Socket LGA 1700	Intel H610	DIMM	DDR4	2	64	\N
-103	Материнская плата MSI B550M PRO-VDH WIFI, Socket AM4, AMD B550, mATX, Ret	MSI	Socket AM4	AMD B550	DIMM	DDR4	4	128	\N
-104	Материнская плата Gigabyte B550M K, Socket AM4, AMD B550, mATX, Ret	GIGABYTE	Socket AM4	AMD B550	DIMM	DDR4	4	128	\N
-105	Материнская плата MSI PRO B760M-E DDR4, Socket LGA 1700, Intel B760, mATX, Ret	MSI	Socket LGA 1700	Intel B760	DIMM	DDR4	2	64	\N
-106	Материнская плата MSI B550M PRO-VDH, Socket AM4, AMD B550, mATX, Ret	MSI	Socket AM4	AMD B550	DIMM	DDR4	4	128	\N
-107	Материнская плата ASUS PRIME B550-PLUS, Socket AM4, AMD B550, ATX, Ret	ASUS	Socket AM4	AMD B550	DIMM	DDR4	4	128	\N
-108	Материнская плата MSI B760 GAMING PLUS WIFI, Socket LGA 1700, Intel B760, ATX, Ret	MSI	Socket LGA 1700	Intel B760	DIMM	DDR5	4	192	\N
-109	Материнская плата ASUS ROG STRIX B550-F GAMING, Socket AM4, AMD B550, ATX, Ret	ASUS	Socket AM4	AMD B550	DIMM	DDR4	4	128	\N
-110	Материнская плата Gigabyte B850 GAMING X WIFI6E, Socket AM5, AMD B850, ATX, Ret	GIGABYTE	Socket AM5	AMD B850	DIMM	DDR5	4	256	\N
-111	Материнская плата Gigabyte B760M D3HP DDR4, Socket LGA 1700, Intel B760, mATX, Ret	GIGABYTE	Socket LGA 1700	Intel B760	DIMM	DDR4	4	128	\N
-112	Материнская плата MSI B760M GAMING PLUS WIFI, Socket LGA 1700, Intel B760, mATX, Ret	MSI	Socket LGA 1700	Intel B760	DIMM	DDR5	4	256	\N
-113	Материнская плата ASUS PRIME B550M-K, Socket AM4, AMD B550, mATX, Ret	ASUS	Socket AM4	AMD B550	DIMM	DDR4	4	128	\N
-114	Материнская плата MSI PRO B760-P WIFI DDR4, Socket LGA 1700, Intel B760, ATX, Ret	MSI	Socket LGA 1700	Intel B760	DIMM	DDR4	4	128	\N
-115	Материнская плата ASUS TUF GAMING B850-PLUS WIFI, Socket AM5, AMD B850, ATX, Ret	ASUS	Socket AM5	AMD B850	DIMM	DDR5	4	256	\N
-116	Материнская плата MSI PRO B650-S WIFI, Socket AM5, AMD B650, ATX, Ret	MSI	Socket AM5	AMD B650	DIMM	DDR5	4	256	\N
-117	Материнская плата MSI MAG Z790 TOMAHAWK WIFI, Socket LGA 1700, Intel Z790, ATX, Ret	MSI	Socket LGA 1700	Intel Z790	DIMM	DDR5	4	192	\N
-118	Материнская плата Gigabyte B550M DS3H R2, Socket AM4, AMD B550, mATX, Ret	GIGABYTE	Socket AM4	AMD B550	DIMM	DDR4	4	128	\N
-119	Материнская плата MSI Z790 GAMING PLUS WIFI, Socket LGA 1700, Intel Z790, ATX, Ret	MSI	Socket LGA 1700	Intel Z790	DIMM	DDR5	4	128	\N
-120	Материнская плата Gigabyte A520M DS3H V2, Socket AM4, AMD A520, mATX, Ret	GIGABYTE	Socket AM4	AMD A520	DIMM	DDR4	4	128	\N
-121	Материнская плата ASUS PRIME B760M-K D4, Socket LGA 1700, Intel B760, mATX, Ret	ASUS	Socket LGA 1700	Intel B760	DIMM	DDR4	2	64	\N
-122	Материнская плата Gigabyte H610M K DDR4, Socket LGA 1700, Intel H610, mATX, Ret	GIGABYTE	Socket LGA 1700	Intel H610	DIMM	DDR4	2	64	\N
-123	Материнская плата ASUS TUF GAMING B550-PLUS, Socket AM4, AMD B550, ATX, Ret	ASUS	Socket AM4	AMD B550	DIMM	DDR4	4	128	\N
-124	Материнская плата MSI PRO H610M-S DDR4, Socket LGA 1700, Intel H610, mATX, Ret	MSI	Socket LGA 1700	Intel H610	DIMM	DDR4	2	64	\N
-125	Материнская плата ASUS PRIME B660-PLUS D4, Socket LGA 1700, Intel B660, ATX, Ret	ASUS	Socket LGA 1700	Intel B660	DIMM	DDR4	4	128	\N
-126	Материнская плата ASUS TUF GAMING B850M-PLUS WIFI, Socket AM5, AMD B850, mATX, Ret	ASUS	Socket AM5	AMD B850	DIMM	DDR5	4	192	\N
-127	Материнская плата ASUS PRIME B760M-K, Socket LGA 1700, Intel B760, mATX, Ret	ASUS	Socket LGA 1700	Intel B760	DIMM	DDR5	2	96	\N
-128	Материнская плата MSI PRO B760M-P DDR4, Socket LGA 1700, Intel B760, mATX, Ret	MSI	Socket LGA 1700	Intel B760	DIMM	DDR4	4	128	\N
-129	Материнская плата MSI A520M PRO, Socket AM4, AMD A520, mATX, Ret	MSI	Socket AM4	AMD A520	DIMM	DDR4	2	64	\N
-130	Материнская плата Gigabyte B650 EAGLE AX, Socket AM5, AMD B650, ATX, Ret	GIGABYTE	Socket AM5	AMD B650	DIMM	DDR5	4	256	\N
-131	Материнская плата ASUS TUF GAMING B450-PLUS II, Socket AM4, AMD B450, ATX, Ret	ASUS	Socket AM4	AMD B450	DIMM	DDR4	4	128	\N
-132	Материнская плата MSI B550-A PRO, Socket AM4, AMD B550, ATX, Ret	MSI	Socket AM4	AMD B550	DIMM	DDR4	4	128	\N
-133	Материнская плата Gigabyte B550 GAMING X V2, Socket AM4, AMD B550, ATX, Ret	GIGABYTE	Socket AM4	AMD B550	DIMM	DDR4	4	128	\N
-134	Материнская плата Gigabyte A520M K V2, Socket AM4, AMD A520, mATX, Ret	GIGABYTE	Socket AM4	AMD A520	DIMM	DDR4	2	64	\N
-135	Материнская плата MSI MPG B550 GAMING PLUS, Socket AM4, AMD B550, ATX, Ret	MSI	Socket AM4	AMD B550	DIMM	DDR4	4	128	\N
-136	Материнская плата MSI A520M-A PRO, Socket AM4, AMD A520, mATX, Ret	MSI	Socket AM4	AMD A520	DIMM	DDR4	2	64	\N
-137	Материнская плата Gigabyte B550M K, Socket AM4, AMD B550, mATX, Ret	GIGABYTE	Socket AM4	AMD B550	DIMM	DDR4	4	128	\N
-138	Материнская плата Gigabyte B760M DS3H DDR4, Socket LGA 1700, Intel B760, mATX, Ret	GIGABYTE	Socket LGA 1700	Intel B760	DIMM	DDR4	4	128	\N
-139	Материнская плата MSI B550M PRO-VDH WIFI, Socket AM4, AMD B550, mATX, Ret	MSI	Socket AM4	AMD B550	DIMM	DDR4	4	128	\N
-140	Материнская плата Gigabyte B550M DS3H R2, Socket AM4, AMD B550, mATX, Ret	GIGABYTE	Socket AM4	AMD B550	DIMM	DDR4	4	128	\N
-141	Материнская плата MSI PRO H610M-E DDR4, Socket LGA 1700, Intel H610, mATX, Ret	MSI	Socket LGA 1700	Intel H610	DIMM	DDR4	2	64	\N
-142	Материнская плата MSI B550M PRO-VDH, Socket AM4, AMD B550, mATX, Ret	MSI	Socket AM4	AMD B550	DIMM	DDR4	4	128	\N
+COPY public.motherboards (id, name, brand, socket, chipset, form_factor, ram_type, ram_slots, max_ram, price, img_url) FROM stdin;
 \.
 
 
@@ -750,56 +497,7 @@ COPY public.motherboards (id, name, brand, socket, chipset, form_factor, ram_typ
 -- Data for Name: psus; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.psus (id, name, brand, wattage, certification, modular, price) FROM stdin;
-1	Corsair RM650x	Corsair	650	80+ Gold	t	110
-2	Be Quiet Pure Power 11	Be Quiet	600	80+ Gold	f	90
-3	Seasonic Focus GX-750	Seasonic	750	80+ Gold	t	130
-4	Блок питания BLOODY BD-PS750G,  750Вт,  80 PLUS GOLD,  120мм, черный, retail [bd-ps750g-m]	BLOODY	750	80 PLUS GOLD	t	\N
-5	Блок питания Formula APMM-750BM,  750Вт,  80 PLUS BRONZE,  140мм, черный, retail(восстановленный)	FORMULA	750	80 PLUS BRONZE	t	\N
-6	Блок питания KINGPRICE KPPSU750,  750Вт,  120мм, серый [kppsu750v3]	KINGPRICE	750	\N	\N	\N
-7	Блок питания Formula APMM-1000GM Gen.5,  1000Вт,  80 PLUS GOLD,  120мм, черный, retail(Б/У)	FORMULA	1000	80 PLUS GOLD	t	\N
-8	Блок питания BLOODY BD-PS1000G,  1000Вт,  80 PLUS GOLD,  140мм, черный, retail [bd-ps1000g-m]	BLOODY	1000	80 PLUS GOLD	t	\N
-9	Блок питания Thermaltake Litepower,  650Вт,  120мм, черный, retail [ps-ltp-0650npcneu-2]	THERMALTAKE	650	\N	\N	\N
-10	Блок питания Digma DPSU-550W-WH,  550Вт,  80 PLUS WHITE,  120мм, черный, retail	DIGMA	550	80 PLUS WHITE	\N	\N
-11	Блок питания BLOODY BD-PS850G,  850Вт,  80 PLUS GOLD,  120мм, черный, retail [bd-ps850g-m]	BLOODY	850	80 PLUS GOLD	t	\N
-12	Блок питания Digma DPSU-750W-WH,  750Вт,  80 PLUS WHITE,  120мм, черный, retail	DIGMA	750	80 PLUS WHITE	\N	\N
-13	Блок питания MSI MAG A650BN,  650Вт,  80 PLUS BRONZE,  120мм, черный, retail [306-7zp2b11-ce0]	MSI	650	80 PLUS BRONZE	\N	\N
-14	Блок питания Accord ACC-350W-12,  350Вт,  120мм, черный [acc-350-12]	ACCORD	350	\N	\N	\N
-15	Блок питания BLOODY BD-PS750G,  750Вт,  80 PLUS GOLD,  120мм, белый, retail [bd-ps750g-mw]	BLOODY	750	80 PLUS GOLD	t	\N
-16	Блок питания BLOODY BD-PS1250P,  1250Вт,  80 PLUS PLATINUM,  140мм, черный, retail [bd-ps1250p-m]	BLOODY	1250	80 PLUS PLATINUM	t	\N
-17	Блок питания Thermaltake Smart RGB 700,  700Вт,  80 PLUS WHITE,  120мм, черный, retail [ps-spr-0700nhsawe-1]	THERMALTAKE	700	80 PLUS WHITE	\N	\N
-18	Блок питания BLOODY BD-PS750G,  750Вт,  80 PLUS GOLD,  120мм, черный, retail [bd-ps750g-mr]	BLOODY	750	80 PLUS GOLD	t	\N
-19	Блок питания KINGPRICE KPPSU500,  500Вт,  120мм, черный, retail [kppsu500v2]	KINGPRICE	500	\N	\N	\N
-20	Блок питания DeepCool PF750,  750Вт,  80 PLUS WHITE,  120мм, черный, retail [r-pf750d-ha0b-wdeu]	DEEPCOOL	750	80 PLUS WHITE	\N	\N
-21	Блок питания BLOODY BD-PS700W,  700Вт,  80 PLUS WHITE,  120мм, черный, retail	BLOODY	700	80 PLUS WHITE	\N	\N
-22	Блок питания DeepCool GamerStorm PQ850G Gen.5,  850Вт,  80 PLUS GOLD,  120мм, черный, retail [r-pq850g-fd0b-wgeu-v1]	DEEPCOOL	850	80 PLUS GOLD	t	\N
-23	Блок питания DeepCool GamerStorm PN850M V2 Gen.5,  850Вт,  80 PLUS GOLD,  120мм, черный, retail [r-pn850m-fc0b-wgeu]	DEEPCOOL	850	80 PLUS GOLD	\N	\N
-24	Блок питания BLOODY BD-PS600W,  600Вт,  80 PLUS WHITE,  120мм, черный, retail	BLOODY	600	80 PLUS WHITE	\N	\N
-25	Блок питания BLOODY BD-PS500W,  500Вт,  80 PLUS WHITE,  120мм, черный, retail	BLOODY	500	80 PLUS WHITE	\N	\N
-26	Блок питания DeepCool GamerStorm PQ750G Gen.5,  750Вт,  80 PLUS GOLD,  120мм, черный, retail [r-pq750g-fd0b-wgeu-v1]	DEEPCOOL	750	80 PLUS GOLD	t	\N
-27	Блок питания Accord ACC-400W-12,  400Вт,  120мм, черный [acc-400-12]	ACCORD	400	\N	\N	\N
-28	Блок питания DeepCool PF700,  700Вт,  80 PLUS WHITE,  120мм, черный, retail [r-pf700d-ha0b-wdeu]	DEEPCOOL	700	80 PLUS WHITE	\N	\N
-29	Блок питания Digma DPSU-450W,  450Вт,  120мм, черный, retail	DIGMA	450	\N	\N	\N
-30	Блок питания DeepCool PF600,  600Вт,  80 PLUS WHITE,  120мм, черный, retail [r-pf600d-ha0b-wdeu]	DEEPCOOL	600	80 PLUS WHITE	\N	\N
-31	Блок питания DeepCool PF650,  650Вт,  80 PLUS WHITE,  120мм, черный, retail [r-pf650d-ha0b-wdeu]	DEEPCOOL	650	80 PLUS WHITE	\N	\N
-32	Блок питания Accord ACC-450W-12,  450Вт,  120мм, черный [acc-450-12]	ACCORD	450	\N	\N	\N
-33	Блок питания DeepCool PF500,  500Вт,  80 PLUS WHITE,  120мм, черный, retail [r-pf500d-ha0b-wdeu]	DEEPCOOL	500	80 PLUS WHITE	\N	\N
-34	Блок питания Digma DPSU-500W,  500Вт,  120мм, черный, retail	DIGMA	500	\N	\N	\N
-35	Блок питания Thermaltake Toughpower GF A3 Gen.5,  750Вт,  80 PLUS GOLD,  120мм, черный, retail [ps-tpd-0750fnfage-h]	THERMALTAKE	750	80 PLUS GOLD	t	\N
-36	Блок питания MSI MEG Ai1300P,  1300Вт,  80 PLUS PLATINUM,  120мм, черный, retail [306-7zp4a11-ce0]	MSI	1300	80 PLUS PLATINUM	t	\N
-37	Блок питания Thermaltake Toughpower GF A3 Gen.5,  1050Вт,  80 PLUS GOLD,  120мм, черный, retail [ps-tpd-1050fnfage-h]	THERMALTAKE	1050	80 PLUS GOLD	t	\N
-38	Блок питания Thermaltake Toughpower GF A3 Gen.5,  650Вт,  80 PLUS GOLD,  120мм, черный, retail [ps-tpd-0650fnfage-h]	THERMALTAKE	650	80 PLUS GOLD	t	\N
-39	Блок питания BLOODY BD-PS700W,  700Вт,  80 PLUS WHITE,  120мм, черный, retail [bd-ps700w-r]	BLOODY	700	80 PLUS WHITE	\N	\N
-40	Блок питания DeepCool GamerStorm PQ750G Gen.5,  750Вт,  80 PLUS GOLD,  120мм, черный, retail [r-pq750g-fd0b-wgeu-v1]	DEEPCOOL	750	80 PLUS GOLD	t	\N
-41	Блок питания DeepCool PF750,  750Вт,  80 PLUS WHITE,  120мм, черный, retail [r-pf750d-ha0b-wdeu]	DEEPCOOL	750	80 PLUS WHITE	\N	\N
-42	Блок питания DeepCool GamerStorm PN850M V2 Gen.5,  850Вт,  80 PLUS GOLD,  120мм, черный, retail [r-pn850m-fc0b-wgeu]	DEEPCOOL	850	80 PLUS GOLD	\N	\N
-43	Блок питания BLOODY BD-PS750G,  750Вт,  80 PLUS GOLD,  120мм, черный, retail [bd-ps750g-m]	BLOODY	750	80 PLUS GOLD	t	\N
-44	Блок питания Accord ACC-400W-12,  400Вт,  120мм, черный [acc-400-12]	ACCORD	400	\N	\N	\N
-45	Блок питания DeepCool PF600,  600Вт,  80 PLUS WHITE,  120мм, черный, retail [r-pf600d-ha0b-wdeu]	DEEPCOOL	600	80 PLUS WHITE	\N	\N
-46	Блок питания BLOODY BD-PS1000G,  1000Вт,  80 PLUS GOLD,  140мм, черный, retail [bd-ps1000g-m]	BLOODY	1000	80 PLUS GOLD	t	\N
-47	Блок питания DeepCool GamerStorm PQ850G Gen.5,  850Вт,  80 PLUS GOLD,  120мм, черный, retail [r-pq850g-fd0b-wgeu-v1]	DEEPCOOL	850	80 PLUS GOLD	t	\N
-48	Блок питания DeepCool PL750D,  750Вт,  80 PLUS BRONZE,  120мм, черный, retail [r-pl750d-fc0b-wdeu-v2]	DEEPCOOL	750	80 PLUS BRONZE	\N	\N
-49	Блок питания DeepCool PF500,  500Вт,  80 PLUS WHITE,  120мм, черный, retail [r-pf500d-ha0b-wdeu]	DEEPCOOL	500	80 PLUS WHITE	\N	\N
+COPY public.psus (id, name, brand, wattage, certification, modular, price, img_url) FROM stdin;
 \.
 
 
@@ -807,11 +505,7 @@ COPY public.psus (id, name, brand, wattage, certification, modular, price) FROM 
 -- Data for Name: rams; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.rams (id, name, brand, capacity, speed, price, ram_type) FROM stdin;
-1	Corsair Vengeance LPX	Corsair	16	3200	50	\N
-2	G.Skill Ripjaws V	G.Skill	32	3600	90	\N
-3	Kingston Fury Beast	Kingston	16	5200	80	\N
-4	Corsair Dominator Platinum	Corsair	32	6000	160	\N
+COPY public.rams (id, name, brand, capacity, speed, price, ram_type, img_url) FROM stdin;
 \.
 
 
@@ -819,29 +513,80 @@ COPY public.rams (id, name, brand, capacity, speed, price, ram_type) FROM stdin;
 -- Data for Name: storages; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.storages (id, name, brand, capacity, interface, price) FROM stdin;
-1	Samsung 970 EVO Plus	Samsung	500	NVMe	60
-2	Samsung 980 PRO	Samsung	1000	NVMe	120
-3	WD Blue HDD	Western Digital	2000	SATA	50
-4	Crucial MX500	Crucial	1000	SATA	70
-50	SSD накопитель Samsung 990 Pro MZ-V9P2T0BW 2ТБ, M.2 2280, PCIe 4.0 x4,  NVMe,  M.2	SAMSUNG	2	PCIe 4.0 x4	\N
-51	SSD накопитель Kingston A400 SA400S37/240G 240ГБ, 2.5", SATA III,  SATA	KINGSTON	240	SATA III	\N
-52	SSD накопитель Samsung 990 Pro MZ-V9P1T0BW 1ТБ, M.2 2280, PCIe 4.0 x4,  NVMe,  M.2	SAMSUNG	1024	PCIe 4.0 x4	\N
-53	SSD накопитель Kingston NV3 SNV3S/2000G 2ТБ, M.2 2280, PCIe 4.0 x4,  NVMe,  M.2	KINGSTON	2	PCIe 4.0 x4	\N
-54	SSD накопитель Kingston A400 SA400S37/960G 960ГБ, 2.5", SATA III,  SATA	KINGSTON	960	SATA III	\N
-55	SSD накопитель Samsung 870 EVO MZ-77E500BW 500ГБ, 2.5", SATA III,  SATA	SAMSUNG	500	SATA III	\N
-56	SSD накопитель KINGSPEC P3-256 256ГБ, 2.5", SATA III,  SATA	KINGSPEC	256	SATA III	\N
-92	Жесткий диск Seagate Ironwolf ST8000VN004,  8ТБ,  HDD,  SATA III,  3.5"	\N	8	SATA III	\N
-93	Жесткий диск WD Purple WD33PURZ,  3ТБ,  HDD,  SATA III,  3.5"	\N	3	SATA III	\N
-94	Жесткий диск WD Black WD5000LPSX,  500ГБ,  HDD,  SATA III,  2.5"	\N	500	SATA III	\N
-95	Жесткий диск WD Blue WD20SPZX,  2ТБ,  HDD,  SATA III,  2.5"	\N	2	SATA III	\N
-96	Жесткий диск WD Purple WD23PURZ,  2ТБ,  HDD,  SATA III,  3.5"	\N	2	SATA III	\N
-97	Жесткий диск WD Purple WD43PURZ,  4ТБ,  HDD,  SATA III,  3.5"	\N	4	SATA III	\N
-98	Жесткий диск WD Purple WD10PURZ,  1ТБ,  HDD,  SATA III,  3.5"	\N	1024	SATA III	\N
-99	Жесткий диск WD Purple WD85PURZ,  8ТБ,  HDD,  SATA III,  3.5"	\N	8	SATA III	\N
-100	Жесткий диск WD Red Plus WD40EFPX,  4ТБ,  HDD,  SATA III,  3.5"	\N	4	SATA III	\N
-101	Жесткий диск WD Blue WD40EZAX,  4ТБ,  HDD,  SATA III,  3.5"	\N	4	SATA III	\N
-102	Жесткий диск WD Purple WD64PURZ,  6ТБ,  HDD,  SATA III,  3.5"	\N	6	SATA III	\N
+COPY public.storages (id, name, brand, capacity, interface, price, img_url) FROM stdin;
+106	SSD накопитель KINGSPEC P3-256 256ГБ, 2.5", SATA III,  SATA	KINGSPEC	256	SATA III	3890	\N
+108	SSD накопитель Digma Run S9 DGSR2512GS93T 512ГБ, 2.5", SATA III,  SATA,  rtl	DIGMA	512	SATA III	7990	\N
+111	SSD накопитель Digma Run S9 DGSR2256GS93T 256ГБ, 2.5", SATA III,  SATA,  rtl	DIGMA	256	SATA III	5990	\N
+112	SSD накопитель Digma Run S9 DGSR2001TS93T 1ТБ, 2.5", SATA III,  SATA,  rtl	DIGMA	1024	SATA III	13990	\N
+113	SSD накопитель Digma Run Y2 DGSR2128GY23T 128ГБ, 2.5", SATA III,  SATA,  rtl	DIGMA	128	SATA III	2490	\N
+114	SSD накопитель KINGSPEC P3-512 512ГБ, 2.5", SATA III,  SATA	KINGSPEC	512	SATA III	6990	\N
+116	SSD накопитель Samsung 980 MZ-V8V500BW 500ГБ, M.2 2280, PCIe 3.0 x4,  NVMe,  M.2	SAMSUNG	500	PCIe 3.0 x4	21990	\N
+117	SSD накопитель NETAC N600S NT01N600S-256G-S3X 256ГБ, 2.5", SATA III,  SATA	NETAC	256	SATA III	4990	\N
+119	SSD накопитель Samsung 980 MZ-V8V1T0BW 1ТБ, M.2 2280, PCIe 3.0 x4,  NVMe,  M.2	SAMSUNG	1024	PCIe 3.0 x4	24990	\N
+120	SSD накопитель A-Data Legend 960 Max ALEG-960M-1TCS 1ТБ, M.2 2280, PCIe 4.0 x4,  NVMe,  M.2	A-DATA	1024	PCIe 4.0 x4	17260	\N
+121	SSD накопитель KINGSPEC P3-1TB 1ТБ, 2.5", SATA III,  SATA	KINGSPEC	1024	SATA III	11990	\N
+122	SSD накопитель A-Data XPG SX8200 Pro ASX8200PNP-512GT-C 512ГБ, M.2 2280, PCIe 3.0 x4,  NVMe,  M.2	A-DATA	512	PCIe 3.0 x4	9290	\N
+123	SSD накопитель Crucial BX500 CT240BX500SSD1 240ГБ, 2.5", SATA III,  SATA	CRUCIAL	240	SATA III	5990	\N
+124	SSD накопитель NETAC N600S NT01N600S-512G-S3X 512ГБ, 2.5", SATA III,  SATA	NETAC	512	SATA III	7590	\N
+126	SSD накопитель Samsung 870 EVO MZ-77E250BW 250ГБ, 2.5", SATA III,  SATA	SAMSUNG	250	SATA III	15990	\N
+127	SSD накопитель Patriot P220 P220S512G25 512ГБ, 2.5", SATA III,  SATA	PATRIOT	512	SATA III	7990	\N
+128	SSD накопитель A-Data Ultimate SU650 ASU650SS-512GT-R 512ГБ, 2.5", SATA III,  SATA	A-DATA	512	SATA III	6990	\N
+129	SSD накопитель Patriot Burst Elite PBE240GS25SSDR 240ГБ, 2.5", SATA III,  SATA	PATRIOT	240	SATA III	4590	\N
+130	SSD накопитель A-Data Ultimate SU650 ASU650SS-256GT-R 256ГБ, 2.5", SATA III,  SATA	A-DATA	256	SATA III	4790	\N
+131	SSD накопитель Kingston KC3000 SKC3000S/512G 512ГБ, M.2 2280, PCIe 4.0 x4,  NVMe,  M.2	KINGSTON	512	PCIe 4.0 x4	17990	\N
+132	SSD накопитель A-Data Ultimate SU650 ASU650SS-240GT-R 240ГБ, 2.5", SATA III,  SATA	A-DATA	240	SATA III	5040	\N
+133	SSD накопитель A-Data Legend 960 Max ALEG-960M-2TCS 2ТБ, M.2 2280, PCIe 4.0 x4,  NVMe,  M.2	A-DATA	2	PCIe 4.0 x4	26990	\N
+134	SSD накопитель Patriot P210 P210S512G25 512ГБ, 2.5", SATA III,  SATA	PATRIOT	512	SATA III	7990	\N
+135	SSD накопитель Digma Mega M2 DGSM3512GM23T 512ГБ, M.2 2280, PCIe 3.0 x4,  NVMe,  M.2,  rtl	DIGMA	512	PCIe 3.0 x4	8990	\N
+136	SSD накопитель NETAC N535S NT01N535S-240G-S3X 240ГБ, 2.5", SATA III,  SATA	NETAC	240	SATA III	3990	\N
+137	SSD накопитель Kingston KC600 SKC600/256G 256ГБ, 2.5", SATA III,  SATA	KINGSTON	256	SATA III	9990	\N
+104	SSD накопитель Kingston NV3 SNV3S/1000G 1ТБ, M.2 2280, PCIe 4.0 x4,  NVMe,  M.2	KINGSTON	1024	PCIe 4.0 x4	12990	\N
+125	SSD накопитель Kingston NV3 SNV3S/500G 500ГБ, M.2 2280, PCIe 4.0 x4,  NVMe,  M.2	KINGSTON	500	PCIe 4.0 x4	8990	\N
+103	SSD накопитель Kingston A400 SA400S37/480G 480ГБ, 2.5", SATA III,  SATA	KINGSTON	480	SATA III	9990	\N
+105	SSD накопитель Kingston A400 SA400S37/240G 240ГБ, 2.5", SATA III,  SATA	KINGSTON	240	SATA III	6990	\N
+115	SSD накопитель Samsung 990 Pro MZ-V9P1T0BW 1ТБ, M.2 2280, PCIe 4.0 x4,  NVMe,  M.2	SAMSUNG	1024	PCIe 4.0 x4	23990	\N
+109	SSD накопитель Samsung 990 Pro MZ-V9P2T0BW 2ТБ, M.2 2280, PCIe 4.0 x4,  NVMe,  M.2	SAMSUNG	2	PCIe 4.0 x4	31990	\N
+107	SSD накопитель Samsung 870 EVO MZ-77E500BW 500ГБ, 2.5", SATA III,  SATA	SAMSUNG	500	SATA III	23990	\N
+110	SSD накопитель Kingston A400 SA400S37/960G 960ГБ, 2.5", SATA III,  SATA	KINGSTON	960	SATA III	11990	\N
+118	SSD накопитель Kingston KC3000 SKC3000S/1024G 1ТБ, M.2 2280, PCIe 4.0 x4,  NVMe,  M.2	KINGSTON	1024	PCIe 4.0 x4	19990	\N
+138	SSD накопитель A-Data Legend 900 SLEG-900-1TCS 1ТБ, M.2 2280, PCIe 4.0 x4,  NVMe,  M.2	A-DATA	1024	PCIe 4.0 x4	15990	\N
+145	SSD накопитель Kingston NV3 SNV3S/2000G 2ТБ, M.2 2280, PCIe 4.0 x4,  NVMe,  M.2	KINGSTON	2	PCIe 4.0 x4	20990	\N
+153	Жесткий диск Seagate Barracuda ST2000DM008,  2ТБ,  HDD,  SATA III,  3.5"	\N	2	SATA III	15990	\N
+154	Жесткий диск Seagate Skyhawk ST4000VX016,  4ТБ,  HDD,  SATA III,  3.5"	\N	4	SATA III	18990	\N
+157	Жесткий диск WD Purple WD11PURZ,  1ТБ,  HDD,  SATA III,  3.5"	\N	1024	SATA III	11990	\N
+158	Жесткий диск WD Blue WD20EZBX,  2ТБ,  HDD,  SATA III,  3.5"	\N	2	SATA III	15990	\N
+160	Жесткий диск WD Blue WD20EARZ,  2ТБ,  HDD,  SATA III,  3.5"	\N	2	SATA III	13990	\N
+161	Жесткий диск WD Purple WD64PURZ,  6ТБ,  HDD,  SATA III,  3.5"	\N	6	SATA III	25990	\N
+162	Жесткий диск WD Blue WD60EZAX,  6ТБ,  HDD,  SATA III,  3.5"	\N	6	SATA III	25990	\N
+164	Жесткий диск Seagate Skyhawk ST4000VX015,  4ТБ,  HDD,  SATA III,  3.5"	\N	4	SATA III	18990	\N
+165	Жесткий диск Seagate Ironwolf ST4000VN006,  4ТБ,  HDD,  SATA III,  3.5"	\N	4	SATA III	21990	\N
+166	Жесткий диск Seagate Skyhawk ST2000VX017,  2ТБ,  HDD,  SATA III,  3.5"	\N	2	SATA III	13990	\N
+167	Жесткий диск WD Red Plus WD60EFPX,  6ТБ,  HDD,  SATA III,  3.5"	\N	6	SATA III	31990	\N
+168	Жесткий диск WD Blue WD80EAAZ,  8ТБ,  HDD,  SATA III,  3.5"	\N	8	SATA III	26990	\N
+170	Жесткий диск Seagate Barracuda ST4000DM004,  4ТБ,  HDD,  SATA III,  3.5"	\N	4	SATA III	16990	\N
+171	Жесткий диск Seagate Skyhawk ST1000VX013,  1ТБ,  HDD,  SATA III,  3.5"	\N	1024	SATA III	10990	\N
+172	Жесткий диск Seagate Barracuda ST1000DM014,  1ТБ,  HDD,  SATA III,  3.5"	\N	1024	SATA III	13990	\N
+174	Жесткий диск Toshiba MQ04 MQ04ABF100,  1ТБ,  HDD,  SATA III,  2.5"	\N	1024	SATA III	15990	\N
+175	Жесткий диск Seagate Barracuda ST2000DM005,  2ТБ,  HDD,  SATA III,  3.5"	\N	2	SATA III	12990	\N
+176	Жесткий диск Seagate Barracuda ST8000DM004,  8ТБ,  HDD,  SATA III,  3.5"	\N	8	SATA III	30990	\N
+177	Жесткий диск WD Blue WD10SPZX,  1ТБ,  HDD,  SATA III,  2.5"	\N	1024	SATA III	15990	\N
+178	Жесткий диск Toshiba P300 HDWD320UZSVA,  2ТБ,  HDD,  SATA III,  3.5"	\N	2	SATA III	14990	\N
+179	Жесткий диск Seagate Ironwolf ST8000VN004,  8ТБ,  HDD,  SATA III,  3.5"	\N	8	SATA III	39990	\N
+180	Жесткий диск Seagate Exos X18 ST18000NM000J,  18ТБ,  HDD,  SATA III,  3.5"	\N	18	SATA III	89990	\N
+181	Жесткий диск Seagate Skyhawk ST8000VX010,  8ТБ,  HDD,  SATA III,  3.5"	\N	8	SATA III	35990	\N
+182	Жесткий диск WD Ultrastar DC HC550 WUH721818ALE6L4,  18ТБ,  HDD,  SATA III,  3.5" [0f38459]	\N	18	SATA III	78990	\N
+183	Жесткий диск Seagate Barracuda ST6000DM003,  6ТБ,  HDD,  SATA III,  3.5"	\N	6	SATA III	24990	\N
+184	Жесткий диск Seagate Barracuda ST2000LM015,  2ТБ,  HDD,  SATA III,  2.5"	\N	2	SATA III	17990	\N
+156	Жесткий диск WD Purple WD33PURZ,  3ТБ,  HDD,  SATA III,  3.5"	\N	3	SATA III	15990	\N
+155	Жесткий диск WD Blue WD20SPZX,  2ТБ,  HDD,  SATA III,  2.5"	\N	2	SATA III	17990	\N
+173	Жесткий диск WD Black WD5000LPSX,  500ГБ,  HDD,  SATA III,  2.5"	\N	500	SATA III	12990	\N
+149	Жесткий диск WD Purple WD43PURZ,  4ТБ,  HDD,  SATA III,  3.5"	\N	4	SATA III	19990	\N
+151	Жесткий диск WD Purple WD23PURZ,  2ТБ,  HDD,  SATA III,  3.5"	\N	2	SATA III	13990	\N
+150	Жесткий диск WD Blue WD40EZAX,  4ТБ,  HDD,  SATA III,  3.5"	\N	4	SATA III	15990	\N
+159	Жесткий диск WD Purple WD10PURZ,  1ТБ,  HDD,  SATA III,  3.5"	\N	1024	SATA III	10990	\N
+152	Жесткий диск WD Red Plus WD40EFPX,  4ТБ,  HDD,  SATA III,  3.5"	\N	4	SATA III	21990	\N
+163	Жесткий диск WD Purple WD85PURZ,  8ТБ,  HDD,  SATA III,  3.5"	\N	8	SATA III	34990	\N
+169	Жесткий диск WD Red Plus WD80EFPX,  8ТБ,  HDD,  SATA III,  3.5"	\N	8	SATA III	34990	\N
 \.
 
 
@@ -849,56 +594,64 @@ COPY public.storages (id, name, brand, capacity, interface, price) FROM stdin;
 -- Name: cases_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.cases_id_seq', 3, true);
+SELECT pg_catalog.setval('public.cases_id_seq', 14, true);
 
 
 --
 -- Name: coolers_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.coolers_id_seq', 3, true);
+SELECT pg_catalog.setval('public.coolers_id_seq', 80, true);
 
 
 --
 -- Name: cpus_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.cpus_id_seq', 309, true);
+SELECT pg_catalog.setval('public.cpus_id_seq', 386, true);
 
 
 --
 -- Name: gpus_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.gpus_id_seq', 188, true);
+SELECT pg_catalog.setval('public.gpus_id_seq', 234, true);
 
 
 --
 -- Name: motherboards_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.motherboards_id_seq', 142, true);
+SELECT pg_catalog.setval('public.motherboards_id_seq', 188, true);
 
 
 --
 -- Name: psus_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.psus_id_seq', 49, true);
+SELECT pg_catalog.setval('public.psus_id_seq', 95, true);
 
 
 --
 -- Name: rams_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.rams_id_seq', 136, true);
+SELECT pg_catalog.setval('public.rams_id_seq', 182, true);
 
 
 --
 -- Name: storages_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.storages_id_seq', 102, true);
+SELECT pg_catalog.setval('public.storages_id_seq', 194, true);
+
+
+--
+-- Name: cases cases_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.cases
+    ADD CONSTRAINT cases_name_key UNIQUE (name);
 
 
 --
@@ -910,11 +663,27 @@ ALTER TABLE ONLY public.cases
 
 
 --
+-- Name: coolers coolers_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.coolers
+    ADD CONSTRAINT coolers_name_key UNIQUE (name);
+
+
+--
 -- Name: coolers coolers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.coolers
     ADD CONSTRAINT coolers_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cpus cpus_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.cpus
+    ADD CONSTRAINT cpus_name_key UNIQUE (name);
 
 
 --
@@ -926,11 +695,27 @@ ALTER TABLE ONLY public.cpus
 
 
 --
+-- Name: gpus gpus_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.gpus
+    ADD CONSTRAINT gpus_name_key UNIQUE (name);
+
+
+--
 -- Name: gpus gpus_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.gpus
     ADD CONSTRAINT gpus_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: motherboards motherboards_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.motherboards
+    ADD CONSTRAINT motherboards_name_key UNIQUE (name);
 
 
 --
@@ -942,6 +727,14 @@ ALTER TABLE ONLY public.motherboards
 
 
 --
+-- Name: psus psus_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.psus
+    ADD CONSTRAINT psus_name_key UNIQUE (name);
+
+
+--
 -- Name: psus psus_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -950,11 +743,27 @@ ALTER TABLE ONLY public.psus
 
 
 --
+-- Name: rams rams_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.rams
+    ADD CONSTRAINT rams_name_key UNIQUE (name);
+
+
+--
 -- Name: rams rams_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.rams
     ADD CONSTRAINT rams_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: storages storages_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.storages
+    ADD CONSTRAINT storages_name_key UNIQUE (name);
 
 
 --

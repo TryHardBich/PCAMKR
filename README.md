@@ -38,7 +38,7 @@
     3. Переходим в нашу пустую базу и восстанавливаем dump 
     ```bash
     \c pcamkr_db;
-    psql -U postgres -d pcamkr_db < pcamkr_dump.sql
+    sudo -u postgres psql -d pcamkr < out.sql
     ```
 
     4. Проверяем работает ли сервер 
