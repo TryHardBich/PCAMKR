@@ -1,0 +1,12 @@
+[Unit]
+Description=PCAMKR Application
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory={{ app_dir }}
+ExecStart={{ app_dir }}/venv/bin/gunicorn -w 3 -b unix:{{ app_dir }}/app.sock -m 007 wsgi:app
+
+[Install]
+WantedBy=multi-user.target

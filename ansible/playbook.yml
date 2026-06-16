@@ -1,0 +1,67 @@
+---
+- name: Развертывание системы подбора комплектующих
+  hosts: servers
+  become: yes
+  vars:
+    app_dir: /opt/hardware-selector
+
+  tasks:
+    - name: Обновление системы
+      apt:
+        update_cache: yes
+
+    - name: Установка системных пакетов
+      apt:
+        name:
+          - nginx
+          - python3-pip
+          - git
+          - postgresql
+          - postgresql-contrib
+        state: present
+
+    - name: Создание директории приложения
+      file:
+        path: "{{ app_dir }}"
+        state: directory
+
+    - name: Клонирование репозитория
+      git:
+        repo: 'https://github.com/TryHardBich/PCAMKR'
+        dest: "{{ app_dir }}"
+        version: main
+
+    - name: Установка Python зависимостей
+      pip:
+        requirements: "{{ app_dir }}/requirements.txt"
+
+    - name: Настройка Nginx
+      template:
+        src: templates/nginx.conf.j2
+        dest: /etc/nginx/sites-available/pcamkr
+
+    - name: Активация конфигурации Nginx
+      file:
+        src: /etc/nginx/sites-available/pcamkr
+        dest: /etc/nginx/sites-enabled/pcamkr
+        state: link
+
+    - name: Создание systemd сервиса
+      template:
+        src: templates/hardware-selector.service.j2
+        dest: /etc/systemd/system/hardware-selector.service
+
+    - name: Перезагрузка systemd
+      shell: systemctl daemon-reload
+
+    - name: Запуск сервиса
+      service:
+        name: hardware-selector
+        state: started
+        enabled: yes
+
+  handlers:
+    - name: Перезапуск Nginx
+      service:
+        name: nginx
+        state: restarted

@@ -1,0 +1,9 @@
+server {
+    listen 80;
+    server_name {{ ansible_hostname }};
+
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:{{ app_dir }}/app.sock;
+    }
+}
