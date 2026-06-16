@@ -826,3 +826,8 @@ input[type=number] {
     width: 100%;
   }
 }
+
+::selection {
+    background: #47474793;
+    color: white;      
+}

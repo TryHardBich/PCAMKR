@@ -141,6 +141,7 @@ function renderBuilder() {
     totalPriceEl.textContent = formatPrice(total);
 
     // правая таблица
+    
     Object.keys(CATEGORY_NAMES).forEach(key => {
         const item = selectedParts[key];
         const row = document.createElement("tr");
