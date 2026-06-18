@@ -3,22 +3,17 @@ name: Deploy to Azure Web App (Frontend)
 on:
   push:
     branches:
-      - devops   
-      - main   
+      - devops
+      - main
   pull_request:
     branches:
       - main
-
-env:
-  NODE_VERSION: '22'
-  FRONTEND_DIR: './frontend'
-  BACKEND_DIR: './backend'
 
 jobs:
   ci-checks:
     name: 🧪 CI Checks (Lint & Build)
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
@@ -26,28 +21,33 @@ jobs:
       - name: 🟨 Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: \${{ env.NODE_VERSION }}
-          cache: 'npm'
+          node-version: '22'          # Явно задаем версию без переменных
+          cache: 'npm'               # Кэшируем node_modules для ускорения сборки
+
+      - name: 🔍 Verify Node & npm version (для отладки и защиты)
+        run: |
+          node -v
+          npm -v
 
       - name: 📦 Install Dependencies (Root & Backend)
         run: |
           npm ci
-          cd \${{ env.BACKEND_DIR }} && npm ci
+          cd ./backend && npm ci
 
       - name: 🧹 Run ESLint
         run: npm run lint
-        working-directory: \${{ env.FRONTEND_DIR }}
-      
+        working-directory: ./frontend
+
       - name: 🏗️ Build Frontend for Production
         id: build-frontend
         run: npm run build
-        working-directory: \${{ env.FRONTEND_DIR }}
+        working-directory: ./frontend
 
-      - name: ✅ Save Build Artifact (Optional but good for debugging)
+      - name: ✅ Save Build Artifact (для отката и проверки)
         uses: actions/upload-artifact@v4
         with:
           name: frontend-build
-          path: \${{ env.FRONTEND_DIR }}/dist
+          path: ./frontend/dist
 
   deploy-azure:
     name: 🚀 Deploy to Azure
@@ -62,11 +62,12 @@ jobs:
       - name: 🟨 Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: \${{ env.NODE_VERSION }}
+          node-version: '22'
+          cache: 'npm'
 
       - name: 🏗️ Rebuild Frontend
         run: npm run build
-        working-directory: \${{ env.FRONTEND_DIR }}
+        working-directory: ./frontend
 
       - name: 📦 Deploy to Azure Web App
         id: deploy-to-azure
@@ -74,10 +75,9 @@ jobs:
         with:
           app-name: \${{ secrets.AZURE_WEBAPP_NAME }}
           publish-profile: \${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: \${{ env.FRONTEND_DIR }}/dist
-          
+          package: ./frontend/dist
+
       - name: 🔗 Output App URL
         run: |
           echo "✅ Deployment successful!"
           echo "🌐 Your app is live at: https://\${{ secrets.AZURE_WEBAPP_NAME }}.azurewebsites.net"
-
