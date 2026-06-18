@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha -R spec",
-    "build": "react-scripts build",
+    "build": "vite build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
