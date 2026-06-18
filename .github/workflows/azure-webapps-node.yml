@@ -1,0 +1,83 @@
+name: Deploy to Azure Web App (Frontend)
+
+on:
+  push:
+    branches:
+      - devops   
+      - main   
+  pull_request:
+    branches:
+      - main
+
+env:
+  NODE_VERSION: '20'
+  FRONTEND_DIR: './frontend'
+  BACKEND_DIR: './backend'
+
+jobs:
+  ci-checks:
+    name: 🧪 CI Checks (Lint & Build)
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟨 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: \${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: 📦 Install Dependencies (Root & Backend)
+        run: |
+          npm ci
+          cd \${{ env.BACKEND_DIR }} && npm ci
+
+      - name: 🧹 Run ESLint
+        run: npm run lint
+        working-directory: \${{ env.FRONTEND_DIR }}
+      
+      - name: 🏗️ Build Frontend for Production
+        id: build-frontend
+        run: npm run build
+        working-directory: \${{ env.FRONTEND_DIR }}
+
+      - name: ✅ Save Build Artifact (Optional but good for debugging)
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: \${{ env.FRONTEND_DIR }}/dist
+
+  deploy-azure:
+    name: 🚀 Deploy to Azure
+    needs: ci-checks
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🟨 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: \${{ env.NODE_VERSION }}
+
+      - name: 🏗️ Rebuild Frontend
+        run: npm run build
+        working-directory: \${{ env.FRONTEND_DIR }}
+
+      - name: 📦 Deploy to Azure Web App
+        id: deploy-to-azure
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: \${{ secrets.AZURE_WEBAPP_NAME }}
+          publish-profile: \${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: \${{ env.FRONTEND_DIR }}/dist
+          
+      - name: 🔗 Output App URL
+        run: |
+          echo "✅ Deployment successful!"
+          echo "🌐 Your app is live at: https://\${{ secrets.AZURE_WEBAPP_NAME }}.azurewebsites.net"
+
