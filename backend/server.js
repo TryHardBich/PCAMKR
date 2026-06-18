@@ -30,7 +30,7 @@ app.use('/api/storages', storageRouter);
 console.log('Registered routes:');
 app._router.stack.forEach(r => { if (r.route && r.route.path) console.log(Object.keys(r.route.methods).join(','), r.route.path); });
 
-const server = app.listen(3001, "0.0.0.0", () => 
+const server = app.listen(3001, '0.0.0.0', () => 
   console.log('SERVER STARTED ON PORT 3001')
 );
 

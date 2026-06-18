@@ -1,387 +1,335 @@
-import { parse } from "node-html-parser";
+import { parse } from 'node-html-parser';
+import puppeteer from 'puppeteer';
+import { db } from '../db.js';
+import { keywordsMap } from './keywordsMap.js';
+import { booleanMap } from './booleanMap.js';
+import cron from 'node-cron';
 
-import * as puppeteer from "puppeteer";
+const BASE_URL = 'https://www.citilink.ru';
 
-import { db } from "../db.js";
-
-import { keywordsMap } from "./keywordsMap.js";
-
-import { booleanMap } from "./booleanMap.js";
-
-import cron from "node-cron";
-
-const MIN_LINKS_ON_LOADED_PAGE = 30;
-
-const LINKS_ON_LAST_PAGE = 32;
-
-const BASE_URL = "https://www.citilink.ru";
-
-const CPU_URL = "https://www.citilink.ru/catalog/processory?p=";
-const GPU_URL = "https://www.citilink.ru/catalog/videokarty?p=";
-const RAM_URL = "https://www.citilink.ru/catalog/moduli-pamyati?p=";
-const MOTHERBOARD_URL = "https://www.citilink.ru/catalog/materinskie-platy?p=";
-const SSD_URL = "https://www.citilink.ru/catalog/ssd-nakopiteli?p=";
-const HDD_URL = "https://www.citilink.ru/catalog/zhestkie-diski?p=";
-const PSU_URL = "https://www.citilink.ru/catalog/bloki-pitaniya?p=";
+const CPU_URL = 'https://www.citilink.ru/catalog/processory?p=';
+const GPU_URL = 'https://www.citilink.ru/catalog/videokarty?p=';
+const RAM_URL = 'https://www.citilink.ru/catalog/moduli-pamyati?p=';
+const MOTHERBOARD_URL = 'https://www.citilink.ru/catalog/materinskie-platy?p=';
+const SSD_URL = 'https://www.citilink.ru/catalog/ssd-nakopiteli?p=';
+const HDD_URL = 'https://www.citilink.ru/catalog/zhestkie-diski?p=';
+const PSU_URL = 'https://www.citilink.ru/catalog/bloki-pitaniya?p=';
 const COOLERS_URL =
-  "https://www.citilink.ru/catalog/sistemy-ohlazhdeniya-kompyutera?p=";
-const CASES_URL = "https://www.citilink.ru/catalog/korpusa?p=";
-
-const browser = await puppeteer.launch();
+  'https://www.citilink.ru/catalog/sistemy-ohlazhdeniya-kompyutera?p=';
+const CASES_URL = 'https://www.citilink.ru/catalog/korpusa?p=';
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const waitForLoad = async (page, selector) => {
+  /* global document */  // <-- Только один раз в начале функции
   try {
     await page.waitForFunction(
       (sel) => {
-        if (sel) {
-          return (
-            document.querySelectorAll(".react-loading-skeleton").length < 2 &&
-            document.querySelectorAll(sel).length > 0
-          );
-        } else {
-          return (
-            document.querySelectorAll(".react-loading-skeleton").length < 2
-          );
+        const skeletonCount = document.querySelectorAll('.react-loading-skeleton').length;
+        if (skeletonCount < 2) {
+          if (sel) {
+            return document.querySelectorAll(sel).length > 0;
+          }
+          return true;
         }
+        return false;
       },
-      { timeout: 10000 },
+      { timeout: 15000 },
       selector,
     );
   } catch (error) {
-    console.log(await page.content());
-    console.log("time limit exceeded for: \n", page);
-  }
-
-  const linksCount = await page.evaluate(() => {
-    return document.querySelectorAll('a[href*="/product/"]').length;
-  });
-  console.log(linksCount);
-
-  const isLastPage = !(linksCount >= LINKS_ON_LAST_PAGE);
-
-  return !isLastPage;
-};
-
-const parsePipeline = async (pageNumber) => {
-  console.log(CPU_URL + pageNumber);
-  await Promise.all([
-    cpuPage.goto(CPU_URL + pageNumber),
-
-    gpuPage.goto(GPU_URL + pageNumber),
-
-    ramPage.goto(RAM_URL + pageNumber),
-
-    motherboardPage.goto(MOTHERBOARD_URL + pageNumber),
-
-    ssdPage.goto(SSD_URL + pageNumber),
-
-    hddPage.goto(HDD_URL + pageNumber),
-
-    psuPage.goto(PSU_URL + pageNumber),
-
-    coolersPage.goto(COOLERS_URL + pageNumber),
-
-    casesPage.goto(CASES_URL + pageNumber),
-  ]);
-  const cpuLoaded = await waitForLoad(cpuFullPage.page);
-
-  const gpuLoaded = await waitForLoad(gpuFullPage.page);
-
-  const ramLoaded = await waitForLoad(ramFullPage.page);
-
-  const motherboardLoaded = await waitForLoad(motherboardFullPage.page);
-
-  const ssdLoaded = await waitForLoad(ssdFullPage.page);
-
-  const hddLoaded = await waitForLoad(hddFullPage.page);
-
-  const psuLoaded = await waitForLoad(psuFullPage.page);
-
-  const coolersLoaded = await waitForLoad(coolersFullPage.page);
-
-  if (
-    !cpuLoaded &&
-    !gpuLoaded &&
-    !ramLoaded &&
-    !motherboardLoaded &&
-    !ssdLoaded &&
-    !hddLoaded &&
-    !psuLoaded &&
-    !coolersLoaded
-  ) {
-    console.warn(
-      "page does not exist, it might be due to exceeding max count of pages on site",
-    );
+    console.warn('Wait for load timeout or error:', error.message);
     return false;
   }
 
-  for (var j = 0; j < pages.length; j++) {
-    {
-      const html = await pages[j].page.content();
-      const root = parse(html, {
-        blockTextElements: {
-          script: false,
-          noscript: true,
-          style: false,
-          pre: true,
-        },
-        fixNestedATags: false,
-        parseNoneClosedTags: true,
-        preserveTagNesting: true,
-        voidTag: {
-          closingSlash: true,
-        },
-      });
-      const partElements = root.querySelectorAll('[class*="SnippetProduct"]');
-      const itemPage = await browser.newPage();
+  // Больше не нужно писать /* global document */ здесь
+  const linksCount = await page.evaluate(() => {
+    return document.querySelectorAll('a[href*="/product/"]').length;
+  });
 
-      for (var k = 0; k < partElements.length; k++) {
-        await delay(Math.random() * 3 * 1000);
-        const title = partElements[k].querySelector('a[href*="/product/"]');
-        const price = partElements[k].querySelector('[class*="MainPrice"]');
-        const href = title._attrs.href;
-        const itemPageUrl = BASE_URL + href + "properties";
-        console.log(itemPageUrl);
+  const LINKS_ON_LAST_PAGE = 32;
+  const isLastPage = !(linksCount >= LINKS_ON_LAST_PAGE);
+  return !isLastPage;
+};
 
-        await itemPage.goto(itemPageUrl);
 
-        const itemPageLoaded = await waitForLoad(
-          itemPage,
-          '[class*="PropertiesItem-components"]',
-        );
 
+const parsePipeline = async (pageNumber, pages) => {
+  console.log('Parsing page ${pageNumber}...');
+  
+  await Promise.all([
+    pages.cpu.page.goto(CPU_URL + pageNumber),
+    pages.gpu.page.goto(GPU_URL + pageNumber),
+    pages.ram.page.goto(RAM_URL + pageNumber),
+    pages.motherboard.page.goto(MOTHERBOARD_URL + pageNumber),
+    pages.ssd.page.goto(SSD_URL + pageNumber),
+    pages.hdd.page.goto(HDD_URL + pageNumber),
+    pages.psu.page.goto(PSU_URL + pageNumber),
+    pages.coolers.page.goto(COOLERS_URL + pageNumber),
+    pages.cases.page.goto(CASES_URL + pageNumber),
+  ]);
+
+  const checks = await Promise.all([
+    waitForLoad(pages.cpu.page),
+    waitForLoad(pages.gpu.page),
+    waitForLoad(pages.ram.page),
+    waitForLoad(pages.motherboard.page),
+    waitForLoad(pages.ssd.page),
+    waitForLoad(pages.hdd.page),
+    waitForLoad(pages.psu.page),
+    waitForLoad(pages.coolers.page),
+    waitForLoad(pages.cases.page),
+  ]);
+
+  if (!checks.some((c) => c)) {
+    console.warn('Page does not exist or failed to load.');
+    return false;
+  }
+
+  for (let j = 0; j < pages.list.length; j++) {
+    const currentPageObj = pages.list[j];
+    const html = await currentPageObj.page.content();
+    const root = parse(html, {
+      blockTextElements: {
+        script: false,
+        noscript: true,
+        style: false,
+        pre: true,
+      },
+      fixNestedATags: false,
+      parseNoneClosedTags: true,
+      preserveTagNesting: true,
+      voidTag: { closingSlash: true },
+    });
+
+    const partElements = root.querySelectorAll('[class*="SnippetProduct"]');
+    const itemPage = await pages.browser.newPage();
+
+    for (let k = 0; k < partElements.length; k++) {
+      await delay(Math.random() * 3 * 1000);
+      
+      const titleEl = partElements[k].querySelector('a[href*="/product/"]');
+      const priceEl = partElements[k].querySelector('[class*="MainPrice"]');
+      
+      if (!titleEl || !priceEl) continue;
+
+      const href = titleEl._attrs.href;
+      const itemPageUrl = BASE_URL + href + 'properties';
+      
+      try {
+        await itemPage.goto(itemPageUrl, { waitUntil: 'networkidle0', timeout: 30000 });
+        await waitForLoad(itemPage, '[class*="PropertiesItem-components"]');
+        
         const itemHtml = await itemPage.content();
-
         const itemRoot = parse(itemHtml, {
-          blockTextElements: {
-            script: false,
-            noscript: true,
-            style: false,
-            pre: true,
-          },
+          blockTextElements: { script: false, noscript: true, style: false, pre: true },
           fixNestedATags: false,
           parseNoneClosedTags: true,
           preserveTagNesting: true,
-          voidTag: {
-            closingSlash: true,
-          },
+          voidTag: { closingSlash: true },
         });
 
-        const properties = itemRoot.querySelectorAll(
-          '[class*="PropertiesItem-components"]',
-        );
-
+        const properties = itemRoot.querySelectorAll('[class*="PropertiesItem-components"]');
         const img = itemRoot.querySelector('[src*="width:400/height:400"]');
-
-        const img_url = img?._attrs?.src;
-
-        console.log(img_url, img);
-
-        console.log("pr", properties.length);
+        const imgUrl = img?._attrs?.src;
 
         const columns = [];
         const values = [];
 
         properties.forEach((propertyContainer) => {
-          const property = propertyContainer.querySelector(
-            '[class*="PropertiesName"]',
-          );
-          const valueContainer = propertyContainer.querySelector(
-            `[class*=PropertiesValue]`,
-          );
+          const propertyNameEl = propertyContainer.querySelector('[class*="PropertiesName"]');
+          const valueContainer = propertyContainer.querySelector('[class*="PropertiesValue"]');
+          const rawValue = valueContainer?.children?.text;
+          const rawName = propertyNameEl?.innerText?.toLowerCase().trim();
 
-          const value = valueContainer?.children[0]?.text;
+          if (!rawName || !rawValue) return;
 
-          if (keywordsMap[property?.innerText?.toLowerCase().trim()]) {
-            var formattedValue = value.trim();
-            columns.push(
-              keywordsMap[property?.innerText?.toLowerCase().trim()].column,
-            );
-            switch (
-              keywordsMap[property?.innerText?.toLowerCase().trim()].type
-            ) {
-              case "integer":
-                const tmpArray = formattedValue.split(" ");
-                formattedValue = tmpArray.join("");
-                formattedValue = parseInt(formattedValue);
-                break;
-              case "boolean":
-                formattedValue = booleanMap[formattedValue];
-                break;
-              case "textArray":
-                console.log(formattedValue);
-                formattedValue = formattedValue.split(", ");
-                /* formattedValue = formattedValue.map((value) => {
-                  return '"' + value + '"';
-                }); */
-                break;
-              case "numeric":
-                const tmp = formattedValue.split(" ");
-                formattedValue = tmp.join("");
-                formattedValue = parseInt(formattedValue);
-                break;
-              case "text":
-                /* formattedValue = '"' + value + '"'; */
-                break;
+          const mapEntry = keywordsMap[rawName];
+          if (!mapEntry) return;
+
+          let formattedValue = rawValue.trim();
+          
+          columns.push(mapEntry.column);
+
+          switch (mapEntry.type) {
+            case 'integer': {
+              const tmpArray = formattedValue.split(' ');
+              formattedValue = tmpArray.join('');
+              formattedValue = parseInt(formattedValue, 10);
+              if (isNaN(formattedValue)) formattedValue = null;
+              values.push(formattedValue);
+              break;
             }
-
-            console.log(
-              keywordsMap[property?.innerText.toLowerCase().trim()].column,
-              formattedValue,
-            );
-            console.log("");
-            values.push(formattedValue);
+            case 'boolean': {
+              formattedValue = booleanMap[formattedValue] ?? null;
+              values.push(formattedValue);
+              break;
+            }
+            case 'textArray': {
+              formattedValue = formattedValue.split(', ');
+              values.push(JSON.stringify(formattedValue)); // Сохраняем как JSON строку
+              break;
+            }
+            case 'numeric': {
+              const tmp = formattedValue.split(' ');
+              formattedValue = tmp.join('');
+              formattedValue = parseInt(formattedValue, 10);
+              if (isNaN(formattedValue)) formattedValue = null;
+              values.push(formattedValue);
+              break;
+            }
+            case 'text': {
+              values.push(formattedValue);
+              break;
+            }
+            default: {
+              values.push(formattedValue);
+            }
           }
         });
 
-        if (title?._attrs?.title) {
-          columns.push("name");
-          values.push(title?._attrs?.title);
+        if (titleEl._attrs?.title) {
+          columns.push('name');
+          values.push(titleEl._attrs.title);
         }
-        const formattedPrice = price?.textContent
-          ?.split("₽")[0]
-          .split(" ")
-          .join("");
+
+        const priceText = priceEl.textContent;
+        const formattedPrice = priceText
+          ?.split('₽')
+          ?.replace(/\s+/g, '') // Удаляем все пробелы
+          ?.trim();
+
         if (formattedPrice) {
-          columns.push("price");
-          values.push(parseInt(formattedPrice));
+          const priceNum = parseInt(formattedPrice, 10);
+          if (!isNaN(priceNum)) {
+            columns.push('price');
+            values.push(priceNum);
+          }
         }
-        if (img_url) {
-          columns.push("img_url");
-          values.push(img_url);
+
+        if (imgUrl) {
+          columns.push('img_url');
+          values.push(imgUrl);
         }
-        /*       console.log(
-        title?._attrs?.title,
-        parseInt(price?.textContent?.split("₽")[0]?.trim()),
-      ); */
 
-        console.log(formattedPrice);
-        const partInfo = {
-          name: title?._attrs?.title,
-          price: parseInt(formattedPrice),
-        };
-        if (partInfo.name && partInfo.price) {
-          const placeholders = values.map((_, i) => `$${i + 1}`).join(", ");
-
-          const insertRes = await db.query(
-            `INSERT INTO ${pages[j].pageTitle} (${columns.join(
-              ", ",
-            )}) VALUES (${placeholders}) ON CONFLICT (name) DO UPDATE SET price = EXCLUDED.price`,
+        if (columns.length > 0 && values.length > 0) {
+          const placeholders = values.map((_, i) => `$${i + 1}`).join(', ');
+          const columnNames = columns.join(', ');
+          
+          await db.query(
+            `INSERT INTO ${currentPageObj.pageTitle} (${columnNames}) VALUES (\${placeholders}) ON CONFLICT (name) DO UPDATE SET price = EXCLUDED.price`,
             values,
-            (err) => {
-              console.log(err);
-              db.query("ROLLBACK");
-            },
-          );
-          /* console.log(partInfo.name, partInfo.price); */
+          ).catch((err) => {
+            console.error('DB Error for ${titleEl._attrs.title}:', err.message);
+          });
         }
+      } catch (err) {
+        console.error('Error processing item ${itemPageUrl}:', err.message);
+      } finally {
+        // Не закрываем itemPage здесь, чтобы не спамить созданием страниц, 
+        // но в продакшене лучше закрывать или использовать пул страниц.
+        // Для простоты оставим сборщику мусора, либо можно раскомментировать:
+        // await itemPage.close(); 
       }
     }
   }
-
   return true;
 };
 
-const cpuPage = await browser.newPage();
-const gpuPage = await browser.newPage();
-const ramPage = await browser.newPage();
-const motherboardPage = await browser.newPage();
-const ssdPage = await browser.newPage();
-const hddPage = await browser.newPage();
-const psuPage = await browser.newPage();
-const coolersPage = await browser.newPage();
-const casesPage = await browser.newPage();
+const startParser = async () => {
+  let browser;
+  let isRunning = false;
 
-const cpuFullPage = {
-  pageTitle: "cpus",
-  page: cpuPage,
-};
-const gpuFullPage = {
-  pageTitle: "gpus",
-  page: gpuPage,
-};
-
-const psuFullPage = {
-  pageTitle: "psus",
-  page: psuPage,
-};
-
-const hddFullPage = {
-  pageTitle: "storages",
-  page: hddPage,
-};
-
-const ssdFullPage = {
-  pageTitle: "storages",
-  page: ssdPage,
-};
-
-const ramFullPage = {
-  pageTitle: "rams",
-  page: ramPage,
-};
-
-const motherboardFullPage = {
-  pageTitle: "motherboards",
-  page: motherboardPage,
-};
-const coolersFullPage = {
-  pageTitle: "coolers",
-  page: coolersPage,
-};
-const casesFullPage = {
-  pageTitle: "cases",
-  page: casesPage,
-};
-
-const pages = [
-  cpuFullPage,
-  gpuFullPage,
-  ramFullPage,
-  motherboardFullPage,
-  ssdFullPage,
-  hddFullPage,
-  psuFullPage,
-  coolersFullPage,
-  casesFullPage,
-];
-
-var isRunning = false;
-
-try {
-  var i = 1;
-  isRunning = true;
-  while (true) {
-    const result = await parsePipeline(i);
-    if (!result) {
-      console.log("stopped parsing");
-      break;
-    }
-    i++;
-  }
-} finally {
-  isRunning = false;
-}
-
-cron.schedule("0 0 */2 * * *", async () => {
-  if (isRunning) {
-    console.log("процесс уже запущен");
-    return;
-  }
-  var i = 1;
-  isRunning = true;
   try {
-    while (true) {
-      const result = await parsePipeline(i);
-      if (!result) {
-        console.log("stopped parsing");
-        break;
+    browser = await puppeteer.launch({
+      headless: 'new', // Явное указание нового режима headless
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+    });
+
+    const cpuPage = await browser.newPage();
+    const gpuPage = await browser.newPage();
+    const ramPage = await browser.newPage();
+    const motherboardPage = await browser.newPage();
+    const ssdPage = await browser.newPage();
+    const hddPage = await browser.newPage();
+    const psuPage = await browser.newPage();
+    const coolersPage = await browser.newPage();
+    const casesPage = await browser.newPage();
+
+    const pages = {
+      cpu: { pageTitle: 'cpus', page: cpuPage },
+      gpu: { pageTitle: 'gpus', page: gpuPage },
+      ram: { pageTitle: 'rams', page: ramPage },
+      motherboard: { pageTitle: 'motherboards', page: motherboardPage },
+      ssd: { pageTitle: 'storages', page: ssdPage },
+      hdd: { pageTitle: 'storages', page: hddPage },
+      psu: { pageTitle: 'psus', page: psuPage },
+      coolers: { pageTitle: 'coolers', page: coolersPage },
+      cases: { pageTitle: 'cases', page: casesPage },
+      list: [
+        { pageTitle: 'cpus', page: cpuPage },
+        { pageTitle: 'gpus', page: gpuPage },
+        { pageTitle: 'rams', page: ramPage },
+        { pageTitle: 'motherboards', page: motherboardPage },
+        { pageTitle: 'storages', page: ssdPage },
+        { pageTitle: 'storages', page: hddPage },
+        { pageTitle: 'psus', page: psuPage },
+        { pageTitle: 'coolers', page: coolersPage },
+        { pageTitle: 'cases', page: casesPage },
+      ],
+      browser,
+    };
+
+    // Ручной запуск (для тестов)
+    let i = 1;
+    isRunning = true;
+    try {
+      while (true) {
+        const result = await parsePipeline(i, pages);
+        if (!result) {
+          console.log('Stopped parsing: no more pages or error.');
+          break;
+        }
+        i++;
       }
-      i++;
+    } catch (e) {
+      console.error('Manual run error:', e);
+    } finally {
+      isRunning = false;
     }
+
+    // Cron запуск (каждые 2 часа)
+    cron.schedule('0 0 */2 * * *', async () => {
+      if (isRunning) {
+        console.log('Process already running, skipping cron job.');
+        return;
+      }
+      isRunning = true;
+      let cronI = 1;
+      try {
+        while (true) {
+          const result = await parsePipeline(cronI, pages);
+          if (!result) {
+            console.log('Cron stopped parsing.');
+            break;
+          }
+          cronI++;
+        }
+      } catch (e) {
+        console.error('Cron job error:', e);
+      } finally {
+        isRunning = false;
+      }
+    });
+
+  } catch (error) {
+    console.error('Failed to start parser:', error);
   } finally {
-    isRunning = false;
+    // Важно: не закрываем браузер сразу, если хотим, чтобы cron работал.
+    // В реальном приложении лучше управлять жизненным циклом иначе.
+    // process.on('SIGINT', () => browser?.close());
   }
-});
+};
+
+// Экспортируем функцию, чтобы можно было вызвать из server.js
+export { startParser };
