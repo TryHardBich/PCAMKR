@@ -21,33 +21,29 @@ jobs:
       - name: 🟨 Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'          # Явно задаем версию без переменных
-          cache: 'npm'               # Кэшируем node_modules для ускорения сборки
+          node-version: '22'
+          cache: 'npm'
 
-      - name: 🔍 Verify Node & npm version (для отладки и защиты)
-        run: |
-          node -v
-          npm -v
-
-      - name: 📦 Install Dependencies (Root & Backend)
+      - name: 📦 Install All Dependencies (Root + Backend + Frontend tools)
+        # npm ci установит и бэкенд (через cd backend), и vite (из корня)
         run: |
           npm ci
           cd ./backend && npm ci
 
       - name: 🧹 Run ESLint
+        # Линтер запускаем относительно корня или конкретной папки, если нужно
         run: npm run lint
-        working-directory: ./frontend
 
       - name: 🏗️ Build Frontend for Production
-        id: build-frontend
+        # Скрипт build из package.json сам зайдет в ./frontend и запустит vite build
         run: npm run build
-        working-directory: ./frontend
 
-      - name: ✅ Save Build Artifact (для отката и проверки)
+      - name: ✅ Save Build Artifact
         uses: actions/upload-artifact@v4
         with:
           name: frontend-build
           path: ./frontend/dist
+          retention-days: 1
 
   deploy-azure:
     name: 🚀 Deploy to Azure
@@ -65,9 +61,11 @@ jobs:
           node-version: '22'
           cache: 'npm'
 
-      - name: 🏗️ Rebuild Frontend
-        run: npm run build
-        working-directory: ./frontend
+      - name: 📥 Download Frontend Build Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend-build
+          path: ./frontend/dist
 
       - name: 📦 Deploy to Azure Web App
         id: deploy-to-azure
